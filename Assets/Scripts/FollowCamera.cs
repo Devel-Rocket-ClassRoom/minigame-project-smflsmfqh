@@ -9,11 +9,7 @@ public class FollowCamera : MonoBehaviour
     private float _scrollSensitivity = 5f;
 
     [SerializeField]
-    private float _smoothTime = 1f;
-
-    [SerializeField]
     private Vector3 _offset = new Vector3(0f, 0.05f, -0.35f);
-    private Vector3 _velocity;
     private float _defaultDistance;
     private float _currentDistance;
 
@@ -42,16 +38,9 @@ public class FollowCamera : MonoBehaviour
         );
 
         Quaternion rotation = Quaternion.Euler(_player.Pitch, _player.Yaw, 0f);
-        Vector3 targetPos =
-            _player.transform.position + rotation * (_offset.normalized * _currentDistance);
-
-        transform.position = Vector3.SmoothDamp(
-            transform.position,
-            targetPos,
-            ref _velocity,
-            _smoothTime
+        transform.SetPositionAndRotation(
+            _player.transform.position + rotation * (_offset.normalized * _currentDistance),
+            rotation
         );
-
-        transform.rotation = rotation;
     }
 }
