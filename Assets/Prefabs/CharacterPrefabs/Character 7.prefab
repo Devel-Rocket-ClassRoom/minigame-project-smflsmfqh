@@ -2050,11 +2050,11 @@ GameObject:
   - component: {fileID: 5737258785303874700}
   - component: {fileID: 3253797976182165083}
   - component: {fileID: 2642855303278957648}
-  - component: {fileID: 5406361052245513302}
-  - component: {fileID: 5804430762872468691}
+  - component: {fileID: 4150640672180624047}
+  - component: {fileID: 2134510526770021348}
   m_Layer: 0
   m_Name: Character 7
-  m_TagString: Untagged
+  m_TagString: Npc
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2150,7 +2150,29 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.95, z: 0}
---- !u!114 &5406361052245513302
+--- !u!195 &4150640672180624047
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6616359842534243974}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 1
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &2134510526770021348
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2159,37 +2181,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 6616359842534243974}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f75db5b538eef814b9775d744f05e3b5, type: 3}
+  m_Script: {fileID: 11500000, guid: 259378cc5d39040408b1252d3288c354, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Controller.CharacterMover
-  m_WalkSpeed: 1
-  m_RunSpeed: 4
-  m_RotateSpeed: 90
-  m_Space: 1
-  m_JumpHeight: 5
-  m_HorizontalID: Hor
-  m_VerticalID: Vert
-  m_StateID: State
-  m_JumpID: IsJump
-  m_LookWeight:
-    weight: 1
-    body: 0.3
-    head: 0.7
-    eyes: 1
---- !u!114 &5804430762872468691
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6616359842534243974}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2c67ce836140b4479603ebcf944cddd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Controller.MovePlayerInput
-  m_Camera: {fileID: 0}
-  m_FollowTarget: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::NPCMovement
+  _Type: 0
+  _RectWidth: 20
+  _RectDepth: 10
+  _PatrolSpeed: 2.5
+  _PatrolWaitTime: 1
+  _RunSpeed: 5
+  _RunWaitTime: 0.5
+  _ExcludeAreas:
+  - Road
+  - Not Walkable
 --- !u!1 &6652927345056106520
 GameObject:
   m_ObjectHideFlags: 0
