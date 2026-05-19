@@ -13,107 +13,127 @@ public class NPCMovement : MonoBehaviour
 
     [Header("NPC 타입")]
     [SerializeField]
-    private NpcType m_Type = NpcType.Patrol;
+    private NpcType _Type = NpcType.Patrol;
+
+    [Header("이동 범위")]
+    [SerializeField]
+    private float _RectWidth = 20f;
+
+    [SerializeField]
+    private float _RectDepth = 10f;
 
     [Header("Patrol 설정")]
     [SerializeField]
-    private float m_PatrolRadius = 10f; // 스폰 위치 기준 배회 반경
+    private float _PatrolSpeed = 2.5f;
 
     [SerializeField]
-    private float m_PatrolSpeed = 2.5f;
-
-    [SerializeField]
-    private float m_WaitTime = 1f; // 목적지 도착 후 대기 시간
+    private float _PatrolWaitTime = 1f;
 
     [Header("Runner 설정")]
     [SerializeField]
-    private float m_RunRadius = 25f; // 스폰 위치 기준 이동 반경
+    private float _RunSpeed = 5f;
 
     [SerializeField]
-    private float m_RunSpeed = 5f;
+    private float _RunWaitTime = 0.5f;
 
     [Header("NavMesh 영역 설정")]
     [SerializeField]
-    private string[] m_ExcludeAreas = { "Road" }; // 진입 금지 area 이름 목록
+    private string[] _ExcludeAreas = { "Road", "Not Walkable" };
 
-    private NavMeshAgent m_Agent;
-    private Animator m_Animator;
+    private NavMeshAgent _Agent;
+    private Animator _Animator;
 
-    private Vector3 m_Origin; // 스폰 위치 (배회 중심)
-    private int m_AreaMask;
-    private float m_WaitTimer;
-    private bool m_Waiting;
-    private bool m_Initialized;
-    private float m_AnimVert;
+    private Vector3 _Origin;
+    private int _AreaMask;
+    private float _WaitTimer;
+    private bool _Waiting;
+    private bool _Initialized;
+    private float _AnimVert;
+    private float _CurrentWaitTime;
 
-    // Animator 파라미터 — Character_Movement.controller 기준
+    private Vector3 _PointA;
+    private Vector3 _PointB;
+    private bool _GoingToB;
+    private float _minDistance = 5f;
+
     private static readonly int k_HorID = Animator.StringToHash("Hor");
     private static readonly int k_VertID = Animator.StringToHash("Vert");
     private static readonly int k_StateID = Animator.StringToHash("State");
 
     private void Awake()
     {
-        m_Agent = GetComponent<NavMeshAgent>();
-        m_Animator = GetComponent<Animator>();
+        _Agent = GetComponent<NavMeshAgent>();
+        _Animator = GetComponent<Animator>();
     }
 
     private void Start()
     {
-        if (!m_Initialized)
+        if (!_Initialized)
+        {
+            _Origin = transform.position;
             Setup();
+        }
     }
 
     private void Update()
     {
-        if (!m_Initialized)
+        if (!_Initialized)
             return;
-
-        if (m_Type == NpcType.Patrol)
-            UpdatePatrol();
-        else
-            UpdateRunner();
-
+        UpdateMovement();
         UpdateAnimator();
     }
 
-    // ---- 외부(SpawnManager)에서 런타임 세팅 ----
-
-    public void SetupPatrol(float radius = 10f, float speed = 2.5f, float waitTime = 1f)
+    public void SetupPatrol(
+        Vector3 zoneCenter,
+        float rectWidth = 20f,
+        float rectDepth = 10f,
+        float speed = 2.5f,
+        float waitTime = 1f
+    )
     {
-        m_Type = NpcType.Patrol;
-        m_PatrolRadius = radius;
-        m_PatrolSpeed = speed;
-        m_WaitTime = waitTime;
+        _Origin = zoneCenter;
+        _Type = NpcType.Patrol;
+        _RectWidth = rectWidth;
+        _RectDepth = rectDepth;
+        _PatrolSpeed = speed;
+        _PatrolWaitTime = waitTime;
         Setup();
     }
 
-    public void SetupRunner(float radius = 25f, float speed = 5f)
+    public void SetupRunner(
+        Vector3 zoneCenter,
+        float rectWidth = 20f,
+        float rectDepth = 10f,
+        float speed = 5f,
+        float waitTime = 0.5f
+    )
     {
-        m_Type = NpcType.Runner;
-        m_RunRadius = radius;
-        m_RunSpeed = speed;
+        _Origin = zoneCenter;
+        _Type = NpcType.Runner;
+        _RectWidth = rectWidth;
+        _RectDepth = rectDepth;
+        _RunSpeed = speed;
+        _RunWaitTime = waitTime;
         Setup();
     }
-
-    // ---- 초기화 ----
 
     private void Setup()
     {
-        m_Initialized = true;
-        m_Origin = transform.position;
-        m_AreaMask = BuildAreaMask();
+        _Initialized = true;
+        _AreaMask = BuildAreaMask();
 
-        m_Agent.areaMask = m_AreaMask;
-        m_Agent.stoppingDistance = 0.3f;
-        m_Agent.speed = m_Type == NpcType.Patrol ? m_PatrolSpeed : m_RunSpeed;
+        _Agent.areaMask = _AreaMask;
+        _Agent.stoppingDistance = 0.3f;
+        _Agent.speed = _Type == NpcType.Patrol ? _PatrolSpeed : _RunSpeed;
+        _CurrentWaitTime = _Type == NpcType.Patrol ? _PatrolWaitTime : _RunWaitTime;
 
-        MoveToNextDestination();
+        SetupLinearPoints();
     }
 
     private int BuildAreaMask()
     {
         int mask = NavMesh.AllAreas;
-        foreach (var areaName in m_ExcludeAreas)
+        foreach (var areaName in _ExcludeAreas)
         {
             int area = NavMesh.GetAreaFromName(areaName);
             if (area >= 0)
@@ -124,117 +144,97 @@ public class NPCMovement : MonoBehaviour
         return mask;
     }
 
-    // ---- Patrol 업데이트 ----
-
-    private void UpdatePatrol()
+    private void SetupLinearPoints()
     {
-        if (m_Waiting)
+        float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
+        Vector3 dir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+
+        float halfW = _RectWidth * 0.5f;
+        float halfD = _RectDepth * 0.5f;
+
+        float tX = Mathf.Abs(dir.x) > 0.001f ? halfW / Mathf.Abs(dir.x) : float.MaxValue;
+        float tZ = Mathf.Abs(dir.z) > 0.001f ? halfD / Mathf.Abs(dir.z) : float.MaxValue;
+        float t = Mathf.Min(tX, tZ);
+
+        Vector3 candidateA = _Origin + dir * t;
+        Vector3 candidateB = _Origin - dir * t;
+
+        NavMeshHit hit;
+        _PointA = NavMesh.SamplePosition(candidateA, out hit, 3f, _AreaMask)
+            ? hit.position
+            : _Origin;
+        _PointB = NavMesh.SamplePosition(candidateB, out hit, 3f, _AreaMask)
+            ? hit.position
+            : _Origin;
+
+        if (Vector3.Distance(_PointA, _PointB) < _minDistance)
         {
-            m_WaitTimer -= Time.deltaTime;
-            if (m_WaitTimer <= 0f)
+            _PointA = _Origin;
+            _PointB = _Origin;
+            _Agent.isStopped = true;
+            _Waiting = true;
+            _WaitTimer = _CurrentWaitTime;
+            return;
+        }
+
+        _GoingToB = true;
+        _Agent.SetDestination(_PointB);
+    }
+
+    private void UpdateMovement()
+    {
+        if (_Waiting)
+        {
+            _WaitTimer -= Time.deltaTime;
+            if (_WaitTimer <= 0f)
             {
-                m_Waiting = false;
-                m_Agent.isStopped = false;
-                MoveToNextDestination();
+                Debug.Log("[NPC Movement] 웨이팅 타이머 종료");
+                _Waiting = false;
+                _Agent.isStopped = false;
+                _GoingToB = !_GoingToB;
+                Debug.Log($"[NPC Movement] _GointToB: {_GoingToB}");
+                _Agent.SetDestination(_GoingToB ? _PointB : _PointA);
             }
             return;
         }
 
         if (HasArrived())
         {
-            m_Agent.isStopped = true;
-            m_Waiting = true;
-            m_WaitTimer = m_WaitTime;
+            _Agent.isStopped = true;
+            _Waiting = true;
+            _WaitTimer = _CurrentWaitTime;
         }
     }
-
-    // ---- Runner 업데이트 ----
-
-    private void UpdateRunner()
-    {
-        if (HasArrived())
-            MoveToNextDestination();
-    }
-
-    // ---- NavMesh 랜덤 목적지 선택 ----
-
-    private void MoveToNextDestination()
-    {
-        float radius = m_Type == NpcType.Patrol ? m_PatrolRadius : m_RunRadius;
-
-        if (TryGetRandomNavMeshPoint(m_Origin, radius, out var dest))
-        {
-            m_Agent.SetDestination(dest);
-        }
-        else
-        {
-            // 유효한 점을 못 찾으면 잠시 후 재시도
-            m_Waiting = true;
-            m_WaitTimer = 0.5f;
-        }
-    }
-
-    private bool TryGetRandomNavMeshPoint(Vector3 center, float radius, out Vector3 result)
-    {
-        for (int i = 0; i < 10; i++) // 최대 10회 시도
-        {
-            var candidate = center + Random.insideUnitSphere * radius;
-            candidate.y = center.y;
-
-            if (NavMesh.SamplePosition(candidate, out var hit, radius, m_AreaMask))
-            {
-                result = hit.position;
-                return true;
-            }
-        }
-        result = center;
-        return false;
-    }
-
-    // ---- Animator 구동 ----
 
     private void UpdateAnimator()
     {
-        var moving = !m_Agent.isStopped && m_Agent.velocity.sqrMagnitude > 0.01f;
-        m_AnimVert = Mathf.MoveTowards(m_AnimVert, moving ? 1f : 0f, Time.deltaTime * 4.5f);
+        var moving = !_Agent.isStopped && _Agent.velocity.sqrMagnitude > 0.01f;
+        _AnimVert = Mathf.MoveTowards(_AnimVert, moving ? 1f : 0f, Time.deltaTime * 4.5f);
 
-        m_Animator.SetFloat(k_HorID, 0f);
-        m_Animator.SetFloat(k_VertID, m_AnimVert);
-        m_Animator.SetFloat(k_StateID, m_Type == NpcType.Runner ? 1f : 0f);
+        _Animator.SetFloat(k_HorID, 0f);
+        _Animator.SetFloat(k_VertID, _AnimVert);
+        _Animator.SetFloat(k_StateID, _Type == NpcType.Runner ? 1f : 0f);
     }
-
-    // ---- 도착 판정 ----
 
     private bool HasArrived()
     {
-        return !m_Agent.pathPending
-            && m_Agent.hasPath
-            && m_Agent.remainingDistance <= m_Agent.stoppingDistance;
+        return !_Agent.pathPending
+            && _Agent.hasPath
+            && _Agent.remainingDistance <= _Agent.stoppingDistance;
     }
-
-    // ---- Gizmos ----
 
     private void OnDrawGizmosSelected()
     {
-        var center = Application.isPlaying ? m_Origin : transform.position;
-        var radius = m_Type == NpcType.Patrol ? m_PatrolRadius : m_RunRadius;
-
+        var center = Application.isPlaying ? _Origin : transform.position;
         Gizmos.color =
-            m_Type == NpcType.Patrol ? new Color(0f, 1f, 0f, 0.2f) : new Color(1f, 0.3f, 0f, 0.2f);
-        DrawWireCircle(center, radius);
-    }
+            _Type == NpcType.Patrol ? new Color(0f, 1f, 0f, 0.4f) : new Color(1f, 0.3f, 0f, 0.4f);
+        Gizmos.DrawWireCube(center, new Vector3(_RectWidth, 0.1f, _RectDepth));
 
-    private static void DrawWireCircle(Vector3 center, float radius, int segments = 32)
-    {
-        float step = 360f / segments;
-        for (int i = 0; i < segments; i++)
+        if (Application.isPlaying)
         {
-            float a0 = i * step * Mathf.Deg2Rad;
-            float a1 = (i + 1) * step * Mathf.Deg2Rad;
-            Gizmos.DrawLine(
-                center + new Vector3(Mathf.Cos(a0), 0f, Mathf.Sin(a0)) * radius,
-                center + new Vector3(Mathf.Cos(a1), 0f, Mathf.Sin(a1)) * radius
-            );
+            Gizmos.DrawSphere(_PointA, 0.2f);
+            Gizmos.DrawSphere(_PointB, 0.2f);
+            Gizmos.DrawLine(_PointA, _PointB);
         }
     }
 }
