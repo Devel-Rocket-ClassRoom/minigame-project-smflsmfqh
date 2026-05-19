@@ -974,7 +974,7 @@ NavMeshAgent:
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
-  m_WalkableMask: 7
+  m_WalkableMask: 1
   m_ObstacleAvoidanceType: 4
 --- !u!114 &4973541881949461195
 MonoBehaviour:
@@ -988,14 +988,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 259378cc5d39040408b1252d3288c354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCMovement
-  m_Type: 1
-  m_PointA: {fileID: 0}
-  m_PointB: {fileID: 0}
-  m_WaitTime: 1
-  m_PatrolSpeed: 2.5
-  m_Waypoints: []
-  m_Loop: 0
-  m_RunSpeed: 5
+  _Type: 0
+  _RectWidth: 20
+  _RectDepth: 10
+  _PatrolSpeed: 2.5
+  _PatrolWaitTime: 1
+  _RunSpeed: 5
+  _RunWaitTime: 0.5
+  _ExcludeAreas:
+  - Road
+  - Not Walkable
 --- !u!1 &1187923991776359311
 GameObject:
   m_ObjectHideFlags: 0
