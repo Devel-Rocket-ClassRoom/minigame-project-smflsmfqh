@@ -10,15 +10,16 @@ public class PlayerMovement : MonoBehaviour
         Sprint,
         Roll,
         Crouch,
+        None,
     }
 
     [Header("Movement Speed")]
     [SerializeField]
-    private float _moveSpeed = 5f;
+    private float _moveSpeed = 0.8f;
 
     [Header("Jump Field")]
     [SerializeField]
-    private float _jumpForce = 1f;
+    private float _jumpForce = 2.5f;
 
     [SerializeField]
     private LayerMask _groundLayerMask;
@@ -70,7 +71,9 @@ public class PlayerMovement : MonoBehaviour
     private CapsuleCollider _collider;
     private Vector2 _inputDir;
     private float _currentSpeed;
-    private MoveMode mode = MoveMode.Move;
+    private MoveMode _mode = MoveMode.Move;
+    private bool _isSpeedBoost = false;
+    private Coroutine _speedCo;
 
     public float Yaw { get; private set; }
     public float Pitch { get; private set; }
@@ -90,15 +93,17 @@ public class PlayerMovement : MonoBehaviour
 
         // 우선순위: Roll > Crouch > Sprint > Move
         if (_isRolling)
-            mode = MoveMode.Roll;
+            _mode = MoveMode.Roll;
+        else if (_isSpeedBoost)
+            _mode = MoveMode.None;
         else if (_isCrouching)
-            mode = MoveMode.Crouch;
+            _mode = MoveMode.Crouch;
         else if (_isSprint && _sprintDuration > 0)
-            mode = MoveMode.Sprint;
+            _mode = MoveMode.Sprint;
         else
-            mode = MoveMode.Move;
+            _mode = MoveMode.Move;
 
-        switch (mode)
+        switch (_mode)
         {
             case MoveMode.Move:
                 {
@@ -145,7 +150,7 @@ public class PlayerMovement : MonoBehaviour
         move.y = _rb.linearVelocity.y;
         _rb.linearVelocity = move;
 
-        if (mode != MoveMode.Roll && IsGrounded() && _rb.linearVelocity.y <= 0f)
+        if (_mode != MoveMode.Roll && IsGrounded() && _rb.linearVelocity.y <= 0f)
         {
             Vector3 p = transform.position;
             p.y = 0.02f;
@@ -252,5 +257,25 @@ public class PlayerMovement : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void SetSpeedBoost(float speed, float sec)
+    {
+        if (_speedCo != null)
+            StopCoroutine(_speedCo);
+
+        _speedCo = StartCoroutine(SpeedBoostCoroutine(speed, sec));
+    }
+
+    private IEnumerator SpeedBoostCoroutine(float speed, float sec)
+    {
+        _isSpeedBoost = true;
+        _currentSpeed = speed;
+        Debug.Log($"[아이템 획득] 속도 부스터 효과: 속도 - {_currentSpeed}, 지속 시간 - {sec}");
+
+        yield return new WaitForSeconds(sec);
+
+        _isSpeedBoost = false;
+        _currentSpeed = _moveSpeed;
     }
 }

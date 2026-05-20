@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
@@ -13,6 +14,9 @@ public class PlayerHealth : MonoBehaviour
     private float _addedHealth = 1f;
     private float _damage = 25f;
     public bool isDead = false;
+    public bool isInvincible = false;
+
+    private Coroutine _invincibleCo;
 
     private void Awake()
     {
@@ -45,6 +49,9 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage()
     {
+        if (isInvincible)
+            return;
+
         _currentHealth -= _damage;
         Debug.Log($"[Player Health] Damage: {_damage}, 현재 체력: {_currentHealth}");
         if (_currentHealth <= 0)
@@ -52,6 +59,35 @@ public class PlayerHealth : MonoBehaviour
             _currentHealth = 0f;
             Die();
         }
+    }
+
+    public void Heal(int amount)
+    {
+        var prevH = _currentHealth;
+        _currentHealth += amount;
+        if (_currentHealth >= k_maxHealth)
+        {
+            _currentHealth = k_maxHealth;
+        }
+        Debug.Log($"[아이템 획득] 치료 효과: {prevH} -> {_currentHealth}");
+    }
+
+    public void SetInvincible(float sec)
+    {
+        if (_invincibleCo != null)
+            StopCoroutine(_invincibleCo);
+
+        _invincibleCo = StartCoroutine(InvincibleCoroutine(sec));
+    }
+
+    private IEnumerator InvincibleCoroutine(float sec)
+    {
+        isInvincible = true;
+        Debug.Log($"[아이템 획득] 무적 효과 - 지속 시간 {sec}");
+
+        yield return new WaitForSeconds(sec);
+
+        isInvincible = false;
     }
 
     private void Die()
