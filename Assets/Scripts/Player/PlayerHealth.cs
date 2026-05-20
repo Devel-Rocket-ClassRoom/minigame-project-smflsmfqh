@@ -13,8 +13,9 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField]
     private float _addedHealth = 1f;
     private float _damage = 25f;
+    private const float k_damageInvincibleTime = 0.7f;
     public bool isDead = false;
-    public bool isInvincible = false;
+    private bool _isInvincible = false;
 
     private Coroutine _invincibleCo;
 
@@ -49,10 +50,11 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage()
     {
-        if (isInvincible)
+        if (_isInvincible)
             return;
 
         _currentHealth -= _damage;
+        SetInvincible(k_damageInvincibleTime);
         Debug.Log($"[Player Health] Damage: {_damage}, 현재 체력: {_currentHealth}");
         if (_currentHealth <= 0)
         {
@@ -82,12 +84,12 @@ public class PlayerHealth : MonoBehaviour
 
     private IEnumerator InvincibleCoroutine(float sec)
     {
-        isInvincible = true;
+        _isInvincible = true;
         Debug.Log($"[아이템 획득] 무적 효과 - 지속 시간 {sec}");
 
         yield return new WaitForSeconds(sec);
 
-        isInvincible = false;
+        _isInvincible = false;
     }
 
     private void Die()
