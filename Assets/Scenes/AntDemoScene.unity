@@ -15286,10 +15286,10 @@ GameObject:
   - component: {fileID: 1753235913}
   - component: {fileID: 1753235912}
   - component: {fileID: 1753235911}
-  - component: {fileID: 1753235919}
   - component: {fileID: 1753235918}
   - component: {fileID: 1753235920}
   - component: {fileID: 1753235921}
+  - component: {fileID: 1753235922}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -15323,7 +15323,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!136 &1753235912
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -15343,10 +15343,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
+  m_Radius: 0.5771847
+  m_Height: 2.0128276
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: -0.012090709, y: 0, z: 0.065094}
 --- !u!23 &1753235913
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -15441,31 +15441,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!143 &1753235919
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1753235910}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Height: 2
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.01
-  m_SkinWidth: 0.001
-  m_MinMoveDistance: 0.0001
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1753235920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15522,6 +15497,21 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 963194227}
+--- !u!114 &1753235922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1753235910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6273b9ea4876d7340b7e63eccd50b99d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  _healthInterval: 2
+  _addedHealth: 1
+  isDead: 0
 --- !u!1001 &1754763570
 PrefabInstance:
   m_ObjectHideFlags: 0
