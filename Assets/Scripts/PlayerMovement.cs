@@ -102,20 +102,17 @@ public class PlayerMovement : MonoBehaviour
         {
             case MoveMode.Move:
                 {
-                    Debug.Log($"[Move] Basic Move mode - current speed: {_currentSpeed}");
                     _currentSpeed = _moveSpeed;
                     _collider.height = _standHeight;
                     _collider.center = _prevColliderCenter;
 
                     _sprintDuration += Time.fixedDeltaTime;
-                    Debug.Log($"[Move] Sprint Time Added {_sprintDuration}");
                     if (_sprintDuration >= _sprintTotalTime)
                         _sprintDuration = _sprintTotalTime;
                 }
                 break;
             case MoveMode.Sprint:
                 {
-                    Debug.Log($"[Sprint] Sprint Start (Sprint Time: {_sprintDuration})");
                     _currentSpeed = _sprintSpeed;
                     _sprintDuration -= Time.fixedDeltaTime;
 
@@ -129,7 +126,6 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case MoveMode.Roll:
             {
-                Debug.Log("[Roll] Roll Start");
                 Vector3 rollVelocity = _rollDirection * _rollSpeed;
                 rollVelocity.y = _rb.linearVelocity.y;
                 _rb.linearVelocity = rollVelocity;
@@ -137,7 +133,6 @@ public class PlayerMovement : MonoBehaviour
             }
             case MoveMode.Crouch:
                 {
-                    Debug.Log("[Crouch] Crouch Start");
                     _currentSpeed = _crouchSpeed;
                     _collider.height = _crouchHeight;
                     _collider.center = new Vector3(0f, _crouchHeight / 2f, 0f);
@@ -149,6 +144,16 @@ public class PlayerMovement : MonoBehaviour
             (transform.forward * _inputDir.y + transform.right * _inputDir.x) * _currentSpeed;
         move.y = _rb.linearVelocity.y;
         _rb.linearVelocity = move;
+
+        if (mode != MoveMode.Roll && IsGrounded() && _rb.linearVelocity.y <= 0f)
+        {
+            Vector3 p = transform.position;
+            p.y = 0.02f;
+            _rb.MovePosition(p);
+            var v = _rb.linearVelocity;
+            v.y = 0f;
+            _rb.linearVelocity = v;
+        }
     }
 
     private void OnMove(InputValue value)

@@ -57,7 +57,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: dbc0ac3b2e21dbd4aaface70d26b6083, type: 2}
+  - {fileID: 2100000, guid: 9b1c3c6efab5ac645a64d8f7f89c1e2a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -427,7 +427,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: dbc0ac3b2e21dbd4aaface70d26b6083, type: 2}
+  - {fileID: 2100000, guid: da394e4ce00db744daf1aac818943e25, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -857,6 +857,7 @@ GameObject:
   - component: {fileID: 4187673265626518116}
   - component: {fileID: 4973541881949461195}
   - component: {fileID: -3851847445166863967}
+  - component: {fileID: 3552956607286372146}
   m_Layer: 0
   m_Name: Character 1
   m_TagString: Npc
@@ -874,7 +875,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 796527067179962140}
@@ -974,7 +975,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: -0.05
+  m_BaseOffset: -0.07
   m_WalkableMask: 1
   m_ObstacleAvoidanceType: 4
 --- !u!114 &4973541881949461195
@@ -989,14 +990,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 259378cc5d39040408b1252d3288c354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCMovement
-  _Type: 0
-  _RectWidth: 20
-  _RectDepth: 10
-  _PatrolSpeed: 2.5
-  _PatrolWaitTime: 1
-  _RunSpeed: 5
-  _RunWaitTime: 0.5
-  _ExcludeAreas:
+  _type: 0
+  _rectWidth: 20
+  _rectDepth: 10
+  _patrolSpeed: 2.5
+  _patrolWaitTime: 1
+  _runSpeed: 5
+  _runWaitTime: 0.5
+  _excludeAreas:
   - Road
   - Not Walkable
 --- !u!114 &-3851847445166863967
@@ -1011,6 +1012,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15b9d6839a1f44e42a942b6f9c715bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FootStompCollider
+--- !u!114 &3552956607286372146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1016194472366248666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edb0c52ece431c348a7db718f6326db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCVisualizeCustomizer
+  _bodyRenderer: {fileID: 373765156286635032}
+  _clothingRenderer: {fileID: 1857057264999666455}
+  _hairRenderer: {fileID: 9016795381937997413}
 --- !u!1 &1187923991776359311
 GameObject:
   m_ObjectHideFlags: 0
@@ -1390,7 +1406,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.12, y: 0.03, z: 0.22}
+  m_Size: {x: 0.17, y: 0.05, z: 0.31}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4494210637875964386
 MonoBehaviour:
@@ -1493,7 +1509,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: dbc0ac3b2e21dbd4aaface70d26b6083, type: 2}
+  - {fileID: 2100000, guid: b64c611211e92234db1c0bdfffd57ba8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1922,7 +1938,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: dbc0ac3b2e21dbd4aaface70d26b6083, type: 2}
+  - {fileID: 2100000, guid: caf7f23baefd7aa43b13acdd90837f66, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2352,7 +2368,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.12, y: 0.03, z: 0.22}
+  m_Size: {x: 0.17, y: 0.05, z: 0.31}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &584527013910487156
 MonoBehaviour:

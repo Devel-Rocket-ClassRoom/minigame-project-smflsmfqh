@@ -6,12 +6,18 @@ public class NPCSpawnZone : MonoBehaviour
     private BoxCollider _collider;
     private const float _maxDistance = 2f;
 
-    public Vector3 Center => _collider.bounds.center;
-    public Vector3 Size => _collider.bounds.size;
+    private BoxCollider GetCollider()
+    {
+        if (_collider == null) _collider = GetComponent<BoxCollider>();
+        return _collider;
+    }
+
+    public Vector3 Center => GetCollider().bounds.center;
+    public Vector3 Size => GetCollider().bounds.size;
 
     private void Awake()
     {
-        _collider = GetComponent<BoxCollider>();
+        GetCollider();
     }
 
     public bool TryGetRandomPoint(int areaMask, out Vector3 result, int maxAttempts = 10)
