@@ -60,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Sprint Field")]
     [SerializeField]
-    private float _sprintSpeed = 2.5f;
+    private float _sprintSpeed = 1.7f;
 
     [SerializeField]
     private float _sprintTotalTime = 7f;
@@ -71,6 +71,7 @@ public class PlayerMovement : MonoBehaviour
     private CapsuleCollider _collider;
     private Vector2 _inputDir;
     private float _currentSpeed;
+    private float _boostSpeed;
     private MoveMode _mode = MoveMode.Move;
     private bool _isSpeedBoost = false;
     private Coroutine _speedCo;
@@ -118,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case MoveMode.Sprint:
                 {
-                    _currentSpeed = _sprintSpeed;
+                    _currentSpeed = _moveSpeed + _sprintSpeed;
                     _sprintDuration -= Time.fixedDeltaTime;
 
                     if (_sprintDuration <= 0)
@@ -143,6 +144,21 @@ public class PlayerMovement : MonoBehaviour
                     _collider.center = new Vector3(0f, _crouchHeight / 2f, 0f);
                 }
                 break;
+        }
+
+        if (_isSpeedBoost)
+        {
+            _currentSpeed = _boostSpeed;
+            if (_isSprint && _sprintDuration > 0)
+            {
+                _currentSpeed += _sprintSpeed;
+                _sprintDuration -= Time.fixedDeltaTime;
+                if (_sprintDuration <= 0)
+                {
+                    _isSprint = false;
+                    _sprintDuration = 0f;
+                }
+            }
         }
 
         Vector3 move =
@@ -270,7 +286,7 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator SpeedBoostCoroutine(float speed, float sec)
     {
         _isSpeedBoost = true;
-        _currentSpeed = speed;
+        _boostSpeed = speed;
         Debug.Log($"[아이템 획득] 속도 부스터 효과: 속도 - {_currentSpeed}, 지속 시간 - {sec}");
 
         yield return new WaitForSeconds(sec);
