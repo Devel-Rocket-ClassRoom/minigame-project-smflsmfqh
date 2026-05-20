@@ -2098,11 +2098,11 @@ GameObject:
   - component: {fileID: 6965457941147426535}
   - component: {fileID: 834963087830068187}
   - component: {fileID: 3700714521811447745}
-  - component: {fileID: -8573005390391596791}
   - component: {fileID: 1703615575541169607}
+  - component: {fileID: 4436418971980100147}
   m_Layer: 0
   m_Name: Character 27
-  m_TagString: Untagged
+  m_TagString: Npc
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2242,18 +2242,6 @@ MonoBehaviour:
   _excludeAreas:
   - Road
   - Not Walkable
---- !u!114 &-8573005390391596791
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5712237799806465226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15b9d6839a1f44e42a942b6f9c715bf2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FootStompCollider
 --- !u!114 &1703615575541169607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2269,6 +2257,18 @@ MonoBehaviour:
   _bodyRenderer: {fileID: 1568129637817120538}
   _clothingRenderer: {fileID: 348247963662717627}
   _hairRenderer: {fileID: 1360918155551914469}
+--- !u!114 &4436418971980100147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5712237799806465226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15b9d6839a1f44e42a942b6f9c715bf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStompCollider
 --- !u!1 &5897655228743348818
 GameObject:
   m_ObjectHideFlags: 0
