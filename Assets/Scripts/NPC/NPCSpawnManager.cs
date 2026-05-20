@@ -14,6 +14,9 @@ public class NPCSpawnManager : MonoBehaviour
     private Transform _player;
 
     [SerializeField]
+    private NPCVisualData _visualData;
+
+    [SerializeField]
     private float _recycleDistance = 30f;
 
     private Dictionary<NPCSpawnZone, Queue<NPCMovement>> _zonePools = new();
@@ -83,10 +86,20 @@ public class NPCSpawnManager : MonoBehaviour
             npc.transform.position = spawnPos;
             npc.gameObject.SetActive(true);
 
+            if (_visualData != null)
+            {
+                var customizer = npc.GetComponent<NPCVisualizeCustomizer>();
+
+                if (customizer != null)
+                {
+                    customizer.ApplyRandomVisuals(_visualData);
+                }
+            }
+
             if (Random.value < _patrolPercent)
-                npc.SetupPatrol(zone.Center, zone.Size.x, zone.Size.z);
+                npc.SetupPatrol(spawnPos, zone.Size.x, zone.Size.z);
             else
-                npc.SetupRunner(zone.Center, zone.Size.x, zone.Size.z);
+                npc.SetupRunner(spawnPos, zone.Size.x, zone.Size.z);
 
             actives.Add(npc);
         }
