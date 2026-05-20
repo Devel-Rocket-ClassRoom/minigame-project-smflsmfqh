@@ -710,7 +710,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.12, y: 0.03, z: 0.22}
+  m_Size: {x: 0.17, y: 0.05, z: 0.31}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2506452348841915793
 MonoBehaviour:
@@ -1504,6 +1504,7 @@ GameObject:
   - component: {fileID: 8605210492276345947}
   - component: {fileID: 648562066201297850}
   - component: {fileID: -7209944774005975828}
+  - component: {fileID: 5190326057536731999}
   m_Layer: 0
   m_Name: Character 5
   m_TagString: Npc
@@ -1521,7 +1522,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7974759321422758081}
@@ -1621,7 +1622,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: -0.05
+  m_BaseOffset: -0.07
   m_WalkableMask: 1
   m_ObstacleAvoidanceType: 4
 --- !u!114 &648562066201297850
@@ -1636,14 +1637,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 259378cc5d39040408b1252d3288c354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCMovement
-  _Type: 0
-  _RectWidth: 20
-  _RectDepth: 10
-  _PatrolSpeed: 2.5
-  _PatrolWaitTime: 1
-  _RunSpeed: 5
-  _RunWaitTime: 0.5
-  _ExcludeAreas:
+  _type: 0
+  _rectWidth: 20
+  _rectDepth: 10
+  _patrolSpeed: 2.5
+  _patrolWaitTime: 1
+  _runSpeed: 5
+  _runWaitTime: 0.5
+  _excludeAreas:
   - Road
   - Not Walkable
 --- !u!114 &-7209944774005975828
@@ -1658,6 +1659,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15b9d6839a1f44e42a942b6f9c715bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FootStompCollider
+--- !u!114 &5190326057536731999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4190781596362857867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edb0c52ece431c348a7db718f6326db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCVisualizeCustomizer
+  _bodyRenderer: {fileID: 1940926337698272892}
+  _clothingRenderer: {fileID: 4320969915101484618}
+  _hairRenderer: {fileID: 521426086984809526}
 --- !u!1 &4201906512285545954
 GameObject:
   m_ObjectHideFlags: 0
@@ -1973,7 +1989,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.12, y: 0.03, z: 0.22}
+  m_Size: {x: 0.17, y: 0.05, z: 0.31}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7306498762074494294
 MonoBehaviour:
