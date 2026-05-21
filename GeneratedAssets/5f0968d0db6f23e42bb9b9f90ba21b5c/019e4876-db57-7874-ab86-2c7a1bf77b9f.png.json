@@ -1,0 +1,28 @@
+{
+  "asset": "5f0968d0db6f23e42bb9b9f90ba21b5c",
+  "fileName": "019e4876-db57-7874-ab86-2c7a1bf77b9f.png",
+  "prompt": "A minimalist white hollow circle with a thick border on a transparent background. Vector art style, perfectly centered, clean edges. Suitable for a UI radial fill effect.",
+  "negativePrompt": "",
+  "model": "gemini-3.1-flash",
+  "modelName": "Gemini 3.1 Nano Banana 2",
+  "customSeed": -1,
+  "w3CTraceId": "",
+  "feedback": 1,
+  "refinementMode": "Generation",
+  "pixelateTargetSize": 0,
+  "pixelateKeepImageSize": false,
+  "pixelatePixelBlockSize": 0,
+  "pixelatePixelGridSize": 0,
+  "pixelateMode": 0,
+  "pixelateOutlineThickness": 0,
+  "doodles": {
+    "m_Items": []
+  },
+  "upscaleFactor": 0,
+  "dimensions": {
+    "width": 1024,
+    "height": 1024
+  },
+  "spriteSheet": false,
+  "duration": 0.0
+}
