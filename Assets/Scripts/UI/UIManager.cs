@@ -11,6 +11,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject _hudPanel;
 
+    // --- GameOver UI용 ---
+
     [SerializeField]
     private GameObject _gameOverPanel;
 
@@ -18,7 +20,17 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI _gameOverDescText;
 
     [SerializeField]
-    private Button _restartButton;
+    private Button _restartButton1;
+
+    // --- GameClear UI용 ---
+    [SerializeField]
+    private GameObject _gameClearPanel;
+
+    [SerializeField]
+    private TextMeshProUGUI __scoreText;
+
+    [SerializeField]
+    private Button _restartButton2;
 
     // --- 추후 여러 판넬 추가할 예정
     // 1. 아내 개미에게 오는 카톡 알림 ui
@@ -32,8 +44,10 @@ public class UIManager : MonoBehaviour
         }
 
         Instance = this;
-        _restartButton.onClick.AddListener(() => GameManager.Instance.Restart());
+        _restartButton1.onClick.AddListener(() => GameManager.Instance.Restart());
+        _restartButton2.onClick.AddListener(() => GameManager.Instance.Restart());
         SetPanel(_gameOverPanel, false);
+        SetPanel(_gameClearPanel, false);
     }
 
     private void Start()
@@ -47,6 +61,11 @@ public class UIManager : MonoBehaviour
         SetPanel(_gameOverPanel, true);
 
         _gameOverDescText.text = StringTableManager.Instance.GetDeathMessage(cause);
+    }
+
+    public void ShowGameClear()
+    {
+        SetPanel(_gameClearPanel, true);
     }
 
     public void ShowHUD()

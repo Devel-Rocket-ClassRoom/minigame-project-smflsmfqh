@@ -50,7 +50,12 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.ShowGameOver(cause);
     }
 
-    public void GameClear() { }
+    public void GameClear()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        UIManager.Instance.ShowGameClear();
+    }
 
     public void Restart()
     {
