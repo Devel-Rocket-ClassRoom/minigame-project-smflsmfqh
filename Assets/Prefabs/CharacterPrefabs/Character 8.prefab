@@ -193,6 +193,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15b9d6839a1f44e42a942b6f9c715bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FootStompCollider
+  _cause: 0
+  _damage: 25
 --- !u!1 &475014256467513529
 GameObject:
   m_ObjectHideFlags: 0
@@ -512,9 +514,9 @@ MonoBehaviour:
   _type: 0
   _rectWidth: 20
   _rectDepth: 10
-  _patrolSpeed: 2.5
+  _patrolSpeed: 2
   _patrolWaitTime: 1
-  _runSpeed: 5
+  _runSpeed: 4
   _runWaitTime: 0.5
   _excludeAreas:
   - Road
@@ -546,6 +548,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15b9d6839a1f44e42a942b6f9c715bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FootStompCollider
+  _cause: 0
+  _damage: 25
 --- !u!1 &1351298899926225584
 GameObject:
   m_ObjectHideFlags: 0
@@ -1873,6 +1877,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15b9d6839a1f44e42a942b6f9c715bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FootStompCollider
+  _cause: 0
+  _damage: 25
 --- !u!1 &4005267256370625077
 GameObject:
   m_ObjectHideFlags: 0
