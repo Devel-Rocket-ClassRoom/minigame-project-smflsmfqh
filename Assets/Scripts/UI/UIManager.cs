@@ -1,5 +1,7 @@
+using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -15,6 +17,9 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _gameOverDescText;
 
+    [SerializeField]
+    private Button _restartButton;
+
     // --- 추후 여러 판넬 추가할 예정
     // 1. 아내 개미에게 오는 카톡 알림 ui
 
@@ -27,12 +32,13 @@ public class UIManager : MonoBehaviour
         }
 
         Instance = this;
+        _restartButton.onClick.AddListener(() => GameManager.Instance.Restart());
+        SetPanel(_gameOverPanel, false);
     }
 
     private void Start()
     {
         ShowHUD();
-        SetPanel(_gameOverPanel, false);
     }
 
     public void ShowGameOver(CauseDeath cause)
