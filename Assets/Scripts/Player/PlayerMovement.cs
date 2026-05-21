@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -79,6 +80,10 @@ public class PlayerMovement : MonoBehaviour
     public float Yaw { get; private set; }
     public float Pitch { get; private set; }
 
+    // --- 이벤트 관련 필드 ---
+    public event Action<float> OnSprintChanged;
+    public event Action<bool> OnSprintActive;
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
@@ -86,6 +91,12 @@ public class PlayerMovement : MonoBehaviour
         _prevColliderCenter = _collider.center;
         _sprintDuration = _sprintTotalTime;
         Yaw = transform.eulerAngles.y;
+    }
+
+    private void Start()
+    {
+        OnSprintChanged?.Invoke(_sprintDuration / _sprintTotalTime);
+        OnSprintActive?.Invoke(_isSprint);
     }
 
     private void FixedUpdate()
@@ -115,6 +126,8 @@ public class PlayerMovement : MonoBehaviour
                     _sprintDuration += Time.fixedDeltaTime;
                     if (_sprintDuration >= _sprintTotalTime)
                         _sprintDuration = _sprintTotalTime;
+
+                    OnSprintChanged?.Invoke(_sprintDuration / _sprintTotalTime);
                 }
                 break;
             case MoveMode.Sprint:
@@ -127,7 +140,9 @@ public class PlayerMovement : MonoBehaviour
                         Debug.Log("[Sprint] Sprint Time Out!");
                         _isSprint = false;
                         _sprintDuration = 0f;
+                        OnSprintActive?.Invoke(_isSprint);
                     }
+                    OnSprintChanged?.Invoke(_sprintDuration / _sprintTotalTime);
                 }
                 break;
             case MoveMode.Roll:
@@ -158,6 +173,7 @@ public class PlayerMovement : MonoBehaviour
                     _isSprint = false;
                     _sprintDuration = 0f;
                 }
+                OnSprintChanged?.Invoke(_sprintDuration / _sprintTotalTime);
             }
         }
 
@@ -187,10 +203,12 @@ public class PlayerMovement : MonoBehaviour
         if (value.isPressed)
         {
             _isSprint = true;
+            OnSprintActive?.Invoke(_isSprint);
         }
         else
         {
             _isSprint = false;
+            OnSprintActive?.Invoke(_isSprint);
         }
     }
 
