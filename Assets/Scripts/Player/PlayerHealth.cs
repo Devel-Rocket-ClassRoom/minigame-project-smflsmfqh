@@ -20,7 +20,9 @@ public class PlayerHealth : MonoBehaviour
 
     private Coroutine _invincibleCo;
 
+    // --- 이벤트 관련 필드 ---
     public event Action<float> OnHealthChanged;
+    public event Action OnDied;
 
     private void Awake()
     {
@@ -117,5 +119,6 @@ public class PlayerHealth : MonoBehaviour
 
         isDead = true;
         Debug.Log($"[Player Health] 게임 오버! 플레이어 죽음: isDead {isDead}");
+        OnDied?.Invoke();
     }
 }
