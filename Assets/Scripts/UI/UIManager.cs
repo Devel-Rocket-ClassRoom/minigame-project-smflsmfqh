@@ -69,6 +69,7 @@ public class UIManager : MonoBehaviour
             $"[UIManager] ShowGameClear 호출, _gameClearPanel null? {_gameClearPanel == null}"
         );
         SetPanel(_gameClearPanel, true);
+        __scoreText.text = $"SCORE: {GameManager.Instance.Score}";
     }
 
     public void ShowHUD()

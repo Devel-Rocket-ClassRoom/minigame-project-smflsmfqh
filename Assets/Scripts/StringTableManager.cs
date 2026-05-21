@@ -43,4 +43,11 @@ public class StringTableManager
 
         return candidates[Random.Range(0, candidates.Count)];
     }
+
+    public string GetMissionMessage(string itemName)
+    {
+        string key = $"MISSION_{itemName}";
+
+        return _stringTable.TryGetValue(key, out var msg) ? msg : string.Empty;
+    }
 }
