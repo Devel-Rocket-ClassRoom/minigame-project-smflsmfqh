@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb367920387d6842b3db8d89e8cf8ed, type: 3}
   m_Name: Egg
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: Egg
+  itemName: EGG
   dropPrefab: {fileID: 5786007090249126986, guid: e8169ddb80384cb459b0e8e1510af91d, type: 3}
   category: 1
   effects: []
+  MissionMessage: 
