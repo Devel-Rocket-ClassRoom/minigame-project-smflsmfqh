@@ -13,7 +13,6 @@ public class PlayerHealth : MonoBehaviour
 
     [SerializeField]
     private float _addedHealth = 1f;
-    private float _damage = 25f;
     private const float k_damageInvincibleTime = 0.7f;
     public bool isDead = false;
     private bool _isInvincible = false;
@@ -22,7 +21,7 @@ public class PlayerHealth : MonoBehaviour
 
     // --- 이벤트 관련 필드 ---
     public event Action<float> OnHealthChanged;
-    public event Action OnDied;
+    public event Action<CauseDeath> OnDied;
 
     private void Awake()
     {
@@ -59,12 +58,12 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    public void TakeDamage()
+    public void TakeDamage(float damage, CauseDeath causeDeath)
     {
         if (_isInvincible)
             return;
 
-        _currentHealth -= _damage;
+        _currentHealth -= damage;
         SetInvincible(k_damageInvincibleTime);
 
         if (_currentHealth <= 0)
@@ -73,11 +72,11 @@ public class PlayerHealth : MonoBehaviour
         }
         OnHealthChanged?.Invoke(_currentHealth / k_maxHealth);
 
-        Debug.Log($"[Player Health] 데미지 입음: {_damage}, 현재 체력: {_currentHealth}");
+        Debug.Log($"[Player Health] 데미지 입음: {damage}, 현재 체력: {_currentHealth}");
 
         if (_currentHealth <= 0f)
         {
-            Die();
+            Die(causeDeath);
         }
     }
 
@@ -112,13 +111,13 @@ public class PlayerHealth : MonoBehaviour
         _isInvincible = false;
     }
 
-    private void Die()
+    private void Die(CauseDeath cause)
     {
         if (isDead)
             return;
 
         isDead = true;
         Debug.Log($"[Player Health] 게임 오버! 플레이어 죽음: isDead {isDead}");
-        OnDied?.Invoke();
+        OnDied?.Invoke(cause);
     }
 }
