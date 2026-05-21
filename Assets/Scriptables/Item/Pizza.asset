@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb367920387d6842b3db8d89e8cf8ed, type: 3}
   m_Name: Pizza
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: Pizza
+  itemName: PIZZA
   dropPrefab: {fileID: 1955685003273417077, guid: 6d09de618ef9d924a830e73240e1191e, type: 3}
   category: 1
   effects: []
+  MissionMessage: 

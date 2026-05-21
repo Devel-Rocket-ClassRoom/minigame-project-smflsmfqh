@@ -9,4 +9,5 @@ public class ItemData : ScriptableObject
     public GameObject dropPrefab;
     public ItemCategory category;
     public ItemEffectSO[] effects;
+    public string MissionMessage;
 }
