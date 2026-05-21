@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb367920387d6842b3db8d89e8cf8ed, type: 3}
   m_Name: IceCream 1
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: IceCream1
+  itemName: ICECREAM
   dropPrefab: {fileID: 4007667469557677227, guid: 23c2b8b3260ff8d4d8755833ed8b4891, type: 3}
   category: 1
   effects: []
+  MissionMessage: 
