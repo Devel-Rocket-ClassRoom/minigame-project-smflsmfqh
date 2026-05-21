@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     private int _score;
     public int Score => _score;
 
+    private bool _isPaused;
+
     [SerializeField]
     private PlayerHealth _playerHealth;
 
@@ -63,5 +65,25 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void TogglePause()
+    {
+        _isPaused = !_isPaused;
+        Time.timeScale = _isPaused ? 0f : 1f;
+        Cursor.lockState = _isPaused ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = _isPaused;
+
+        if (_isPaused) UIManager.Instance.ShowPause();
+        else           UIManager.Instance.HidePause();
+    }
+
+    public void Exit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

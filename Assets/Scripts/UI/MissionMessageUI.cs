@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
-using GLTFast.Schema;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class MissionMessageUI : MonoBehaviour
 {
@@ -17,14 +19,18 @@ public class MissionMessageUI : MonoBehaviour
     [SerializeField]
     private RectTransform _panel;
 
+    [SerializeField]
+    private float _displayDuration = 5f;
+
     private float _panelWidth;
-    private bool _isPlaying;
     private Coroutine _slideCo;
+    private ItemData _currentItem;
+    public event Action<ItemData> OnSlidedOut;
 
     private void Awake()
     {
         _panelWidth = _panel.sizeDelta.x;
-        _panel.anchoredPosition = new Vector2(0f, _panel.anchoredPosition.y);
+        _panel.anchoredPosition = new Vector2(-_panelWidth, _panel.anchoredPosition.y);
     }
 
     private void OnEnable()
@@ -39,9 +45,13 @@ public class MissionMessageUI : MonoBehaviour
 
     private void HandleMissionAssigned(ItemData itemData)
     {
-        string message = StringTableManager.Instance.GetMissionMessage(itemData.itemName);
+        _currentItem = itemData;
+        var (message, sender) = StringTableManager.Instance.GetMissionMessage(itemData.itemName);
 
         _message.text = message;
+        _senderName.text = sender;
+        if (!string.IsNullOrEmpty(sender))
+            _icon.sprite = Resources.Load<Sprite>(sender);
 
         if (_slideCo != null)
         {
@@ -52,9 +62,11 @@ public class MissionMessageUI : MonoBehaviour
 
     private IEnumerator SlideCoroutine()
     {
-        yield return StartCoroutine(Slide(0f, -_panelWidth, 0.3f));
-        yield return new WaitForSeconds(2.5f);
         yield return StartCoroutine(Slide(-_panelWidth, 0f, 0.3f));
+        OnSlidedOut?.Invoke(_currentItem);
+        yield return new WaitForSeconds(_displayDuration);
+        yield return StartCoroutine(Slide(0f, -_panelWidth, 0.3f));
+
         _slideCo = null;
     }
 

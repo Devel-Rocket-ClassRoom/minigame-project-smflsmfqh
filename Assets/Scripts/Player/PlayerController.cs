@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    public static event Action OnMissionTogglePressed;
     private PlayerHealth _ph;
     private PlayerMovement _pm;
     private PlayerInput _pi;
@@ -39,6 +41,18 @@ public class PlayerController : MonoBehaviour
                 break;
             }
         }
+    }
+
+    private void OnMissionToggle(InputValue value)
+    {
+        if (value.isPressed)
+            OnMissionTogglePressed?.Invoke();
+    }
+
+    private void OnPause(InputValue value)
+    {
+        if (value.isPressed)
+            GameManager.Instance.TogglePause();
     }
 
     public void Heal(int amount)
