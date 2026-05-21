@@ -8,7 +8,8 @@ public class NPCSpawnZone : MonoBehaviour
 
     private BoxCollider GetCollider()
     {
-        if (_collider == null) _collider = GetComponent<BoxCollider>();
+        if (_collider == null)
+            _collider = GetComponent<BoxCollider>();
         return _collider;
     }
 
@@ -34,13 +35,11 @@ public class NPCSpawnZone : MonoBehaviour
 
             if (NavMesh.SamplePosition(candidate, out NavMeshHit hit, _maxDistance, areaMask))
             {
-                Debug.Log($"[NPC Random Point] {candidate} Spawned");
                 result = hit.position;
                 return true;
             }
         }
         result = transform.position;
-        Debug.Log($"[NPC Random Point] Failed! {result}");
 
         return false;
     }

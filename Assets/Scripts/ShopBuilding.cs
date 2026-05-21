@@ -31,7 +31,7 @@ public class ShopBuilding : MonoBehaviour
         );
 
         Vector3 frontEdge =
-            new Vector3(bounds.center.x, transform.position.y, bounds.center.z) + fwd * halfExtent;
+            new Vector3(bounds.center.x, 0.1f, bounds.center.z) + fwd * halfExtent;
 
         return frontEdge + fwd * Random.Range(0.5f, 1.5f) + transform.right * Random.Range(-1f, 1f);
     }

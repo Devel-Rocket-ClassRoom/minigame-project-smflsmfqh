@@ -65,6 +65,9 @@ public class UIManager : MonoBehaviour
 
     public void ShowGameClear()
     {
+        Debug.Log(
+            $"[UIManager] ShowGameClear 호출, _gameClearPanel null? {_gameClearPanel == null}"
+        );
         SetPanel(_gameClearPanel, true);
     }
 
