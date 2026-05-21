@@ -6,8 +6,19 @@ public class Destination : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("[Game Clear] 목적지 도착!");
-            GameManager.Instance.GameClear();
+            Debug.Log(
+                $"목적지 도착! 모든 미션 수행: {MissionManager.Instance.OnAllMissionCompleted}"
+            );
+
+            if (MissionManager.Instance.OnAllMissionCompleted)
+            {
+                GameManager.Instance.GameClear();
+            }
+            else
+            {
+                CauseDeath cause = CauseDeath.Mission;
+                GameManager.Instance.GameOver(cause);
+            }
         }
     }
 }
