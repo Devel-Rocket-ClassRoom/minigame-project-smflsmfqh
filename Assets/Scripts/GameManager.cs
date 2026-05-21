@@ -1,5 +1,5 @@
-using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -45,10 +45,18 @@ public class GameManager : MonoBehaviour
     public void GameOver(CauseDeath cause)
     {
         Debug.Log($"[게임 오버] {cause}가 죽임");
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         UIManager.Instance.ShowGameOver(cause);
     }
 
     public void GameClear() { }
 
-    public void Restart() { }
+    public void Restart()
+    {
+        Debug.Log("[게임 오버] RESTART 버튼 눌림");
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 }
