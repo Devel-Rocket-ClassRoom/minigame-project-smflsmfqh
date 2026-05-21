@@ -5,11 +5,23 @@ public class PlayerController : MonoBehaviour
 {
     private PlayerHealth _ph;
     private PlayerMovement _pm;
+    private PlayerInput _pi;
 
     private void Awake()
     {
         _ph = GetComponent<PlayerHealth>();
         _pm = GetComponent<PlayerMovement>();
+        _pi = GetComponent<PlayerInput>();
+    }
+
+    private void OnEnable()
+    {
+        _ph.OnDied += HandleDied;
+    }
+
+    private void OnDisable()
+    {
+        _ph.OnDied -= HandleDied;
     }
 
     private void OnInteract(InputValue value)
@@ -42,5 +54,10 @@ public class PlayerController : MonoBehaviour
     public void SetSpeedBoost(float speed, float sec)
     {
         _pm.SetSpeedBoost(speed, sec);
+    }
+
+    private void HandleDied(CauseDeath _)
+    {
+        _pi.DeactivateInput();
     }
 }

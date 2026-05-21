@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -9,6 +10,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private PlayerHealth _playerHealth;
 
+    [SerializeField]
+    private TextAsset _deathMessageCsv;
+
     private void Awake()
     {
         if (Instance != null)
@@ -19,6 +23,8 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
         _score = 0;
+
+        StringTableManager.Instance.Load(_deathMessageCsv);
     }
 
     private void OnEnable()
@@ -36,9 +42,10 @@ public class GameManager : MonoBehaviour
         _score += amount;
     }
 
-    public void GameOver()
+    public void GameOver(CauseDeath cause)
     {
-        UIManager.Instance.ShowGameOver();
+        Debug.Log($"[게임 오버] {cause}가 죽임");
+        UIManager.Instance.ShowGameOver(cause);
     }
 
     public void GameClear() { }
