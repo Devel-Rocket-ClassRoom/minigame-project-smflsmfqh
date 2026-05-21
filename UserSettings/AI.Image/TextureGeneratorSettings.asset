@@ -17,85 +17,85 @@ MonoBehaviour:
       lastSelectedModels:
         serializedData:
         - key:
-            rid: 4927643256260920310
+            rid: 4847182109667491932
           value:
-            rid: 4927643256260920311
+            rid: 4847182111003377664
         - key:
-            rid: 4927643256260920312
+            rid: 4847182109667491934
           value:
-            rid: 4927643256260920313
+            rid: 4847182111003377665
         - key:
-            rid: 4927643256260920314
+            rid: 4847182109667491936
           value:
-            rid: 4927643256260920315
+            rid: 4847182111003377666
         - key:
-            rid: 4927643256260920316
+            rid: 4847182109667491938
           value:
-            rid: 4927643256260920317
+            rid: 4847182111003377667
         - key:
-            rid: 4927643256260920318
+            rid: 4847182109667491940
           value:
-            rid: 4927643256260920319
+            rid: 4847182111003377668
         - key:
-            rid: 4927643263104974848
+            rid: 4847182109667491942
           value:
-            rid: 4927643263104974849
+            rid: 4847182111003377669
       previewSettings:
         sizeFactor: 1
   references:
     version: 2
     RefIds:
-    - rid: 4927643256260920310
+    - rid: 4847182109667491932
       type: {class: LastSelectedModelKey, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modality: Image
         mode: 0
-    - rid: 4927643256260920311
-      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
-      data:
-        modelID: gemini-3.1-flash
-    - rid: 4927643256260920312
+    - rid: 4847182109667491934
       type: {class: LastSelectedModelKey, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modality: Image
         mode: 1
-    - rid: 4927643256260920313
-      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
-      data:
-        modelID: 
-    - rid: 4927643256260920314
+    - rid: 4847182109667491936
       type: {class: LastSelectedModelKey, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modality: Image
         mode: 2
-    - rid: 4927643256260920315
-      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
-      data:
-        modelID: 
-    - rid: 4927643256260920316
+    - rid: 4847182109667491938
       type: {class: LastSelectedModelKey, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modality: Image
         mode: 3
-    - rid: 4927643256260920317
-      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
-      data:
-        modelID: 
-    - rid: 4927643256260920318
+    - rid: 4847182109667491940
       type: {class: LastSelectedModelKey, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modality: Image
         mode: 4
-    - rid: 4927643256260920319
-      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
-      data:
-        modelID: 
-    - rid: 4927643263104974848
+    - rid: 4847182109667491942
       type: {class: LastSelectedModelKey, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modality: Video
         mode: 6
-    - rid: 4927643263104974849
+    - rid: 4847182111003377664
+      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
+      data:
+        modelID: gemini-3.1-flash-texture
+    - rid: 4847182111003377665
+      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
+      data:
+        modelID: 
+    - rid: 4847182111003377666
+      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
+      data:
+        modelID: 
+    - rid: 4847182111003377667
+      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
+      data:
+        modelID: 
+    - rid: 4847182111003377668
+      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
+      data:
+        modelID: 
+    - rid: 4847182111003377669
       type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modelID: 

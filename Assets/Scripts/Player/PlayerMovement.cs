@@ -53,7 +53,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("Crouch Field")]
     private const float _standHeight = 2f;
     private const float _crouchHeight = 1f;
-    private Vector3 _prevColliderCenter;
 
     [SerializeField]
     private float _crouchSpeed = 0.5f;
@@ -88,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _collider = GetComponent<CapsuleCollider>();
-        _prevColliderCenter = _collider.center;
+        _collider.center = new Vector3(0f, _standHeight / 2f, 0f);
         _sprintDuration = _sprintTotalTime;
         Yaw = transform.eulerAngles.y;
     }
@@ -121,7 +120,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     _currentSpeed = _moveSpeed;
                     _collider.height = _standHeight;
-                    _collider.center = _prevColliderCenter;
+                    _collider.center = new Vector3(0f, _standHeight / 2f, 0f);
 
                     _sprintDuration += Time.fixedDeltaTime;
                     if (_sprintDuration >= _sprintTotalTime)
@@ -184,9 +183,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (_mode != MoveMode.Roll && IsGrounded() && _rb.linearVelocity.y <= 0f)
         {
-            Vector3 p = transform.position;
-            p.y = 0.02f;
-            _rb.MovePosition(p);
             var v = _rb.linearVelocity;
             v.y = 0f;
             _rb.linearVelocity = v;
@@ -273,20 +269,28 @@ public class PlayerMovement : MonoBehaviour
 
     private bool IsGrounded()
     {
-        float halfHeight = _collider.height * transform.localScale.y / 2f;
-        Vector3 bottom = transform.position + Vector3.down * (halfHeight - 0.02f);
+        float scale = transform.localScale.y;
+        float halfHeight = _collider.height * scale / 2f;
+        float centerOffsetY = _collider.center.y * scale;
+        Vector3 bottom = transform.position + Vector3.up * (centerOffsetY - halfHeight + 0.01f);
 
-        Ray[] rays = new Ray[4]
+        float spread = _collider.radius * transform.localScale.x * 0.7f;
+        float rayDist = 0.05f;
+        LayerMask mask = _groundLayerMask == 0 ? ~0 : _groundLayerMask;
+
+        Vector3[] origins = new Vector3[5]
         {
-            new Ray(bottom + transform.forward * 0.2f, Vector3.down),
-            new Ray(bottom - transform.forward * 0.2f, Vector3.down),
-            new Ray(bottom + transform.right * 0.2f, Vector3.down),
-            new Ray(bottom - transform.right * 0.2f, Vector3.down),
+            bottom,
+            bottom + transform.forward * spread,
+            bottom - transform.forward * spread,
+            bottom + transform.right * spread,
+            bottom - transform.right * spread,
         };
 
-        for (int i = 0; i < rays.Length; i++)
+        foreach (var origin in origins)
         {
-            if (Physics.Raycast(rays[i], 0.1f, _groundLayerMask))
+            Debug.DrawRay(origin, Vector3.down * rayDist, Color.red);
+            if (Physics.Raycast(origin, Vector3.down, rayDist, mask))
                 return true;
         }
 

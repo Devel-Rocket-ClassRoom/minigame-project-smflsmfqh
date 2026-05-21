@@ -11,6 +11,9 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject _hudPanel;
 
+    [SerializeField]
+    private GameObject _missionCheckListUI;
+
     // --- GameOver UI용 ---
 
     [SerializeField]
@@ -21,6 +24,8 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private Button _restartButton1;
+    [SerializeField]
+    private Button _exitButton1;
 
     // --- GameClear UI용 ---
     [SerializeField]
@@ -31,9 +36,19 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private Button _restartButton2;
+    [SerializeField]
+    private Button _exitButton2;
 
-    // --- 추후 여러 판넬 추가할 예정
-    // 1. 아내 개미에게 오는 카톡 알림 ui
+
+    // --- Pause UI용 ---
+    [SerializeField]
+    private GameObject _pausePanel;
+
+    [SerializeField]
+    private Button _resumeButton;
+
+    [SerializeField]
+    private Button _exitButton3;
 
     private void Awake()
     {
@@ -44,10 +59,32 @@ public class UIManager : MonoBehaviour
         }
 
         Instance = this;
+
         _restartButton1.onClick.AddListener(() => GameManager.Instance.Restart());
         _restartButton2.onClick.AddListener(() => GameManager.Instance.Restart());
+        _exitButton1.onClick.AddListener(() => GameManager.Instance.Exit());
+        _exitButton2.onClick.AddListener(() => GameManager.Instance.Exit());
+        _resumeButton.onClick.AddListener(() => GameManager.Instance.TogglePause());
+        _exitButton3.onClick.AddListener(() => GameManager.Instance.Exit());
+
         SetPanel(_gameOverPanel, false);
         SetPanel(_gameClearPanel, false);
+        SetPanel(_missionCheckListUI, false);
+        SetPanel(_pausePanel, false);
+
+        MissionManager.Instance.OnMissionAssigned += EnableMissionCheckListUI;
+    }
+
+    private void OnDestroy()
+    {
+        if (MissionManager.Instance != null)
+            MissionManager.Instance.OnMissionAssigned -= EnableMissionCheckListUI;
+    }
+
+    private void EnableMissionCheckListUI(ItemData _)
+    {
+        SetPanel(_missionCheckListUI, true);
+        MissionManager.Instance.OnMissionAssigned -= EnableMissionCheckListUI;
     }
 
     private void Start()
@@ -75,6 +112,16 @@ public class UIManager : MonoBehaviour
     public void ShowHUD()
     {
         SetPanel(_hudPanel, true);
+    }
+
+    public void ShowPause()
+    {
+        SetPanel(_pausePanel, true);
+    }
+
+    public void HidePause()
+    {
+        SetPanel(_pausePanel, false);
     }
 
     public void SetPanel(GameObject panel, bool active)

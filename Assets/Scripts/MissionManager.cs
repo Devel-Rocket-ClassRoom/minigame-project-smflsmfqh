@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[DefaultExecutionOrder(-1)]
 public class MissionManager : MonoBehaviour
 {
     public static MissionManager Instance { get; private set; }
@@ -44,6 +45,7 @@ public class MissionManager : MonoBehaviour
             if (!_assigned[i] && _elapsedTime >= _unlockTimes[i])
             {
                 _assigned[i] = true;
+                Debug.Log($"[미션] {i}번 미션 발동 — 경과 시간: {_elapsedTime:F2}s");
                 OnMissionAssigned?.Invoke(_missionPool[i]);
             }
         }
