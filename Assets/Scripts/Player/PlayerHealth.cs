@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -19,6 +20,8 @@ public class PlayerHealth : MonoBehaviour
 
     private Coroutine _invincibleCo;
 
+    public event Action<float> OnHealthChanged;
+
     private void Awake()
     {
         Reset();
@@ -29,6 +32,11 @@ public class PlayerHealth : MonoBehaviour
         isDead = false;
         _healthTimer = 0f;
         _currentHealth = k_maxHealth;
+    }
+
+    private void Start()
+    {
+        OnHealthChanged?.Invoke(_currentHealth / k_maxHealth);
     }
 
     private void Update()
@@ -43,6 +51,7 @@ public class PlayerHealth : MonoBehaviour
             {
                 _currentHealth = k_maxHealth;
             }
+            OnHealthChanged?.Invoke(_currentHealth / k_maxHealth);
 
             Debug.Log($"[Player Health] 체력 증가: {_addedHealth}, 현재 체력: {_currentHealth}");
         }
@@ -55,10 +64,17 @@ public class PlayerHealth : MonoBehaviour
 
         _currentHealth -= _damage;
         SetInvincible(k_damageInvincibleTime);
-        Debug.Log($"[Player Health] Damage: {_damage}, 현재 체력: {_currentHealth}");
+
         if (_currentHealth <= 0)
         {
             _currentHealth = 0f;
+        }
+        OnHealthChanged?.Invoke(_currentHealth / k_maxHealth);
+
+        Debug.Log($"[Player Health] 데미지 입음: {_damage}, 현재 체력: {_currentHealth}");
+
+        if (_currentHealth <= 0f)
+        {
             Die();
         }
     }
@@ -71,6 +87,8 @@ public class PlayerHealth : MonoBehaviour
         {
             _currentHealth = k_maxHealth;
         }
+        OnHealthChanged?.Invoke(_currentHealth / k_maxHealth);
+
         Debug.Log($"[아이템 획득] 치료 효과: {prevH} -> {_currentHealth}");
     }
 
