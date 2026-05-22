@@ -8,10 +8,13 @@ public class StringTableManager
     public static StringTableManager Instance => _instance ??= new StringTableManager();
 
     private Dictionary<string, string> _stringTable = new Dictionary<string, string>();
+    private Dictionary<string, string> _senderTable = new Dictionary<string, string>();
 
     public void Load(TextAsset csv)
     {
         _stringTable.Clear();
+        _senderTable.Clear();
+        
         var lines = csv.text.Split('\n');
         for (int i = 1; i < lines.Length; i++)
         {
@@ -19,10 +22,13 @@ public class StringTableManager
             if (string.IsNullOrEmpty(line))
                 continue;
 
-            var match = Regex.Match(line, @"^([^,]+),""?([^""]*)""?$");
+            var match = Regex.Match(line, @"^([^,]+),""([^""]*)""(?:,(.+))?$");
             if (match.Success)
             {
-                _stringTable[match.Groups[1].Value] = match.Groups[2].Value;
+                string key = match.Groups[1].Value;
+                _stringTable[key] = match.Groups[2].Value;
+                if (match.Groups[3].Success)
+                    _senderTable[key] = match.Groups[3].Value.Trim();
             }
         }
     }
@@ -44,10 +50,12 @@ public class StringTableManager
         return candidates[Random.Range(0, candidates.Count)];
     }
 
-    public string GetMissionMessage(string itemName)
+    public (string message, string sender) GetMissionMessage(string itemName)
     {
         string key = $"MISSION_{itemName}";
-
-        return _stringTable.TryGetValue(key, out var msg) ? msg : string.Empty;
+        string message = _stringTable.TryGetValue(key, out var msg) ? msg : string.Empty;
+        string sender = _senderTable.TryGetValue(key, out var s) ? s : string.Empty;
+        return (message, sender);
     }
+
 }
