@@ -14,6 +14,15 @@ public class PlayerMovement : MonoBehaviour
         None,
     }
 
+    [Header("Animation")]
+    [SerializeField]
+    private Animator _animator;
+
+    private bool _wasGrounded = true;
+    private bool _isJumping = false;
+    private string _currentAnim = string.Empty;
+    private string _currentFace = string.Empty;
+
     [Header("Movement Speed")]
     [SerializeField]
     private float _moveSpeed = 0.8f;
@@ -50,13 +59,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float _rollCoolDown = 1f;
 
+    private float _standHeight;
+
     [Header("Crouch Field")]
-    private const float _standHeight = 2f;
-    private const float _crouchHeight = 1f;
+    private float _crouchHeight;
 
     [SerializeField]
     private float _crouchSpeed = 0.5f;
     private bool _isCrouching = false;
+
     private Vector3 _prevColliderCenter;
 
     [Header("Sprint Field")]
@@ -77,19 +88,22 @@ public class PlayerMovement : MonoBehaviour
     private bool _isSpeedBoost = false;
     private Coroutine _speedCo;
 
-    public float Yaw { get; private set; }
-    public float Pitch { get; private set; }
-
     // --- 이벤트 관련 필드 ---
     public event Action<float> OnSprintChanged;
     public event Action<bool> OnSprintActive;
 
-    private float playerPosY = 0.17f; // 임시 하드 코딩
+    // --- 외부 호출 가능 속성 필드 ---
+    public float Yaw { get; private set; }
+    public float Pitch { get; private set; }
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
         _collider = GetComponent<CapsuleCollider>();
+        _animator = GetComponent<Animator>();
+
+        _standHeight = _collider.height;
+        _crouchHeight = _standHeight * 0.5f;
         _prevColliderCenter = _collider.center;
         _sprintDuration = _sprintTotalTime;
         Yaw = transform.eulerAngles.y;
@@ -152,13 +166,17 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 rollVelocity = _rollDirection * _rollSpeed;
                 rollVelocity.y = _rb.linearVelocity.y;
                 _rb.linearVelocity = rollVelocity;
-                return;
+                break;
             }
             case MoveMode.Crouch:
                 {
                     _currentSpeed = _crouchSpeed;
                     _collider.height = _crouchHeight;
-                    _collider.center = new Vector3(0f, _crouchHeight / 2f, 0f);
+                    _collider.center = new Vector3(
+                        _prevColliderCenter.x,
+                        _prevColliderCenter.y - (_standHeight - _crouchHeight) / 2f,
+                        _prevColliderCenter.z
+                    );
                 }
                 break;
         }
@@ -190,7 +208,32 @@ public class PlayerMovement : MonoBehaviour
             v.y = 0f;
             _rb.linearVelocity = v;
         }
+
+        float horizSpeed = new Vector2(_rb.linearVelocity.x, _rb.linearVelocity.z).magnitude;
+        _animator.SetFloat("Speed", horizSpeed);
+        _animator.SetBool("IsGrounded", IsGrounded());
+        _animator.SetBool("IsRolling", _isRolling);
+        _animator.SetBool("IsCrouching", _isCrouching);
     }
+
+    public void PlayFace(string stateName)
+    {
+        if (_currentFace == stateName || _animator == null)
+            return;
+
+        _currentFace = stateName;
+        _animator.Play(stateName, 1);
+    }
+
+    public void ResetFace() => PlayFace("Eyes_Blink");
+
+    public void SetFaceDamaged() => PlayFace("Eyes_Cry");
+
+    public void SetFaceDead() => PlayFace("Eyes_Dead");
+
+    public void SetFaceHappy() => PlayFace("Eyes_Happy");
+
+    //public void SetFaceShrink() => PlayFace("Eyes_Shrink");
 
     private void OnMove(InputValue value)
     {
@@ -223,6 +266,7 @@ public class PlayerMovement : MonoBehaviour
         if (value.isPressed && IsGrounded())
         {
             _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+            _animator.SetTrigger("IsJumping");
         }
     }
 

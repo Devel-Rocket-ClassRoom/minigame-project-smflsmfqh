@@ -18,6 +18,8 @@ public class PlayerHealth : MonoBehaviour
     private bool _isInvincible = false;
 
     private Coroutine _invincibleCo;
+    private Animator _animator;
+    private CauseDeath _pendingCause;
 
     // --- 이벤트 관련 필드 ---
     public event Action<float> OnHealthChanged;
@@ -25,6 +27,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void Awake()
     {
+        _animator = GetComponent<Animator>();
         Reset();
     }
 
@@ -115,9 +118,16 @@ public class PlayerHealth : MonoBehaviour
     {
         if (isDead)
             return;
-
+        _pendingCause = cause;
         isDead = true;
+        _animator.SetBool("IsDead", isDead);
+
         Debug.Log($"[Player Health] 게임 오버! 플레이어 죽음: isDead {isDead}");
-        OnDied?.Invoke(cause);
+        //OnDied?.Invoke(cause);
+    }
+
+    public void OnDieAnimationEnd()
+    {
+        OnDied?.Invoke(_pendingCause);
     }
 }
