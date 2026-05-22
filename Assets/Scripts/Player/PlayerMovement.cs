@@ -57,6 +57,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float _crouchSpeed = 0.5f;
     private bool _isCrouching = false;
+    private Vector3 _prevColliderCenter;
 
     [Header("Sprint Field")]
     [SerializeField]
@@ -83,11 +84,13 @@ public class PlayerMovement : MonoBehaviour
     public event Action<float> OnSprintChanged;
     public event Action<bool> OnSprintActive;
 
+    private float playerPosY = 0.17f; // 임시 하드 코딩
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
         _collider = GetComponent<CapsuleCollider>();
-        _collider.center = new Vector3(0f, _standHeight / 2f, 0f);
+        _prevColliderCenter = _collider.center;
         _sprintDuration = _sprintTotalTime;
         Yaw = transform.eulerAngles.y;
     }
@@ -120,7 +123,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     _currentSpeed = _moveSpeed;
                     _collider.height = _standHeight;
-                    _collider.center = new Vector3(0f, _standHeight / 2f, 0f);
+                    _collider.center = _prevColliderCenter;
 
                     _sprintDuration += Time.fixedDeltaTime;
                     if (_sprintDuration >= _sprintTotalTime)
