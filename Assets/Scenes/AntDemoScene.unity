@@ -356,8 +356,8 @@ MonoBehaviour:
   _defaultIconSize: 14
   _playerIconSize: 18
   _playerColor: {r: 0.2, g: 0.6, b: 1, a: 1}
-  _destinationColor: {r: 1, g: 0.85, b: 0, a: 1}
-  _shopColor: {r: 1, g: 0.5, b: 0, a: 1}
+  _destinationColor: {r: 1, g: 0.62403005, b: 0, a: 1}
+  _shopColor: {r: 1, g: 0.62403005, b: 0, a: 1}
   _itemColor: {r: 0.2, g: 1, b: 0.4, a: 1}
 --- !u!1 &78840283
 GameObject:
