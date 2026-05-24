@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using DG.Tweening;  
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -213,7 +214,7 @@ public class PlayerMovement : MonoBehaviour
         _animator.SetFloat("Speed", horizSpeed);
         _animator.SetBool("IsGrounded", IsGrounded());
         _animator.SetBool("IsRolling", _isRolling);
-        _animator.SetBool("IsCrouching", _isCrouching);
+        _animator.SetBool("isCrouching", _isCrouching);
     }
 
     public void PlayFace(string stateName)
