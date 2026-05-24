@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    private const float k_maxHealth = 100f;
+    [SerializeField]
+    private float k_maxHealth = 100f;
     private float _currentHealth;
 
     [SerializeField]
@@ -13,6 +14,12 @@ public class PlayerHealth : MonoBehaviour
 
     [SerializeField]
     private float _addedHealth = 1f;
+
+    [SerializeField]
+    private FollowCamera _followCamera;
+
+    [SerializeField]
+    private PlayerMovement _playerMovement;
     private const float k_damageInvincibleTime = 0.7f;
     public bool isDead = false;
     private bool _isInvincible = false;
@@ -81,6 +88,11 @@ public class PlayerHealth : MonoBehaviour
         {
             Die(causeDeath);
         }
+        else
+        {
+            _followCamera?.TriggerReactionCut(0.6f);
+            _playerMovement?.SetFaceDamaged();
+        }
     }
 
     public void Heal(int amount)
@@ -122,8 +134,10 @@ public class PlayerHealth : MonoBehaviour
         isDead = true;
         _animator.SetBool("IsDead", isDead);
 
+        _followCamera?.TriggerReactionCut(1.5f);
+        _playerMovement?.SetFaceDead();
+
         Debug.Log($"[Player Health] 게임 오버! 플레이어 죽음: isDead {isDead}");
-        //OnDied?.Invoke(cause);
     }
 
     public void OnDieAnimationEnd()

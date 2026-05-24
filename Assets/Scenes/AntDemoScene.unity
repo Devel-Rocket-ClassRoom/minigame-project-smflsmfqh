@@ -664,6 +664,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1789914332637843668, guid: 19e4e08e919e8014ebec0d397225440d, type: 3}
+      propertyPath: k_maxHealth
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1789914332637843668, guid: 19e4e08e919e8014ebec0d397225440d, type: 3}
+      propertyPath: _followCamera
+      value: 
+      objectReference: {fileID: 963194232}
+    - target: {fileID: 1789914332637843668, guid: 19e4e08e919e8014ebec0d397225440d, type: 3}
+      propertyPath: _playerMovement
+      value: 
+      objectReference: {fileID: 845040382}
     - target: {fileID: 3826114054305858717, guid: 19e4e08e919e8014ebec0d397225440d, type: 3}
       propertyPath: m_Name
       value: Player
@@ -708,6 +720,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5436534484111318198, guid: 19e4e08e919e8014ebec0d397225440d, type: 3}
+      propertyPath: _animator
+      value: 
+      objectReference: {fileID: 1574910986}
     - target: {fileID: 5436534484111318198, guid: 19e4e08e919e8014ebec0d397225440d, type: 3}
       propertyPath: _jumpForce
       value: 4
@@ -2290,6 +2306,10 @@ MonoBehaviour:
   _player: {fileID: 845040382}
   _scrollSensitivity: 4
   _offset: {x: 0, y: 0.15, z: -0.35}
+  _reactionOffset: {x: -0.06, y: 0.03, z: 0.02}
+  _reactionLookAtOffset: {x: 0, y: 0.02, z: 0.01}
+  _reactionInDuration: 0.15
+  _reactionOutDuration: 0.3
   _maxZoomOut: 1
 --- !u!1 &978798088
 GameObject:
@@ -3697,6 +3717,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1574847660}
   m_CullTransparentMesh: 1
+--- !u!95 &1574910986 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6868423225127801826, guid: 19e4e08e919e8014ebec0d397225440d, type: 3}
+  m_PrefabInstance: {fileID: 259254512}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1580717376
 GameObject:
   m_ObjectHideFlags: 0
