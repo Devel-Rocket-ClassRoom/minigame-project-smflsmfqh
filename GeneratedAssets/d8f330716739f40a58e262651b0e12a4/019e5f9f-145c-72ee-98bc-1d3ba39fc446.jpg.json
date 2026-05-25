@@ -1,0 +1,38 @@
+{
+    "asset": "d8f330716739f40a58e262651b0e12a4",
+    "fileName": "019e5f9f-145c-72ee-98bc-1d3ba39fc446.jpg",
+    "prompt": "Health heart UI icon, classic red heart shape, 3D rendered look but as a 2D sprite, glossy finish, vibrant and friendly cartoon style, clean edges, professional game UI, matching the colorful and clean aesthetic of the reference palette.",
+    "negativePrompt": "",
+    "model": "game-ui-essentials-2",
+    "modelName": "Game UI Essentials 2.0",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "601cef6ffead6614a8abd4f653eaaef5",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 2048,
+        "height": 2048
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

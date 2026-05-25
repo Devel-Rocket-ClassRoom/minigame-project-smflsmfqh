@@ -1,0 +1,38 @@
+{
+    "asset": "3f4fce1ec9bc647f4affcbf2d6de8d38",
+    "fileName": "019e5fb7-de3a-7613-b974-25de8deb9656.png",
+    "prompt": "A high-quality 2D UI icon of a glowing yellow lightning bolt inside a bright silver circular ring. THE AREA INSIDE THE RING AND OUTSIDE THE RING MUST BE COMPLETELY TRANSPARENT. No black background. Only the bolt and the ring should be visible. Use the provided reference image for the exact style and colors. Alpha transparency required.",
+    "negativePrompt": "",
+    "model": "flux-2-dev",
+    "modelName": "Flux 2 (Dev)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "35f25a9cd6b71411cad67d884c18538e",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

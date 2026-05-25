@@ -35,7 +35,8 @@ public class MissionMessageUI : MonoBehaviour
 
     private void OnEnable()
     {
-        MissionManager.Instance.OnMissionAssigned += HandleMissionAssigned;
+        if (MissionManager.Instance != null)
+            MissionManager.Instance.OnMissionAssigned += HandleMissionAssigned;
     }
 
     private void OnDisable()
