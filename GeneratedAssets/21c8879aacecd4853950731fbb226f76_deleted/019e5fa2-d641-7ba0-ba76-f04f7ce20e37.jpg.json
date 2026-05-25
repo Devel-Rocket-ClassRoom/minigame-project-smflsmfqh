@@ -1,0 +1,38 @@
+{
+    "asset": "21c8879aacecd4853950731fbb226f76",
+    "fileName": "019e5fa2-d641-7ba0-ba76-f04f7ce20e37.jpg",
+    "prompt": "Sprint UI icon, stylized running shoe, casual cartoon style, 3D rendered look, vibrant colors, clean edges, professional game UI, matching ithappy cartoon art style.",
+    "negativePrompt": "",
+    "model": "game-ui-essentials-2",
+    "modelName": "Game UI Essentials 2.0",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "601cef6ffead6614a8abd4f653eaaef5",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 2048,
+        "height": 2048
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

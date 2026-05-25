@@ -1,0 +1,38 @@
+{
+    "asset": "9e521c1cb29d04f5da403746ef2c2d87",
+    "fileName": "019e5faf-0244-7547-a603-35c1dbeab13e.png",
+    "prompt": "Sprint UI icon, a vibrant yellow lightning bolt symbol, centered inside a metallic circular ring border, 3D rendered style, low-poly aesthetic, matching the clean and colorful look of ithappy assets, soft studio lighting, isolated on a solid dark background for easy cut-out",
+    "negativePrompt": "",
+    "model": "gemini-3.1-flash",
+    "modelName": "Gemini 3.1 Nano Banana 2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "6d2283337c4f8b14a9f1c4896361439e",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

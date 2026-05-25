@@ -1,0 +1,38 @@
+{
+    "asset": "ab38c1b44c51043e49be38763d0dd0e7",
+    "fileName": "019e5fc8-8773-77e3-b2ea-43d0fd9848f1.png",
+    "prompt": "Empty UI health bar frame, pill-shaped, glossy silver metallic border, perfectly symmetrical, internal area is a uniform empty container, no partial fills or gradients that look like progress, matching the clean 3D ithappy and heart icon style, isolated on a solid black background for easy transparency, high-key lighting",
+    "negativePrompt": "",
+    "model": "gemini-3.1-flash",
+    "modelName": "Gemini 3.1 Nano Banana 2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "c9fedf07fbdc7465c9ecbca497254471",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

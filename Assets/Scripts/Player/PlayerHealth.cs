@@ -74,7 +74,7 @@ public class PlayerHealth : MonoBehaviour
             return;
 
         _currentHealth -= damage;
-        SetInvincible(k_damageInvincibleTime);
+        SetInvincible(k_damageInvincibleTime, "damage");
 
         if (_currentHealth <= 0)
         {
@@ -108,22 +108,23 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log($"[아이템 획득] 치료 효과: {prevH} -> {_currentHealth}");
     }
 
-    public void SetInvincible(float sec)
+    public void SetInvincible(float sec, string source = "unknown")
     {
         if (_invincibleCo != null)
             StopCoroutine(_invincibleCo);
 
-        _invincibleCo = StartCoroutine(InvincibleCoroutine(sec));
+        _invincibleCo = StartCoroutine(InvincibleCoroutine(sec, source));
     }
 
-    private IEnumerator InvincibleCoroutine(float sec)
+    private IEnumerator InvincibleCoroutine(float sec, string source)
     {
         _isInvincible = true;
-        Debug.Log($"[아이템 획득] 무적 효과 - 지속 시간 {sec}");
+        Debug.Log($"[무적 시작] source={source} duration={sec} t={Time.time:F3}");
 
         yield return new WaitForSeconds(sec);
 
         _isInvincible = false;
+        Debug.Log($"[무적 종료] source={source} t={Time.time:F3}");
     }
 
     private void Die(CauseDeath cause)
@@ -134,7 +135,7 @@ public class PlayerHealth : MonoBehaviour
         isDead = true;
         _animator.SetBool("IsDead", isDead);
 
-        _followCamera?.TriggerReactionCut(1.5f);
+        _followCamera?.TriggerReactionCut(2f);
         _playerMovement?.SetFaceDead();
 
         Debug.Log($"[Player Health] 게임 오버! 플레이어 죽음: isDead {isDead}");

@@ -60,9 +60,9 @@ public class PlayerController : MonoBehaviour
         _ph.Heal(amount);
     }
 
-    public void SetInvincible(float sec)
+    public void SetInvincible(float sec, string source = "unknown")
     {
-        _ph.SetInvincible(sec);
+        _ph.SetInvincible(sec, source);
     }
 
     public void SetSpeedBoost(float speed, float sec)

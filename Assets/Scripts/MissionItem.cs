@@ -5,9 +5,15 @@ public class MissionItem : MonoBehaviour, IInteractive
     [SerializeField]
     private ItemData _itemData;
 
+    private PlayerMovement _playerMovement;
+    private FollowCamera _camera;
+
     private void Awake()
     {
-        // 프리팹에 MinimapMarker가 없을 경우 런타임에 자동 추가
+        var player = GameObject.FindGameObjectWithTag("Player");
+        _playerMovement = player.GetComponent<PlayerMovement>();
+        _camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<FollowCamera>();
+
         if (!TryGetComponent<MinimapMarker>(out _))
         {
             var marker = gameObject.AddComponent<MinimapMarker>();
@@ -20,6 +26,9 @@ public class MissionItem : MonoBehaviour, IInteractive
         foreach (var effect in _itemData.effects)
         {
             effect.Apply(player);
+            _camera.TriggerReactionCut(0.6f);
+            _playerMovement.SetFaceHappy();
+
             Debug.Log($"[아이템 효과 발동] 아이템: {_itemData.itemName}");
         }
 

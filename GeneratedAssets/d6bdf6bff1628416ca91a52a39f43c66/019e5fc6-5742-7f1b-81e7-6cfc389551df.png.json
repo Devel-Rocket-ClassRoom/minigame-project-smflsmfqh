@@ -1,0 +1,38 @@
+{
+    "asset": "d6bdf6bff1628416ca91a52a39f43c66",
+    "fileName": "019e5fc6-5742-7f1b-81e7-6cfc389551df.png",
+    "prompt": "Vibrant red heart icon, glossy 3D rendered style, matching the exact shape and glossiness of the reference heart, clean and cheerful ithappy style, bright lighting, isolated on a solid black background, high-key lighting",
+    "negativePrompt": "",
+    "model": "flux-2-dev",
+    "modelName": "Flux 2 (Dev)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "c9fedf07fbdc7465c9ecbca497254471",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

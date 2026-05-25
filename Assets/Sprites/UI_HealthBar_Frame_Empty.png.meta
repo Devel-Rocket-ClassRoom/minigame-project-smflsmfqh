@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4676e3b5d4676482993c698ea95f5954
+guid: 071bad363faeb4d86b5090d1654bd316
 labels:
 - UnityAI
 TextureImporter:
@@ -23,7 +23,7 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
     flipGreenChannel: 0
-  isReadable: 0
+  isReadable: 1
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
