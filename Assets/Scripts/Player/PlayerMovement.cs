@@ -100,6 +100,7 @@ public class PlayerMovement : MonoBehaviour
     // --- 외부 호출 가능 속성 필드 ---
     public float Yaw { get; private set; }
     public float Pitch { get; private set; }
+    public bool IsCrouching => _isCrouching;
 
     private void Awake()
     {
@@ -181,13 +182,6 @@ public class PlayerMovement : MonoBehaviour
                         _prevColliderCenter.y - (_standHeight - _crouchHeight) / 2f,
                         _prevColliderCenter.z
                     );
-                    _crouchDuration -= Time.fixedDeltaTime;
-
-                    if (_crouchDuration <= 0)
-                    {
-                        _isCrouching = false;
-                        _crouchDuration = 0f;
-                    }
                 }
                 break;
         }
