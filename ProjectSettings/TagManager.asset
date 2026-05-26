@@ -8,6 +8,7 @@ TagManager:
   - ItemStore
   - Ground
   - Npc
+  - Road
   layers:
   - Default
   - TransparentFX
