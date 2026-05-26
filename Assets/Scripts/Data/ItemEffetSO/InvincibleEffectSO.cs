@@ -8,6 +8,6 @@ public class InvincibleEffectSO : ItemEffectSO
 
     public override void Apply(PlayerController player)
     {
-        player.SetInvincible(_duration);
+        player.SetInvincible(_duration, "item");
     }
 }
