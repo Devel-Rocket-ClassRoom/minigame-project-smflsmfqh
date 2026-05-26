@@ -1,0 +1,38 @@
+{
+    "asset": "35f25a9cd6b71411cad67d884c18538e",
+    "fileName": "019e5fb7-1ba5-7b7f-8218-9667c2a27ba9.png",
+    "prompt": "Make all the black areas transparent, including the area inside the circular ring and around the lightning bolt. Only the yellow lightning bolt and the metallic circular frame should remain. Ensure the interior of the ring is completely empty/transparent.",
+    "negativePrompt": "",
+    "model": "flux-2-dev",
+    "modelName": "Flux 2 (Dev)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "35f25a9cd6b71411cad67d884c18538e",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

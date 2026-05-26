@@ -1,0 +1,28 @@
+{
+    "asset": "af0088a91d3574e66a9f03fc68198c4f",
+    "fileName": "019e5fa6-d912-75d4-814a-4628fdfbbd12.jpg",
+    "prompt": "Individual 2D game UI icon of a stylized yellow lightning bolt, glossy 3D cartoon style, vibrant yellow and orange, clean edges, soft lighting, matching ithappy low-poly aesthetic, NO color palettes or charts, just a single centered lightning icon.",
+    "negativePrompt": "",
+    "model": "game-ui-essentials-2",
+    "modelName": "Game UI Essentials 2.0",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 2048,
+        "height": 2048
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

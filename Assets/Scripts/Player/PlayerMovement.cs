@@ -14,14 +14,14 @@ public class PlayerMovement : MonoBehaviour
         Crouch,
         None,
     }
+    [Header("PlayerHealth")]
+    [SerializeField]
+    private PlayerHealth _playerHealth;
 
     [Header("Animation")]
     [SerializeField]
     private Animator _animator;
 
-    private bool _wasGrounded = true;
-    private bool _isJumping = false;
-    private string _currentAnim = string.Empty;
     private string _currentFace = string.Empty;
 
     [Header("Movement Speed")]
@@ -55,10 +55,10 @@ public class PlayerMovement : MonoBehaviour
     private float _rollSpeed = 2f;
 
     [SerializeField]
-    private float _rollDuration = 0.5f;
+    private float _rollDuration = 0.7f;
 
     [SerializeField]
-    private float _rollCoolDown = 1f;
+    private float _rollCoolDown = 5f;
 
     private float _standHeight;
 
@@ -67,6 +67,10 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     private float _crouchSpeed = 0.5f;
+
+    [SerializeField]
+    private float _crouchTotalTime = 3.5f;
+    private float _crouchDuration;
     private bool _isCrouching = false;
 
     private Vector3 _prevColliderCenter;
@@ -154,7 +158,6 @@ public class PlayerMovement : MonoBehaviour
 
                     if (_sprintDuration <= 0)
                     {
-                        Debug.Log("[Sprint] Sprint Time Out!");
                         _isSprint = false;
                         _sprintDuration = 0f;
                         OnSprintActive?.Invoke(_isSprint);
@@ -178,6 +181,13 @@ public class PlayerMovement : MonoBehaviour
                         _prevColliderCenter.y - (_standHeight - _crouchHeight) / 2f,
                         _prevColliderCenter.z
                     );
+                    _crouchDuration -= Time.fixedDeltaTime;
+
+                    if (_crouchDuration <= 0)
+                    {
+                        _isCrouching = false;
+                        _crouchDuration = 0f;
+                    }
                 }
                 break;
         }
@@ -198,10 +208,13 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        Vector3 move =
-            (transform.forward * _inputDir.y + transform.right * _inputDir.x) * _currentSpeed;
-        move.y = _rb.linearVelocity.y;
-        _rb.linearVelocity = move;
+        if (_mode != MoveMode.Roll)
+        {
+            Vector3 move =
+                (transform.forward * _inputDir.y + transform.right * _inputDir.x) * _currentSpeed;
+            move.y = _rb.linearVelocity.y;
+            _rb.linearVelocity = move;
+        }
 
         if (_mode != MoveMode.Roll && IsGrounded() && _rb.linearVelocity.y <= 0f)
         {
@@ -280,6 +293,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!value.isPressed || _isRolling)
             return;
+
         if (Time.time - _lastRollTime < _rollCoolDown)
             return;
 
@@ -303,16 +317,13 @@ public class PlayerMovement : MonoBehaviour
     {
         _isRolling = true;
         _lastRollTime = Time.time;
+        _playerHealth.SetInvincible(_rollDuration, "roll");
 
-        float elapsed = 0f;
-        while (elapsed < _rollDuration)
-        {
-            elapsed += Time.fixedDeltaTime;
-            yield return new WaitForFixedUpdate();
-        }
+        yield return new WaitForSeconds(_rollDuration);
 
         _rollCoroutine = null;
         _isRolling = false;
+        Debug.Log($"[Roll] 롤 종료 t={Time.time:F3}");
     }
 
     private bool IsGrounded()
