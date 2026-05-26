@@ -17,85 +17,85 @@ MonoBehaviour:
       lastSelectedModels:
         serializedData:
         - key:
-            rid: 4847182198875357978
+            rid: 4927643372059885741
           value:
-            rid: 4847182198875358044
+            rid: 4927643372059885742
         - key:
-            rid: 4847182198875357980
+            rid: 4927643372059885743
           value:
-            rid: 4847182198875358045
+            rid: 4927643372059885744
         - key:
-            rid: 4847182198875357982
+            rid: 4927643372059885745
           value:
-            rid: 4847182198875358046
+            rid: 4927643372059885746
         - key:
-            rid: 4847182198875357984
+            rid: 4927643372059885747
           value:
-            rid: 4847182198875358047
+            rid: 4927643372059885748
         - key:
-            rid: 4847182198875357986
+            rid: 4927643372059885749
           value:
-            rid: 4847182198875358048
+            rid: 4927643372059885750
         - key:
-            rid: 4847182198875357988
+            rid: 4927643372059885751
           value:
-            rid: 4847182198875358049
+            rid: 4927643372059885752
       previewSettings:
         sizeFactor: 1
   references:
     version: 2
     RefIds:
-    - rid: 4847182198875357978
+    - rid: 4927643372059885741
       type: {class: LastSelectedModelKey, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modality: Image
         mode: 0
-    - rid: 4847182198875357980
+    - rid: 4927643372059885742
+      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
+      data:
+        modelID: gpt-image-1-5-recolor
+    - rid: 4927643372059885743
       type: {class: LastSelectedModelKey, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modality: Image
         mode: 1
-    - rid: 4847182198875357982
+    - rid: 4927643372059885744
+      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
+      data:
+        modelID: 
+    - rid: 4927643372059885745
       type: {class: LastSelectedModelKey, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modality: Image
         mode: 2
-    - rid: 4847182198875357984
+    - rid: 4927643372059885746
+      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
+      data:
+        modelID: 
+    - rid: 4927643372059885747
       type: {class: LastSelectedModelKey, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modality: Image
         mode: 3
-    - rid: 4847182198875357986
+    - rid: 4927643372059885748
+      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
+      data:
+        modelID: 
+    - rid: 4927643372059885749
       type: {class: LastSelectedModelKey, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modality: Image
         mode: 4
-    - rid: 4847182198875357988
+    - rid: 4927643372059885750
+      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
+      data:
+        modelID: 
+    - rid: 4927643372059885751
       type: {class: LastSelectedModelKey, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modality: Video
         mode: 6
-    - rid: 4847182198875358044
-      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
-      data:
-        modelID: gpt-image-1-5-recolor
-    - rid: 4847182198875358045
-      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
-      data:
-        modelID: 
-    - rid: 4847182198875358046
-      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
-      data:
-        modelID: 
-    - rid: 4847182198875358047
-      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
-      data:
-        modelID: 
-    - rid: 4847182198875358048
-      type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
-      data:
-        modelID: 
-    - rid: 4847182198875358049
+    - rid: 4927643372059885752
       type: {class: ModelSelection, ns: Unity.AI.Image.Services.Stores.States, asm: Unity.AI.Image}
       data:
         modelID: 
