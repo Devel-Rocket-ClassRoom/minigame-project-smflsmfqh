@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using DG.Tweening;  
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
         Crouch,
         None,
     }
+
     [Header("PlayerHealth")]
     [SerializeField]
     private PlayerHealth _playerHealth;
@@ -31,9 +32,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Jump Field")]
     [SerializeField]
     private float _jumpForce = 2.5f;
-
-    [SerializeField]
-    private LayerMask _groundLayerMask;
+    private readonly HashSet<Collider> _groundContacts = new();
+    private bool _isGrounded => _groundContacts.Count > 0;
 
     [Header("Player Rotation")]
     [SerializeField]
@@ -216,7 +216,7 @@ public class PlayerMovement : MonoBehaviour
             _rb.linearVelocity = move;
         }
 
-        if (_mode != MoveMode.Roll && IsGrounded() && _rb.linearVelocity.y <= 0f)
+        if (_mode != MoveMode.Roll && _isGrounded && _rb.linearVelocity.y <= 0f)
         {
             var v = _rb.linearVelocity;
             v.y = 0f;
@@ -225,7 +225,7 @@ public class PlayerMovement : MonoBehaviour
 
         float horizSpeed = new Vector2(_rb.linearVelocity.x, _rb.linearVelocity.z).magnitude;
         _animator.SetFloat("Speed", horizSpeed);
-        _animator.SetBool("IsGrounded", IsGrounded());
+        _animator.SetBool("IsGrounded", _isGrounded);
         _animator.SetBool("IsRolling", _isRolling);
         _animator.SetBool("isCrouching", _isCrouching);
     }
@@ -277,7 +277,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnJump(InputValue value)
     {
-        if (value.isPressed && IsGrounded())
+        if (value.isPressed && _isGrounded)
         {
             _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
             _animator.SetTrigger("IsJumping");
@@ -326,30 +326,29 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log($"[Roll] 롤 종료 t={Time.time:F3}");
     }
 
-    private bool IsGrounded()
+    private void OnCollisionEnter(Collision collision)
     {
-        float scale = transform.localScale.y;
-        float halfHeight = _collider.height * scale / 2f;
-        float centerOffsetY = _collider.center.y * scale;
-        Vector3 bottom = transform.position + Vector3.up * (centerOffsetY - halfHeight + 0.01f);
-
-        float spread = _collider.radius * transform.localScale.x * 0.7f;
-        float rayDist = 0.05f;
-        LayerMask mask = _groundLayerMask == 0 ? ~0 : _groundLayerMask;
-
-        Vector3[] origins = new Vector3[5]
+        if (IsGroundContact(collision))
         {
-            bottom,
-            bottom + transform.forward * spread,
-            bottom - transform.forward * spread,
-            bottom + transform.right * spread,
-            bottom - transform.right * spread,
-        };
+            _groundContacts.Add(collision.collider);
+        }
+    }
 
-        foreach (var origin in origins)
+    private void OnCollisionExit(Collision collision)
+    {
+        _groundContacts.Remove(collision.collider);
+    }
+
+    private bool IsGroundContact(Collision collision)
+    {
+        if (!collision.gameObject.CompareTag("Ground") && !collision.gameObject.CompareTag("Road"))
         {
-            Debug.DrawRay(origin, Vector3.down * rayDist, Color.red);
-            if (Physics.Raycast(origin, Vector3.down, rayDist, mask))
+            return false;
+        }
+
+        foreach (var c in collision.contacts)
+        {
+            if (c.normal.y > 0.7f)
                 return true;
         }
 
