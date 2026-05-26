@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -8,7 +9,8 @@ public class CatMovement : MonoBehaviour
 {
     [Header("추격 대상")]
     [SerializeField]
-    private PlayerMovement _player;
+    private PlayerHealth _player;
+    private PlayerMovement _playerMovement;
 
     [Header("가시 범위")]
     [SerializeField]
@@ -43,7 +45,9 @@ public class CatMovement : MonoBehaviour
 
     private const float _damage = 10f;
     private float _lastAttackTime = -999f;
-    private float _attackTimer;
+
+    private bool _isAttacking = false;
+    private Coroutine _attackCo;    
 
     [Header("NavMesh 영역 설정")]
     private NavMeshAgent _agent;
@@ -64,7 +68,7 @@ public class CatMovement : MonoBehaviour
     private bool _initialized;
     private bool _hasDestination = false;
     private string _currentAnim = string.Empty;
-    private string _currentFace = string.Empty;
+    private CauseDeath cause = CauseDeath.Cat;
 
     private void Awake()
     {
@@ -76,6 +80,8 @@ public class CatMovement : MonoBehaviour
     {
         Setup();
         SetWanderTarget();
+        if (_player != null)
+            _playerMovement = _player.GetComponent<PlayerMovement>();
     }
 
     private void Update()
@@ -83,7 +89,8 @@ public class CatMovement : MonoBehaviour
         if (!_initialized)
             return;
 
-        bool detected = Physics.CheckSphere(transform.position, _detectionRadius, _playerLayer);
+        bool detected = Physics.CheckSphere(transform.position, _detectionRadius, _playerLayer)
+                        && (_playerMovement == null || !_playerMovement.IsCrouching);
 
         if (detected && _state != State.Chase)
             EnterChase();
@@ -120,6 +127,7 @@ public class CatMovement : MonoBehaviour
         _state = State.Chase;
         _agent.speed = _runSpeed;
         _agent.stoppingDistance = _stopDistance;
+        _agent.updateRotation = false;
         _hasDestination = false;
         _isFound = true;
         _isWaiting = false;
@@ -130,6 +138,7 @@ public class CatMovement : MonoBehaviour
         _state = State.Wander;
         _agent.speed = _wanderSpeed;
         _agent.stoppingDistance = 0f;
+        _agent.updateRotation = true;
 
         _isFound = false;
 
@@ -142,6 +151,13 @@ public class CatMovement : MonoBehaviour
             return;
 
         _agent.SetDestination(_player.transform.position);
+
+        Vector3 dir = (_player.transform.position - transform.position).normalized;
+        dir.y = 0f;
+        if (dir != Vector3.zero)
+            transform.rotation = Quaternion.LookRotation(dir);
+        
+        TryAttack();
     }
 
     private void UpdateWander()
@@ -193,28 +209,64 @@ public class CatMovement : MonoBehaviour
         }
     }
 
+    private void TryAttack()
+    {
+        if (_isAttacking) return;
+
+        float dist = Vector3.Distance(transform.position, _player.transform.position);
+        if (dist > _attackRadius)
+            return;
+
+        if (Time.time - _lastAttackTime < _attackCoolDown)
+            return;
+
+
+        _lastAttackTime = Time.time;
+        _attackCo = StartCoroutine(AttackRoutine());
+    }
+
+    private IEnumerator AttackRoutine()
+    {
+        _isAttacking = true;
+        _agent.isStopped = true;
+
+        _animator.Play("Eat");
+        yield return null;
+
+        float clipLength = _animator.GetCurrentAnimatorStateInfo(0).length;
+
+        yield return new WaitForSeconds(clipLength * 0.5f);
+
+        float dist = Vector3.Distance(transform.position, _player.transform.position);
+        if (dist <= _attackRadius)
+            _player.TakeDamage(_damage, cause);
+
+        yield return new WaitForSeconds(clipLength * 0.5f);
+
+        _agent.isStopped = false;
+        _currentAnim = string.Empty; // UpdateAnimation()이 강제로 재생 상태 복원하도록 초기화
+        _isAttacking = false;
+    }
+
     private void UpdateAnimation()
     {
+        if (_isAttacking) return;
+
         string targetMove;
-        string targetFace;
         if (_state == State.Chase)
         {
             targetMove = "Run";
-            targetFace = "Eyes_Excited";
         }
         else if (_isWaiting || _agent.velocity.magnitude < 0.1f)
         {
             targetMove = "Idle_A";
-            targetFace = "Eyes_Blink";
         }
         else
             targetMove = "Walk";
-        targetFace = "Eyes_Blink";
 
         if (_currentAnim != targetMove)
         {
             _currentAnim = targetMove;
-            _currentFace = targetFace;
             _animator.Play(targetMove);
             _animator.SetBool("isFound", _isFound);
         }
