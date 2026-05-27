@@ -13,7 +13,7 @@ public class FootStompCollider : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("[FootStomp] 플레이어 밟힘!");
+            Debug.Log($"[Foot Stomp] {_cause}가 플레이어 밟음! 데미지: {_damage}");
             other.GetComponent<PlayerHealth>().TakeDamage(_damage, _cause);
         }
     }
