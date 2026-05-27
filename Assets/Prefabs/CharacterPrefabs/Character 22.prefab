@@ -186,7 +186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FootStompCollider
   _cause: 0
-  _damage: 25
+  _damage: 20
 --- !u!1 &81228563659906130
 GameObject:
   m_ObjectHideFlags: 0
