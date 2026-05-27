@@ -92,6 +92,7 @@ public class PlayerMovement : MonoBehaviour
     private MoveMode _mode = MoveMode.Move;
     private bool _isSpeedBoost = false;
     private Coroutine _speedCo;
+    private bool _isCrawling = false;
 
     // --- 이벤트 관련 필드 ---
     public event Action<float> OnSprintChanged;
@@ -101,6 +102,12 @@ public class PlayerMovement : MonoBehaviour
     public float Yaw { get; private set; }
     public float Pitch { get; private set; }
     public bool IsCrouching => _isCrouching;
+    public bool IsGrounded => _isGrounded;
+    /// <summary>AntCrawl이 입력 방향을 공유받기 위한 프로퍼티</summary>
+    public Vector2 InputDir => _inputDir;
+
+    /// <summary>AntCrawl이 제어권을 가져갈 때 호출 — FixedUpdate 이동·회전 로직을 중단</summary>
+    public void SetCrawling(bool value) => _isCrawling = value;
 
     private void Awake()
     {
@@ -123,6 +130,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (_isCrawling)
+            return;
+
         _rb.MoveRotation(Quaternion.Euler(0f, Yaw, 0f));
 
         // 우선순위: Roll > Crouch > Sprint > Move
@@ -271,6 +281,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnJump(InputValue value)
     {
+        // 크롤 중 점프는 AntCrawl.OnJump가 전담
+        if (_isCrawling)
+            return;
+
         if (value.isPressed && _isGrounded)
         {
             _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
@@ -280,11 +294,16 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCrouch(InputValue value)
     {
+        // Bug 5 수정: 크롤 중 Crouch 입력 무시
+        if (_isCrawling) return;
         _isCrouching = value.isPressed;
     }
 
     private void OnRoll(InputValue value)
     {
+        // Bug 5 수정: 크롤 중 Roll 입력 무시
+        if (_isCrawling) return;
+
         if (!value.isPressed || _isRolling)
             return;
 

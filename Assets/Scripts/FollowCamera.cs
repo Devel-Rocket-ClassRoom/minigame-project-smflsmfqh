@@ -12,6 +12,10 @@ public class FollowCamera : MonoBehaviour
     [SerializeField]
     private Vector3 _offset = new Vector3(0f, 0.05f, -0.35f);
 
+    [Header("Crawl Camera")]
+    [Tooltip("일반 ↔ 크롤 카메라 전환 보간 속도")]
+    [SerializeField] private float _crawlBlendSpeed = 5f;
+
     [Header("Reaction Cut")]
     [SerializeField]
     private Vector3 _reactionOffset = new Vector3(-0.04f, 0.012f, 0.005f);
@@ -28,6 +32,9 @@ public class FollowCamera : MonoBehaviour
     private bool _isReacting;
     private bool _useLookAt;
 
+    private AntCrawl _antCrawl;
+    private float _crawlBlend = 0f;
+
     [SerializeField]
     private float _maxZoomOut = 2.5f;
 
@@ -42,10 +49,20 @@ public class FollowCamera : MonoBehaviour
         GetComponent<Camera>().nearClipPlane = 0.001f;
     }
 
+    private void Start()
+    {
+        if (_player != null)
+            _antCrawl = _player.GetComponent<AntCrawl>();
+    }
+
     private void LateUpdate()
     {
         if (_player == null)
             return;
+
+        float targetBlend = (_antCrawl != null && _antCrawl.IsCrawling) ? 1f : 0f;
+        _crawlBlend = Mathf.MoveTowards(_crawlBlend, targetBlend, Time.deltaTime * _crawlBlendSpeed);
+
         if (!_isReacting)
         {
 
@@ -58,11 +75,19 @@ public class FollowCamera : MonoBehaviour
             _activeOffset = _offset.normalized * _currentDistance;
         }
 
+        // 일반 모드: 월드 Yaw/Pitch 기반
         Quaternion playerRot = Quaternion.Euler(0f, _player.Yaw, 0f);
         Quaternion fullRot = Quaternion.Euler(_player.Pitch, _player.Yaw, 0f);
+        Vector3 normalPos = _player.transform.position + playerRot * _activeOffset;
 
-        Vector3 camPos = _player.transform.position + playerRot * _activeOffset;
-        transform.position = camPos;
+        // 크롤 모드: 개미 로컬 공간 기반 (transform.rotation이 표면 법선으로 정렬된 상태)
+        Vector3 crawlPos = _player.transform.position + _player.transform.rotation * _activeOffset;
+        Quaternion crawlRot = Quaternion.LookRotation(
+            _player.transform.position - crawlPos,
+            _player.transform.up
+        );
+
+        transform.position = Vector3.Lerp(normalPos, crawlPos, _crawlBlend);
 
         if (_useLookAt)
         {
@@ -71,7 +96,7 @@ public class FollowCamera : MonoBehaviour
         }
         else
         {
-            transform.rotation = fullRot;
+            transform.rotation = Quaternion.Slerp(fullRot, crawlRot, _crawlBlend);
         }
     }
 
