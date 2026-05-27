@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dbb367920387d6842b3db8d89e8cf8ed, type: 3}
-  m_Name: Toast
+  m_Name: Banana
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: Toast
-  dropPrefab: {fileID: 5584498739468633908, guid: 0bd78f00a390a5b4c97cdb04b346da1b, type: 3}
+  itemName: Banana
+  dropPrefab: {fileID: 2894232268450555028, guid: 929eb7645f2060440a2d6f833e9037a7, type: 3}
   category: 0
   effects:
-  - {fileID: 11400000, guid: 6e399a4feb87347f4853d13e0908a471, type: 2}
+  - {fileID: 11400000, guid: 82e79396c6adfb34cb62aecded9f141e, type: 2}

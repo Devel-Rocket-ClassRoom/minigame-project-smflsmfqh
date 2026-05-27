@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 741f0a0aff7d0334592f0f445c27772d, type: 3}
-  m_Name: CoffeeSpeedBoostSO
-  m_EditorClassIdentifier: Assembly-CSharp::SpeedBoostEffectSO
-  _speed: 2.5
-  _duration: 7
+  m_Script: {fileID: 11500000, guid: acfe45b6f56b18b488bd2ef7a2614208, type: 3}
+  m_Name: HealEffect2
+  m_EditorClassIdentifier: Assembly-CSharp::HealEffectSO
+  _healAmount: 50

@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dbb367920387d6842b3db8d89e8cf8ed, type: 3}
-  m_Name: Toast
+  m_Name: ChocoBar
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: Toast
-  dropPrefab: {fileID: 5584498739468633908, guid: 0bd78f00a390a5b4c97cdb04b346da1b, type: 3}
+  itemName: ChocoBar
+  dropPrefab: {fileID: 617894504041986320, guid: 362111ea9419e1e4fbc08329b3baa0b2, type: 3}
   category: 0
   effects:
-  - {fileID: 11400000, guid: 6e399a4feb87347f4853d13e0908a471, type: 2}
+  - {fileID: 11400000, guid: 82e79396c6adfb34cb62aecded9f141e, type: 2}
+  - {fileID: 11400000, guid: dda4bf8720dab174a9b4e38f295c6d49, type: 2}
