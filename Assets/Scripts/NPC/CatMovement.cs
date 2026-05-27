@@ -47,7 +47,7 @@ public class CatMovement : MonoBehaviour
     private float _lastAttackTime = -999f;
 
     private bool _isAttacking = false;
-    private Coroutine _attackCo;    
+    private Coroutine _attackCo;
 
     [Header("NavMesh 영역 설정")]
     private NavMeshAgent _agent;
@@ -89,8 +89,9 @@ public class CatMovement : MonoBehaviour
         if (!_initialized)
             return;
 
-        bool detected = Physics.CheckSphere(transform.position, _detectionRadius, _playerLayer)
-                        && (_playerMovement == null || !_playerMovement.IsCrouching);
+        bool detected =
+            Physics.CheckSphere(transform.position, _detectionRadius, _playerLayer)
+            && (_playerMovement == null || !_playerMovement.IsCrouching);
 
         if (detected && _state != State.Chase)
             EnterChase();
@@ -108,6 +109,12 @@ public class CatMovement : MonoBehaviour
         }
 
         UpdateAnimation();
+    }
+
+    public void SetPlayer(PlayerHealth player)
+    {
+        _player = player;
+        _playerMovement = player != null ? player.GetComponent<PlayerMovement>() : null;
     }
 
     private void Setup()
@@ -156,7 +163,7 @@ public class CatMovement : MonoBehaviour
         dir.y = 0f;
         if (dir != Vector3.zero)
             transform.rotation = Quaternion.LookRotation(dir);
-        
+
         TryAttack();
     }
 
@@ -211,7 +218,8 @@ public class CatMovement : MonoBehaviour
 
     private void TryAttack()
     {
-        if (_isAttacking) return;
+        if (_isAttacking)
+            return;
 
         float dist = Vector3.Distance(transform.position, _player.transform.position);
         if (dist > _attackRadius)
@@ -219,7 +227,6 @@ public class CatMovement : MonoBehaviour
 
         if (Time.time - _lastAttackTime < _attackCoolDown)
             return;
-
 
         _lastAttackTime = Time.time;
         _attackCo = StartCoroutine(AttackRoutine());
@@ -250,7 +257,8 @@ public class CatMovement : MonoBehaviour
 
     private void UpdateAnimation()
     {
-        if (_isAttacking) return;
+        if (_isAttacking)
+            return;
 
         string targetMove;
         if (_state == State.Chase)
