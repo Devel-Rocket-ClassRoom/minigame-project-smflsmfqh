@@ -55,6 +55,7 @@ public class NPCMovement : MonoBehaviour
     private float _waitTimer;
     private bool _waiting;
     private bool _initialized;
+    private bool _externallyPaused;
     private float _animVert;
     private float _currentWaitTime;
 
@@ -169,8 +170,26 @@ public class NPCMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// CrosswalkWaitZone 등 외부에서 NPC를 일시정지/해제.
+    /// true면 내부 이동 로직 전체를 스킵해 CheckStuck이 덮어쓰지 않음.
+    /// </summary>
+    public void SetExternalPause(bool paused)
+    {
+        _externallyPaused = paused;
+        _agent.isStopped = paused;
+
+        // 해제 시 경로가 없으면 새 목적지를 잡아줌
+        // (대기 중 기존 목적지에 도달해 경로가 소멸된 경우 대비)
+        if (!paused && !_agent.hasPath && !_waiting)
+            SetNextRandomDestination();
+    }
+
     private void UpdateMovement()
     {
+        if (_externallyPaused)
+            return;
+
         CheckStuck();
 
         if (_waiting)
