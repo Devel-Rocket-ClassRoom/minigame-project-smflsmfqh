@@ -10,12 +10,18 @@ public class ShopBuilding : MonoBehaviour
     {
         if (!other.CompareTag("Player"))
             return;
+
+        if (_shopData.dropItems == null || _shopData.dropItems.Length == 0)
+        {
+            Debug.LogWarning($"[ShopBuilding] {_shopData.shopName}: dropItems가 비어있습니다.");
+            return;
+        }
+
+        ItemData selected = _shopData.dropItems[Random.Range(0, _shopData.dropItems.Length)];
         _spawnPos = GetFrontSpawnPosition();
-        foreach (var item in _shopData.dropItems)
-            Instantiate(item.dropPrefab, _spawnPos, Quaternion.identity);
-        Debug.Log(
-            $"[아이템 드랍] {_shopData.shopName}에서 {_shopData.dropItems[0].itemName} 아이템 드랍!"
-        );
+        Instantiate(selected.dropPrefab, _spawnPos, Quaternion.identity);
+
+        Debug.Log($"[아이템 드랍] {_shopData.shopName}에서 {selected.itemName} 아이템 드랍!");
     }
 
     private Vector3 GetFrontSpawnPosition()
