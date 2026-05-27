@@ -15,4 +15,5 @@ MonoBehaviour:
   itemName: Fry1
   dropPrefab: {fileID: 5320333293514257754, guid: 1322a882093444543add81e1b6232dbc, type: 3}
   category: 0
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: 82e79396c6adfb34cb62aecded9f141e, type: 2}
