@@ -71,12 +71,7 @@ public class FollowCamera : MonoBehaviour
         if (_player == null)
             return;
 
-        float targetBlend = (_antCrawl != null && _antCrawl.IsCrawling) ? 1f : 0f;
-        _crawlBlend = Mathf.MoveTowards(
-            _crawlBlend,
-            targetBlend,
-            Time.deltaTime * _crawlBlendSpeed
-        );
+        
 
         if (!_isReacting)
         {

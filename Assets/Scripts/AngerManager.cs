@@ -12,7 +12,11 @@ public class AngerSystem : MonoBehaviour
     [SerializeField]
     private float _maxAnger = 200f;
 
-    private float[] _thresholds = { 0f, 25f, 50f, 75f, 90f };
+    // 게임 시작 시 순서대로 발화되는 인트로 메시지 키
+    private readonly string[] _introKeys = { "ANGER_0", "ANGER_1", "ANGER_2" };
+
+    // 분노 게이지 % 임계값 기반 메시지 (0%는 인트로로 분리)
+    private float[] _thresholds = { 10f, 25f, 50f, 75f, 90f };
 
     private float _currentAnger;
     private bool[] _triggered;
@@ -21,12 +25,19 @@ public class AngerSystem : MonoBehaviour
 
     public float Anger => _currentAnger;
     public event Action<float> OnAngerChanged;
-    public event Action<string> OnMessasgeTriggered;
+    public event Action<(string, string)> OnMessasgeTriggered;
 
     private void Start()
     {
         _triggered = new bool[_thresholds.Length];
         MissionManager.Instance.OnMissionCompleted += HandleMissionCompleted;
+
+        foreach (var key in _introKeys)
+        {
+            var (msg, sender) = StringTableManager.Instance.GetMessage(key);
+            if (!string.IsNullOrEmpty(msg))
+                OnMessasgeTriggered?.Invoke((msg, sender));
+        }
     }
 
     private void OnDisable()
@@ -50,11 +61,11 @@ public class AngerSystem : MonoBehaviour
             if (!_triggered[i] && percent >= _thresholds[i])
             {
                 _triggered[i] = true;
-                string msg = StringTableManager.Instance.GetAngerMessage(_thresholds[i]);
-                OnMessasgeTriggered?.Invoke(msg);
+                (string msg, string sender) = StringTableManager.Instance.GetAngerMessage(_thresholds[i]);
+                OnMessasgeTriggered?.Invoke((msg, sender));
             }
         }
-
+        
         OnAngerChanged?.Invoke(_currentAnger / _maxAnger);
 
         if (_currentAnger >= _maxAnger)

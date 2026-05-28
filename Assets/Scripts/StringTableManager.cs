@@ -58,9 +58,18 @@ public class StringTableManager
         return (message, sender);
     }
 
-    public string GetAngerMessage(float thresholdPercent)
+    public (string message, string sender) GetMessage(string key)
+    {
+        string message = _stringTable.TryGetValue(key, out var msg) ? msg : string.Empty;
+        string sender = _senderTable.TryGetValue(key, out var s) ? s : string.Empty;
+        return (message, sender);
+    }
+
+    public (string message, string sender) GetAngerMessage(float thresholdPercent)
     {
         string key = $"ANGER_{(int)thresholdPercent}";
-        return _stringTable.TryGetValue(key, out var msg) ? msg : string.Empty;
+        string message = _stringTable.TryGetValue(key, out var msg) ? msg : string.Empty;
+        string sender = _senderTable.TryGetValue(key, out var s) ? s : string.Empty;
+        return (message, sender);
     }
 }
