@@ -14,17 +14,26 @@ public class FollowCamera : MonoBehaviour
 
     [Header("Crawl Camera")]
     [Tooltip("일반 ↔ 크롤 카메라 전환 보간 속도")]
-    [SerializeField] private float _crawlBlendSpeed = 5f;
+    [SerializeField]
+    private float _crawlBlendSpeed = 5f;
 
     [Header("Reaction Cut")]
     [SerializeField]
     private Vector3 _reactionOffset = new Vector3(-0.04f, 0.012f, 0.005f);
+
     [SerializeField]
-    private Vector3 _reactionLookAtOffset = new Vector3(0f,0.015f, 0.01f);
+    private Vector3 _reactionLookAtOffset = new Vector3(0f, 0.015f, 0.01f);
+
     [SerializeField]
     private float _reactionInDuration = 0.15f;
+
     [SerializeField]
     private float _reactionOutDuration = 0.3f;
+
+    [Header("Feedback System")]
+    [SerializeField]
+    private float _maxShakeAmount = 0.008f;
+    private float _shakeIntensity;
 
     private float _defaultDistance;
     private float _currentDistance;
@@ -37,6 +46,8 @@ public class FollowCamera : MonoBehaviour
 
     [SerializeField]
     private float _maxZoomOut = 2.5f;
+
+    public void SetShakeIntensity(float intensity) => _shakeIntensity = intensity;
 
     private void Awake()
     {
@@ -61,11 +72,14 @@ public class FollowCamera : MonoBehaviour
             return;
 
         float targetBlend = (_antCrawl != null && _antCrawl.IsCrawling) ? 1f : 0f;
-        _crawlBlend = Mathf.MoveTowards(_crawlBlend, targetBlend, Time.deltaTime * _crawlBlendSpeed);
+        _crawlBlend = Mathf.MoveTowards(
+            _crawlBlend,
+            targetBlend,
+            Time.deltaTime * _crawlBlendSpeed
+        );
 
         if (!_isReacting)
         {
-
             _currentDistance -= Input.GetAxis("Mouse ScrollWheel") * _scrollSensitivity;
             _currentDistance = Mathf.Clamp(
                 _currentDistance,
@@ -98,11 +112,15 @@ public class FollowCamera : MonoBehaviour
         {
             transform.rotation = Quaternion.Slerp(fullRot, crawlRot, _crawlBlend);
         }
+
+        Vector3 shakeOffset = Random.insideUnitCircle * (_maxShakeAmount * _shakeIntensity);
+        transform.position += shakeOffset;
     }
 
     public void TriggerReactionCut(float holdDuration = 0.8f)
     {
-        if (_isReacting) return;
+        if (_isReacting)
+            return;
         StartCoroutine(ReactionCutCoroutine(holdDuration));
     }
 
@@ -125,7 +143,11 @@ public class FollowCamera : MonoBehaviour
         while (t < _reactionInDuration)
         {
             t += Time.deltaTime;
-            _activeOffset = Vector3.Lerp(startOffset, _reactionOffset, Mathf.Clamp01(t / _reactionInDuration));
+            _activeOffset = Vector3.Lerp(
+                startOffset,
+                _reactionOffset,
+                Mathf.Clamp01(t / _reactionInDuration)
+            );
             yield return null;
         }
 
@@ -138,14 +160,15 @@ public class FollowCamera : MonoBehaviour
         while (t < _reactionOutDuration)
         {
             t += Time.deltaTime;
-            _activeOffset = Vector3.Lerp(_reactionOffset, returnTarget, Mathf.Clamp01(t / _reactionOutDuration));
+            _activeOffset = Vector3.Lerp(
+                _reactionOffset,
+                returnTarget,
+                Mathf.Clamp01(t / _reactionOutDuration)
+            );
             yield return null;
         }
 
         _useLookAt = false;
         _isReacting = false;
     }
-
 }
-    
-

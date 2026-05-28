@@ -3,8 +3,11 @@ using UnityEngine;
 [RequireComponent(typeof(CapsuleCollider))]
 public class CatHeadDamage : MonoBehaviour
 {
-    [SerializeField] private float _damage = 10f;
-    [SerializeField] private float _damageCooldown = 5f;
+    [SerializeField]
+    private float _damage = 10f;
+
+    [SerializeField]
+    private float _damageCooldown = 5f;
 
     private float _lastDamageTime = -999f;
 
