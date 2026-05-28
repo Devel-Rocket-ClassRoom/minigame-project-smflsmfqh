@@ -1491,7 +1491,7 @@ MonoBehaviour:
   _listPanel: {fileID: 1580717376}
   _entryPrefab: {fileID: 7181556538565122046, guid: 346f73cb2770649f2b12643069a80084, type: 3}
   _entryContainer: {fileID: 567229789}
-  _playerController: {fileID: 0}
+  _playerController: {fileID: 1574911005}
 --- !u!1 &179138592
 GameObject:
   m_ObjectHideFlags: 0
@@ -4890,6 +4890,9 @@ MonoBehaviour:
   _groundMask:
     serializedVersion: 2
     m_Bits: 1024
+  _spreadHalfAngle: 30
+  _dropDistanceMin: 0.4
+  _dropDistanceMax: 0.8
 --- !u!1 &687011229
 GameObject:
   m_ObjectHideFlags: 0
@@ -5634,6 +5637,9 @@ MonoBehaviour:
   _groundMask:
     serializedVersion: 2
     m_Bits: 1024
+  _spreadHalfAngle: 30
+  _dropDistanceMin: 0.4
+  _dropDistanceMax: 0.8
 --- !u!65 &801502602
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8550,6 +8556,9 @@ MonoBehaviour:
   _groundMask:
     serializedVersion: 2
     m_Bits: 1024
+  _spreadHalfAngle: 30
+  _dropDistanceMin: 0.4
+  _dropDistanceMax: 0.8
 --- !u!1 &1186623727
 GameObject:
   m_ObjectHideFlags: 0
@@ -9682,6 +9691,9 @@ MonoBehaviour:
   _groundMask:
     serializedVersion: 2
     m_Bits: 1024
+  _spreadHalfAngle: 30
+  _dropDistanceMin: 0.4
+  _dropDistanceMax: 0.8
 --- !u!1 &1398729679
 GameObject:
   m_ObjectHideFlags: 0
@@ -10892,6 +10904,17 @@ MonoBehaviour:
   _dangerRadius: 4
   _panicRadius: 1
   _followCam: {fileID: 963194232}
+--- !u!114 &1574911005 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5585654343831385275, guid: 19e4e08e919e8014ebec0d397225440d, type: 3}
+  m_PrefabInstance: {fileID: 259254512}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524522874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b0332ae2aeaf69469d8a9279c5b5735, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
 --- !u!1 &1576332828
 GameObject:
   m_ObjectHideFlags: 0
@@ -11886,6 +11909,9 @@ MonoBehaviour:
   _groundMask:
     serializedVersion: 2
     m_Bits: 1024
+  _spreadHalfAngle: 30
+  _dropDistanceMin: 0.4
+  _dropDistanceMax: 0.8
 --- !u!65 &1707845566
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14758,6 +14784,9 @@ MonoBehaviour:
   _groundMask:
     serializedVersion: 2
     m_Bits: 1024
+  _spreadHalfAngle: 30
+  _dropDistanceMin: 0.4
+  _dropDistanceMax: 0.8
 --- !u!1 &2123797043
 GameObject:
   m_ObjectHideFlags: 0

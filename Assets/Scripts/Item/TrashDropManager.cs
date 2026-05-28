@@ -5,7 +5,8 @@ public class TrashDropManager : MonoBehaviour
 {
     public static TrashDropManager Instance { get; private set; }
 
-    [SerializeField] private float _itemLifeTime = 20f;
+    [SerializeField]
+    private float _itemLifeTime = 20f;
 
     private readonly Dictionary<ItemData, Stack<MissionItem>> _pool = new();
 
@@ -22,7 +23,8 @@ public class TrashDropManager : MonoBehaviour
     public void SpawnItem(ItemData data, Vector3 position)
     {
         MissionItem item = GetOrCreate(data);
-        item.transform.SetPositionAndRotation(position, Quaternion.identity);
+        var rot = Quaternion.Euler(data.spawnRotation);
+        item.transform.SetPositionAndRotation(position, rot);
         item.gameObject.SetActive(true);
     }
 
@@ -44,7 +46,9 @@ public class TrashDropManager : MonoBehaviour
 
         if (item == null)
         {
-            Debug.LogError($"[TrashDropManager] {data.itemName}의 dropPrefab에 MissionItem 컴포넌트가 없습니다.");
+            Debug.LogError(
+                $"[TrashDropManager] {data.itemName}의 dropPrefab에 MissionItem 컴포넌트가 없습니다."
+            );
             Destroy(go);
             return null;
         }
