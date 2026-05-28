@@ -7,4 +7,6 @@ public class ItemData : ScriptableObject
     public GameObject dropPrefab;
     public ItemCategory category;
     public ItemEffectSO[] effects;
+    public float spawnHeightOffset = 0f;
+    public Vector3 spawnRotation = Vector3.zero;
 }
