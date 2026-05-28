@@ -108,8 +108,8 @@ public class UIManager : MonoBehaviour
         int min = angerSeconds / 60;
         int sec = angerSeconds % 60;
         __scoreText.text = min > 0
-            ? $"Marriage Survival Time: {min}m {sec}s"
-            : $"Marriage Survival Time: {sec}s";
+            ? $"Wife's Patience: {min}m {sec}s"
+            : $"Wife's Patience: {sec}s";
     }
 
     public void ShowHUD()
