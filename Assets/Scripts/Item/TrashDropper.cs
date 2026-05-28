@@ -4,27 +4,43 @@ using UnityEngine;
 public class TrashDropper : MonoBehaviour
 {
     [Header("드랍 아이템 테이블")]
-    [SerializeField] private ItemData[] _dropTable;
+    [SerializeField]
+    private ItemData[] _dropTable;
 
     [Header("드랍 타이밍")]
-    [SerializeField] private float _intervalMin = 20f;
-    [SerializeField] private float _intervalMax = 60f;
+    [SerializeField]
+    private float _intervalMin = 20f;
+
+    [SerializeField]
+    private float _intervalMax = 60f;
 
     [Header("드랍 반경")]
-    [SerializeField] private float _radiusMin = 0.5f;
-    [SerializeField] private float _radiusMax = 2.5f;
+    [SerializeField]
+    private float _radiusMin = 0.5f;
+
+    [SerializeField]
+    private float _radiusMax = 2.5f;
 
     [Header("위치 검증")]
-    [SerializeField] private LayerMask _groundMask;
-    [SerializeField] private LayerMask _obstacleMask;
-    [SerializeField] private float _itemCheckRadius = 0.25f;
-    [SerializeField] private int _maxRetries = 15;
+    [SerializeField]
+    private LayerMask _groundMask;
+
+    [SerializeField]
+    private LayerMask _obstacleMask;
+
+    [SerializeField]
+    private float _itemCheckRadius = 0.25f;
+
+    [SerializeField]
+    private int _maxRetries = 15;
 
     private void Start()
     {
         if (_dropTable == null || _dropTable.Length == 0)
         {
-            Debug.LogWarning($"[TrashDropper] {name}: _dropTable이 비어있습니다. 컴포넌트를 비활성화합니다.");
+            Debug.LogWarning(
+                $"[TrashDropper] {name}: _dropTable이 비어있습니다. 컴포넌트를 비활성화합니다."
+            );
             enabled = false;
             return;
         }
@@ -62,7 +78,9 @@ public class TrashDropper : MonoBehaviour
             }
         }
 
-        Debug.LogWarning($"[TrashDropper] {name}: {_maxRetries}번 시도 후 유효 위치를 찾지 못했습니다.");
+        Debug.LogWarning(
+            $"[TrashDropper] {name}: {_maxRetries}번 시도 후 유효 위치를 찾지 못했습니다."
+        );
     }
 
     private bool TryGetValidPosition(out Vector3 result)
@@ -70,7 +88,8 @@ public class TrashDropper : MonoBehaviour
         result = Vector3.zero;
 
         Vector2 flat = Random.insideUnitCircle;
-        if (flat.sqrMagnitude < 0.001f) flat = Vector2.right;
+        if (flat.sqrMagnitude < 0.001f)
+            flat = Vector2.right;
         flat = flat.normalized * Random.Range(_radiusMin, _radiusMax);
 
         Vector3 origin = transform.position + new Vector3(flat.x, 4f, flat.y);
