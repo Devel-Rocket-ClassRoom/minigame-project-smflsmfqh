@@ -91,7 +91,15 @@ public class PlayerHealth : MonoBehaviour
         else
         {
             _followCamera?.TriggerReactionCut(0.6f);
-            _playerMovement?.SetFaceDamaged();
+            switch (causeDeath)
+            {
+                case CauseDeath.Car:
+                    _playerMovement?.SetFaceShrink();
+                    break;
+                default:
+                    _playerMovement?.SetFaceDamaged();
+                    break;
+            }
         }
     }
 
