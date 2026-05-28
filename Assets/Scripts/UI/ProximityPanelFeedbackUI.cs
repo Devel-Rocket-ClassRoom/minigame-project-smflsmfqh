@@ -8,19 +8,28 @@ public class ProximityPanelFeedbackUI : MonoBehaviour
     [SerializeField]
     private float _blinkInterval = 0.07f;
 
+    [SerializeField]
+    private ProximityFeedback _proximity;
+
     private bool _isInDanger;
     private float _blinkTimer;
 
     private void Awake()
     {
-        ProximityFeedback.OnIntensityChanged += HandleIntensity;
         if (_panel != null)
             _panel.SetActive(false);
     }
 
-    private void OnDestroy()
+    private void OnEnable()
     {
-        ProximityFeedback.OnIntensityChanged -= HandleIntensity;
+        if (_proximity != null)
+            _proximity.OnIntensityChanged += HandleIntensity;
+    }
+
+    private void OnDisable()
+    {
+        if (_proximity != null)
+            _proximity.OnIntensityChanged -= HandleIntensity;
     }
 
     private void Update()

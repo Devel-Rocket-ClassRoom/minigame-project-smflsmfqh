@@ -16,6 +16,9 @@ public class MissionCheckListUI : MonoBehaviour
     [SerializeField]
     private Transform _entryContainer;
 
+    [SerializeField]
+    private PlayerController _playerController;
+
     private readonly List<MissionEntryUI> _entries = new();
     private bool _isOpen = false;
     private Coroutine _peekCo;
@@ -29,14 +32,16 @@ public class MissionCheckListUI : MonoBehaviour
     {
         _missionMessageUI.OnSlidedOut += HandleSlidedOut;
         MissionManager.Instance.OnMissionCompleted += HandleMissionCompleted;
-        PlayerController.OnMissionTogglePressed += ToggleList;
+        if (_playerController != null)
+            _playerController.OnMissionTogglePressed += ToggleList;
     }
 
     private void OnDisable()
     {
         _missionMessageUI.OnSlidedOut -= HandleSlidedOut;
         MissionManager.Instance.OnMissionCompleted -= HandleMissionCompleted;
-        PlayerController.OnMissionTogglePressed -= ToggleList;
+        if (_playerController != null)
+            _playerController.OnMissionTogglePressed -= ToggleList;
     }
 
     private void HandleSlidedOut(ItemData item)
@@ -46,7 +51,6 @@ public class MissionCheckListUI : MonoBehaviour
 
         entry.Init(item);
         _entries.Add(entry);
-
     }
 
     private void HandleMissionCompleted(ItemData item)

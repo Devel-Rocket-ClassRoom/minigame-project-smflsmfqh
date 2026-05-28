@@ -4,6 +4,10 @@ public class ShopBuilding : MonoBehaviour
 {
     [SerializeField]
     private ShopData _shopData;
+
+    [SerializeField]
+    private LayerMask _groundMask;
+
     private Vector3 _spawnPos;
 
     private void OnTriggerEnter(Collider other)
@@ -26,19 +30,24 @@ public class ShopBuilding : MonoBehaviour
 
     private Vector3 GetFrontSpawnPosition()
     {
-        Bounds bounds = new Bounds(transform.position, Vector3.zero);
-        foreach (var r in GetComponentsInChildren<Renderer>())
-            bounds.Encapsulate(r.bounds);
+        var col = GetComponent<BoxCollider>();
+        Vector3 center = col != null
+            ? transform.TransformPoint(col.center)
+            : transform.position;
 
-        Vector3 fwd = transform.forward;
-        float halfExtent = Vector3.Dot(
-            bounds.extents,
-            new Vector3(Mathf.Abs(fwd.x), 0f, Mathf.Abs(fwd.z))
-        );
+        Vector3 outDir = center - transform.position;
+        outDir.y = 0f;
+        outDir = outDir.sqrMagnitude > 0.001f ? outDir.normalized : transform.forward;
+        Vector3 rightDir = Vector3.Cross(Vector3.up, outDir);
 
-        Vector3 frontEdge =
-            new Vector3(bounds.center.x, 0.1f, bounds.center.z) + fwd * halfExtent;
+        Vector3 horizontal = center
+            + outDir   * Random.Range(0.3f, 0.8f)
+            + rightDir * Random.Range(-0.5f, 0.5f);
 
-        return frontEdge + fwd * Random.Range(0.5f, 1.5f) + transform.right * Random.Range(-1f, 1f);
+        Vector3 origin = new Vector3(horizontal.x, center.y + 3f, horizontal.z);
+        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, 6f, _groundMask))
+            return hit.point + Vector3.up * 0.01f;
+
+        return new Vector3(horizontal.x, 0.01f, horizontal.z);
     }
 }
