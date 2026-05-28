@@ -16,9 +16,6 @@ public class NPCSpawnManager : MonoBehaviour
     [SerializeField]
     private NPCVisualData _visualData;
 
-    [SerializeField]
-    private float _recycleDistance = 30f;
-
     private Dictionary<NPCSpawnZone, Queue<NPCMovement>> _zonePools = new();
     private Dictionary<NPCSpawnZone, List<NPCMovement>> _zoneActives = new();
 
@@ -28,9 +25,6 @@ public class NPCSpawnManager : MonoBehaviour
 
     [SerializeField]
     private float _patrolPercent = 0.7f;
-
-    [SerializeField]
-    private int _targetCount = 15;
 
     private void Awake()
     {

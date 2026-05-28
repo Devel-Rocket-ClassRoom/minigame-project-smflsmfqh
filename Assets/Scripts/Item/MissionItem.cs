@@ -43,7 +43,7 @@ public class MissionItem : MonoBehaviour, IInteractive
         }
 
         marker.colorOverride =
-            _itemData.category == ItemCategory.Mission ? Color.tomato : Color.magenta;
+            _itemData.category == ItemCategory.Mission ? Color.red : Color.magenta;
     }
 
     private void OnEnable()
