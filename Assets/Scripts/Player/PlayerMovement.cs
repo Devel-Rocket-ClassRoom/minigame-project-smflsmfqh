@@ -69,8 +69,6 @@ public class PlayerMovement : MonoBehaviour
     private float _crouchSpeed = 0.5f;
 
     [SerializeField]
-    private float _crouchTotalTime = 3.5f;
-    private float _crouchDuration;
     private bool _isCrouching = false;
 
     private Vector3 _prevColliderCenter;
@@ -83,6 +81,10 @@ public class PlayerMovement : MonoBehaviour
     private float _sprintTotalTime = 7f;
     private float _sprintDuration;
     private bool _isSprint = false;
+
+    [Header("노멀법선 field")]
+    [SerializeField]
+    private float yNormal = 0.2f;
 
     private Rigidbody _rb;
     private CapsuleCollider _collider;
@@ -103,6 +105,7 @@ public class PlayerMovement : MonoBehaviour
     public float Pitch { get; private set; }
     public bool IsCrouching => _isCrouching;
     public bool IsGrounded => _isGrounded;
+
     /// <summary>AntCrawl이 입력 방향을 공유받기 위한 프로퍼티</summary>
     public Vector2 InputDir => _inputDir;
 
@@ -251,7 +254,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetFaceHappy() => PlayFace("Eyes_Happy");
 
-    //public void SetFaceShrink() => PlayFace("Eyes_Shrink");
+    public void SetFaceShrink() => PlayFace("Eyes_Shrink");
 
     private void OnMove(InputValue value)
     {
@@ -288,21 +291,22 @@ public class PlayerMovement : MonoBehaviour
         if (value.isPressed && _isGrounded)
         {
             _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
-            _animator.SetTrigger("IsJumping");
         }
     }
 
     private void OnCrouch(InputValue value)
     {
         // Bug 5 수정: 크롤 중 Crouch 입력 무시
-        if (_isCrawling) return;
+        if (_isCrawling)
+            return;
         _isCrouching = value.isPressed;
     }
 
     private void OnRoll(InputValue value)
     {
         // Bug 5 수정: 크롤 중 Roll 입력 무시
-        if (_isCrawling) return;
+        if (_isCrawling)
+            return;
 
         if (!value.isPressed || _isRolling)
             return;
@@ -361,7 +365,7 @@ public class PlayerMovement : MonoBehaviour
 
         foreach (var c in collision.contacts)
         {
-            if (c.normal.y > 0.7f)
+            if (c.normal.y > yNormal)
                 return true;
         }
 

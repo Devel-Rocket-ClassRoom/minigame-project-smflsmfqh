@@ -2,21 +2,36 @@ using UnityEngine;
 
 public class CarMovement : MonoBehaviour
 {
-    private enum CarState { Running, Stop }
+    private enum CarState
+    {
+        Running,
+        Stop,
+    }
 
     [Header("경로점 (Inspector 직접 지정 시)")]
-    [SerializeField] private CarDrivingZone _path;
-    [SerializeField] private int _laneIndex = 0;
-    [SerializeField] private float _laneOffset = 0f;
+    [SerializeField]
+    private CarDrivingZone _path;
+
+    [SerializeField]
+    private int _laneIndex = 0;
+
+    [SerializeField]
+    private float _laneOffset = 0f;
     private int _waypointIndex = 0;
 
     [Header("이동 설정")]
-    [SerializeField] private float _carSpeed = 5f;
-    [SerializeField] private float _rotationSpeed = 8f;
-    [SerializeField] private float _waypointReachDistance = 0.5f;
+    [SerializeField]
+    private float _carSpeed = 5f;
+
+    [SerializeField]
+    private float _rotationSpeed = 8f;
+
+    [SerializeField]
+    private float _waypointReachDistance = 0.5f;
 
     [Header("정지 설정")]
-    [SerializeField] private float _waitTime = 7f;
+    [SerializeField]
+    private float _waitTime = 7f;
 
     private CarState _state = CarState.Running;
     private float _waitTimer;
@@ -30,7 +45,12 @@ public class CarMovement : MonoBehaviour
             InitializeMovement();
     }
 
-    public void Initialize(CarDrivingZone path, int laneIndex, int startWaypointIndex, float laneOffset = 0f)
+    public void Initialize(
+        CarDrivingZone path,
+        int laneIndex,
+        int startWaypointIndex,
+        float laneOffset = 0f
+    )
     {
         _path = path;
         _laneIndex = laneIndex;
@@ -87,10 +107,18 @@ public class CarMovement : MonoBehaviour
         if (dir.sqrMagnitude > 0.001f)
         {
             Quaternion targetRot = Quaternion.LookRotation(dir.normalized);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * _rotationSpeed);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                Time.deltaTime * _rotationSpeed
+            );
         }
 
-        transform.position = Vector3.MoveTowards(transform.position, _currentDestination, _carSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            _currentDestination,
+            _carSpeed * Time.deltaTime
+        );
 
         if (Vector3.Distance(transform.position, _currentDestination) <= _waypointReachDistance)
         {
@@ -109,6 +137,6 @@ public class CarMovement : MonoBehaviour
         _waitTimer = _waitTime;
     }
 
-    private Vector3 GetWaypointPosition()
-        => _path.GetWaypointPosition(_laneIndex, _waypointIndex, _laneOffset);
+    private Vector3 GetWaypointPosition() =>
+        _path.GetWaypointPosition(_laneIndex, _waypointIndex, _laneOffset);
 }
