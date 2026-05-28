@@ -38,12 +38,10 @@ public class CatMovement : MonoBehaviour
 
     [Header("공격 설정")]
     [SerializeField]
-    private float _attackRadius = 2.5f;
+    private float _attackRadius = 1.5f;
 
     [SerializeField]
     private float _attackCoolDown = 5f;
-
-    private const float _damage = 10f;
     private float _lastAttackTime = -999f;
 
     private bool _isAttacking = false;
@@ -121,7 +119,6 @@ public class CatMovement : MonoBehaviour
     {
         _initialized = true;
         int roadAreaIndex = NavMesh.GetAreaFromName(_excludeArea);
-        // Road 영역을 제외한 전체 영역을 허용
         _walkableMask =
             roadAreaIndex >= 0 ? NavMesh.AllAreas & ~(1 << roadAreaIndex) : NavMesh.AllAreas;
 
@@ -242,16 +239,10 @@ public class CatMovement : MonoBehaviour
 
         float clipLength = _animator.GetCurrentAnimatorStateInfo(0).length;
 
-        yield return new WaitForSeconds(clipLength * 0.5f);
-
-        float dist = Vector3.Distance(transform.position, _player.transform.position);
-        if (dist <= _attackRadius)
-            _player.TakeDamage(_damage, cause);
-
-        yield return new WaitForSeconds(clipLength * 0.5f);
+        yield return new WaitForSeconds(clipLength);
 
         _agent.isStopped = false;
-        _currentAnim = string.Empty; // UpdateAnimation()이 강제로 재생 상태 복원하도록 초기화
+        _currentAnim = string.Empty;
         _isAttacking = false;
     }
 

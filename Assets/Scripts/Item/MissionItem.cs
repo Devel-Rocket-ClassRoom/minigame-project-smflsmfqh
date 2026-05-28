@@ -7,8 +7,11 @@ public class MissionItem : MonoBehaviour, IInteractive
     [SerializeField]
     private ItemData _itemData;
 
-    [HideInInspector] public bool IsPooled = false;
-    [HideInInspector] public float LifeTime = 0f;
+    [HideInInspector]
+    public bool IsPooled = false;
+
+    [HideInInspector]
+    public float LifeTime = 0f;
     public event Action<MissionItem> OnDeactivated;
 
     private PlayerMovement _playerMovement;
@@ -39,9 +42,8 @@ public class MissionItem : MonoBehaviour, IInteractive
             marker.type = MinimapMarker.MarkerType.Item;
         }
 
-        marker.colorOverride = _itemData.category == ItemCategory.Mission
-            ? Color.tomato
-            : Color.magenta;
+        marker.colorOverride =
+            _itemData.category == ItemCategory.Mission ? Color.tomato : Color.magenta;
     }
 
     private void OnEnable()
@@ -71,7 +73,7 @@ public class MissionItem : MonoBehaviour, IInteractive
         {
             effect.Apply(player);
             _camera.TriggerReactionCut(0.6f);
-            //_playerMovement.SetFaceHappy();
+            _playerMovement.SetFaceHappy();
 
             Debug.Log($"[아이템 효과 발동] 아이템: {_itemData.itemName}");
         }

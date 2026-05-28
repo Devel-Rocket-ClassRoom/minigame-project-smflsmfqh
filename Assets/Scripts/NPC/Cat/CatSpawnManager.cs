@@ -31,7 +31,6 @@ public class CatSpawnManager : MonoBehaviour
                 var cat = Instantiate(_catPrefab, pos, Quaternion.identity);
                 cat.SetPlayer(_player);
                 _cats[i] = cat;
-                Debug.Log($"[고양이 스폰] {pos}에 {i}번째 고양이 스폰 완료");
             }
         }
     }
