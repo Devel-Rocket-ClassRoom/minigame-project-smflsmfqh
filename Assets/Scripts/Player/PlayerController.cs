@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public static event Action OnMissionTogglePressed;
+    public event Action OnMissionTogglePressed;
     private PlayerHealth _ph;
     private PlayerMovement _pm;
     private PlayerInput _pi;

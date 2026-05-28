@@ -13,7 +13,7 @@ public class ProximityFeedback : MonoBehaviour
     [Header("카메라 흔들림")]
     [SerializeField]
     private FollowCamera _followCam;
-    public static event Action<float> OnIntensityChanged;
+    public event Action<float> OnIntensityChanged;
 
     public float Intensity { get; private set; }
     private GameObject[] _dangers = Array.Empty<GameObject>();

@@ -66,7 +66,6 @@ public class CatMovement : MonoBehaviour
     private bool _initialized;
     private bool _hasDestination = false;
     private string _currentAnim = string.Empty;
-    private CauseDeath cause = CauseDeath.Cat;
 
     private void Awake()
     {
