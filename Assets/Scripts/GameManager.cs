@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public int Score => _score;
 
     private bool _isPaused;
+    private float _playTime;
 
     [SerializeField]
     private PlayerHealth _playerHealth;
@@ -42,6 +43,12 @@ public class GameManager : MonoBehaviour
         _playerHealth.OnDied -= GameOver;
     }
 
+    private void Update()
+    {
+        if (!_isPaused)
+            _playTime += Time.deltaTime;
+    }
+
     public void AddScore(int amount)
     {
         _score += amount;
@@ -61,8 +68,7 @@ public class GameManager : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        int seconds = Mathf.RoundToInt(_angerSystem.Anger / _angerSystem.AngerPerSecond);
-        UIManager.Instance.ShowGameClear(seconds);
+        UIManager.Instance.ShowGameClear(Mathf.RoundToInt(_playTime));
     }
 
     public void Restart()
