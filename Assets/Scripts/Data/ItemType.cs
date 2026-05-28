@@ -4,4 +4,5 @@ public enum ItemCategory
 {
     Food,
     Mission,
+    Optional,
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class MinimapMarker : MonoBehaviour
 {
-    public enum MarkerType { Player, Destination, Shop, Item }
+    public enum MarkerType { Player, Destination, Shop, Item, Flower }
 
     [SerializeField] public MarkerType type = MarkerType.Item;
 
