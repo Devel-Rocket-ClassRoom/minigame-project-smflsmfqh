@@ -14,7 +14,7 @@ public class StringTableManager
     {
         _stringTable.Clear();
         _senderTable.Clear();
-        
+
         var lines = csv.text.Split('\n');
         for (int i = 1; i < lines.Length; i++)
         {
@@ -58,4 +58,9 @@ public class StringTableManager
         return (message, sender);
     }
 
+    public string GetAngerMessage(float thresholdPercent)
+    {
+        string key = $"ANGER_{(int)thresholdPercent}";
+        return _stringTable.TryGetValue(key, out var msg) ? msg : string.Empty;
+    }
 }
