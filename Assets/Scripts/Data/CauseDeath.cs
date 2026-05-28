@@ -4,4 +4,5 @@ public enum CauseDeath
     Cat,
     Car,
     Mission,
+    Anger,
 }

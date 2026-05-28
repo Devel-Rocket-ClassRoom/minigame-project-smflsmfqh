@@ -10,3 +10,8 @@ DEATH_MISSION_0,"The queen will not be pleased."
 MISSION_EGG,"Eggs. Store. Now. I'm not asking twice.",Honey
 MISSION_ICECREAM,"Ice cream. You know which one. Don't get the wrong kind.",Honey
 MISSION_PIZZA,"Daddy!! Can we have pizza tonight?? PLEASE PLEASE PLEASE",Kids
+ANGER_10,"Honey, don't forget to buy Eggs on your way home"
+ANGER_25,"You said 5 minutes. That was 45 minutes ago."
+ANGER_50,"Hello?? Did you get stepped on or something??"
+ANGER_75,"I'm not mad. I'm DONE. Get. Home. Now."
+ANGER_90,"...I'm packing a bag."

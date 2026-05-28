@@ -99,6 +99,8 @@ public class PlayerMovement : MonoBehaviour
     // --- 이벤트 관련 필드 ---
     public event Action<float> OnSprintChanged;
     public event Action<bool> OnSprintActive;
+    public event Action<float> OnRollChanged;
+    public event Action<bool> OnRollActive;
 
     // --- 외부 호출 가능 속성 필드 ---
     public float Yaw { get; private set; }
@@ -129,6 +131,8 @@ public class PlayerMovement : MonoBehaviour
     {
         OnSprintChanged?.Invoke(_sprintDuration / _sprintTotalTime);
         OnSprintActive?.Invoke(_isSprint);
+        OnRollChanged?.Invoke(1f);
+        OnRollActive?.Invoke(false);
     }
 
     private void FixedUpdate()
@@ -198,6 +202,9 @@ public class PlayerMovement : MonoBehaviour
                 }
                 break;
         }
+
+        float rollRatio = Mathf.Clamp01((Time.time - _lastRollTime) / _rollCoolDown);
+        OnRollChanged?.Invoke(rollRatio);
 
         if (_isSpeedBoost)
         {
@@ -333,6 +340,7 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator RollCoroutine()
     {
         _isRolling = true;
+        OnRollActive?.Invoke(true);
         _lastRollTime = Time.time;
         _playerHealth.SetInvincible(_rollDuration, "roll");
 
@@ -340,6 +348,8 @@ public class PlayerMovement : MonoBehaviour
 
         _rollCoroutine = null;
         _isRolling = false;
+        OnRollActive?.Invoke(false);
+
         Debug.Log($"[Roll] 롤 종료 t={Time.time:F3}");
     }
 
