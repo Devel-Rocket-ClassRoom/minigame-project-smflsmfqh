@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviour
     private PlayerHealth _playerHealth;
 
     [SerializeField]
+    private AngerSystem _angerSystem;
+
+    [SerializeField]
     private TextAsset _deathMessageCsv;
 
     private void Awake()
@@ -47,6 +50,8 @@ public class GameManager : MonoBehaviour
     public void GameOver(CauseDeath cause)
     {
         Debug.Log($"[게임 오버] {cause}가 죽임");
+        if (cause == CauseDeath.Mission || cause == CauseDeath.Anger)
+            Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         UIManager.Instance.ShowGameOver(cause);
@@ -56,12 +61,14 @@ public class GameManager : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        UIManager.Instance.ShowGameClear();
+        int seconds = Mathf.RoundToInt(_angerSystem.Anger / _angerSystem.AngerPerSecond);
+        UIManager.Instance.ShowGameClear(seconds);
     }
 
     public void Restart()
     {
         Debug.Log("[게임 오버] RESTART 버튼 눌림");
+        Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);

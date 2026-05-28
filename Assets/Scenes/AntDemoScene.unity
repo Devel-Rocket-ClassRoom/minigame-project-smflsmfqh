@@ -16410,6 +16410,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _playerHealth: {fileID: 845040383}
+  _angerSystem: {fileID: 1293676205}
   _deathMessageCsv: {fileID: 4900000, guid: 5635e3f410ac3bb418a081d05c2ffc06, type: 3}
 --- !u!114 &1293676205
 MonoBehaviour:
@@ -16423,7 +16424,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f54d1cf19da9fbb47b825a7fe17a08c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AngerSystem
-  _angerPerSecond: 0.5
+  _angerPerSecond: 10
   _missionReduction: 20
   _maxAnger: 200
 --- !u!1001 &1300897083

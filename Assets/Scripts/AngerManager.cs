@@ -12,10 +12,8 @@ public class AngerSystem : MonoBehaviour
     [SerializeField]
     private float _maxAnger = 200f;
 
-    // 게임 시작 시 순서대로 발화되는 인트로 메시지 키
     private readonly string[] _introKeys = { "ANGER_0", "ANGER_1", "ANGER_2" };
 
-    // 분노 게이지 % 임계값 기반 메시지 (0%는 인트로로 분리)
     private float[] _thresholds = { 10f, 25f, 50f, 75f, 90f };
 
     private float _currentAnger;
@@ -24,6 +22,7 @@ public class AngerSystem : MonoBehaviour
     private CauseDeath cause = CauseDeath.Anger;
 
     public float Anger => _currentAnger;
+    public float AngerPerSecond => _angerPerSecond;
     public event Action<float> OnAngerChanged;
     public event Action<(string, string)> OnMessasgeTriggered;
 
