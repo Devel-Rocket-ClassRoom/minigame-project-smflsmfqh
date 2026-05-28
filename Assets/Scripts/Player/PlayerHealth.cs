@@ -63,8 +63,6 @@ public class PlayerHealth : MonoBehaviour
                 _currentHealth = k_maxHealth;
             }
             OnHealthChanged?.Invoke(_currentHealth / k_maxHealth);
-
-            Debug.Log($"[Player Health] 체력 증가: {_addedHealth}, 현재 체력: {_currentHealth}");
         }
     }
 
@@ -82,7 +80,9 @@ public class PlayerHealth : MonoBehaviour
         }
         OnHealthChanged?.Invoke(_currentHealth / k_maxHealth);
 
-        Debug.Log($"[Player Health] 데미지 {causeDeath}가 줌, 데미지 입음: {damage}, 현재 체력: {_currentHealth}");
+        Debug.Log(
+            $"[Player Health] 데미지 {causeDeath}가 줌, 데미지 입음: {damage}, 현재 체력: {_currentHealth}"
+        );
 
         if (_currentHealth <= 0f)
         {
