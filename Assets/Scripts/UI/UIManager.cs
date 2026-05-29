@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -100,13 +99,17 @@ public class UIManager : MonoBehaviour
         _gameOverDescText.text = StringTableManager.Instance.GetDeathMessage(cause);
     }
 
-    public void ShowGameClear()
+    public void ShowGameClear(int angerSeconds)
     {
         Debug.Log(
             $"[UIManager] ShowGameClear 호출, _gameClearPanel null? {_gameClearPanel == null}"
         );
         SetPanel(_gameClearPanel, true);
-        __scoreText.text = $"SCORE: {GameManager.Instance.Score}";
+        int min = angerSeconds / 60;
+        int sec = angerSeconds % 60;
+        __scoreText.text = min > 0
+            ? $"Wife's Patience: {min}m {sec}s"
+            : $"Wife's Patience: {sec}s";
     }
 
     public void ShowHUD()
