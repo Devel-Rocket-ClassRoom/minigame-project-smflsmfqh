@@ -23,6 +23,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private Button _restartButton1;
+
     [SerializeField]
     private Button _exitButton1;
 
@@ -35,9 +36,9 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private Button _restartButton2;
+
     [SerializeField]
     private Button _exitButton2;
-
 
     // --- Pause UI용 ---
     [SerializeField]
@@ -48,6 +49,9 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private Button _exitButton3;
+
+    [SerializeField]
+    private ProximityPanelFeedbackUI _proximityPanelFeedbackUI;
 
     private void Awake()
     {
@@ -95,6 +99,8 @@ public class UIManager : MonoBehaviour
     {
         SetPanel(_hudPanel, false);
         SetPanel(_gameOverPanel, true);
+        if (_proximityPanelFeedbackUI != null)
+            _proximityPanelFeedbackUI.ForceHide();
 
         _gameOverDescText.text = StringTableManager.Instance.GetDeathMessage(cause);
     }
@@ -105,11 +111,11 @@ public class UIManager : MonoBehaviour
             $"[UIManager] ShowGameClear 호출, _gameClearPanel null? {_gameClearPanel == null}"
         );
         SetPanel(_gameClearPanel, true);
+        if (_proximityPanelFeedbackUI != null)
+            _proximityPanelFeedbackUI.ForceHide();
         int min = angerSeconds / 60;
         int sec = angerSeconds % 60;
-        __scoreText.text = min > 0
-            ? $"Wife's Patience: {min}m {sec}s"
-            : $"Wife's Patience: {sec}s";
+        __scoreText.text = min > 0 ? $"Wife's Patience: {min}m {sec}s" : $"Wife's Patience: {sec}s";
     }
 
     public void ShowHUD()
