@@ -10,10 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 37111890cfeaa0644a43268cd52b5757, type: 3}
-  m_Name: Market
+  m_Name: FruitStore
   m_EditorClassIdentifier: Assembly-CSharp::ShopData
-  shopName: Market
+  shopName: FruitStore
   dropItems:
-  - {fileID: 11400000, guid: 4d6b39e371641a049af920615b5cd0cc, type: 2}
-  - {fileID: 11400000, guid: 146526875f38345d19dc87756eb28226, type: 2}
-  - {fileID: 11400000, guid: 93d1674c77c46435d895250a1fc8ee55, type: 2}
+  - {fileID: 11400000, guid: 38985c95160e747589e3cb4e7fefe5a9, type: 2}
+  - {fileID: 11400000, guid: 95018dbb05d484f099c89365f4f0c89e, type: 2}

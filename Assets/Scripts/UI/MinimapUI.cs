@@ -28,6 +28,8 @@ public class MinimapUI : MonoBehaviour
 
     [SerializeField]
     private float _playerIconSize = 16f;
+    [SerializeField]
+    private float _flowerIconSize = 30f;
 
     [SerializeField]
     private float _shopIconSize = 40f;
@@ -124,6 +126,7 @@ public class MinimapUI : MonoBehaviour
             MinimapMarker.MarkerType.Player => _playerIconSize,
             MinimapMarker.MarkerType.Shop => _shopIconSize,
             MinimapMarker.MarkerType.Destination => _destinationIconSize,
+            MinimapMarker.MarkerType.Flower => _flowerIconSize,
             _ => _defaultIconSize,
         };
         var rt = go.GetComponent<RectTransform>();
