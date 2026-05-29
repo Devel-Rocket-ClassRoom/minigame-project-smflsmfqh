@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 37111890cfeaa0644a43268cd52b5757, type: 3}
-  m_Name: IceCreamCart
+  m_Name: IceCreamCart 1
   m_EditorClassIdentifier: Assembly-CSharp::ShopData
   shopName: IceCreamCart
   dropItems:
-  - {fileID: 11400000, guid: 3211da8cf3a8c5b4c8074228a3d1f5b5, type: 2}
+  - {fileID: 11400000, guid: a671839b19b305c46912b92c4d4085fc, type: 2}
