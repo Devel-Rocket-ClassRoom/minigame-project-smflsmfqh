@@ -54,4 +54,12 @@ public class ProximityPanelFeedbackUI : MonoBehaviour
             _panel.SetActive(false);
         }
     }
+
+    public void ForceHide()
+    {
+        _isInDanger = false;
+        _blinkTimer = 0f;
+        _panel.SetActive(false);
+        enabled = false;
+    }
 }

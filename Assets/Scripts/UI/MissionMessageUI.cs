@@ -7,12 +7,23 @@ using UnityEngine.UI;
 
 public class MissionMessageUI : MonoBehaviour
 {
-    [SerializeField] private Image _icon;
-    [SerializeField] private TextMeshProUGUI _senderName;
-    [SerializeField] private TextMeshProUGUI _message;
-    [SerializeField] private RectTransform _panel;
-    [SerializeField] private float _displayDuration = 7f;
-    [SerializeField] private AngerSystem _angerSystem;
+    [SerializeField]
+    private Image _icon;
+
+    [SerializeField]
+    private TextMeshProUGUI _senderName;
+
+    [SerializeField]
+    private TextMeshProUGUI _message;
+
+    [SerializeField]
+    private RectTransform _panel;
+
+    [SerializeField]
+    private float _displayDuration = 7f;
+
+    [SerializeField]
+    private AngerSystem _angerSystem;
 
     // 슬라이드 완료 직후 발화 — 미션 메시지일 때만 ItemData가 non-null
     public event Action<ItemData> OnSlidedIn;
@@ -68,13 +79,15 @@ public class MissionMessageUI : MonoBehaviour
     private void HandleMissionAssigned(ItemData itemData)
     {
         var (message, sender) = StringTableManager.Instance.GetMissionMessage(itemData.itemName);
-        if (string.IsNullOrEmpty(message)) return; // 버섯 등 메시지 없는 미션은 무시
+        if (string.IsNullOrEmpty(message))
+            return; // 버섯 등 메시지 없는 미션은 무시
         Enqueue(new MessageData(message, sender, itemData));
     }
 
     private void HandleHint(string message, string sender)
     {
-        if (string.IsNullOrEmpty(message)) return;
+        if (string.IsNullOrEmpty(message))
+            return;
         Enqueue(new MessageData(message, sender));
     }
 
@@ -116,7 +129,7 @@ public class MissionMessageUI : MonoBehaviour
             if (!string.IsNullOrEmpty(data.Sender))
                 _icon.sprite = Resources.Load<Sprite>(data.Sender);
 
-            yield return StartCoroutine(Slide(-_panelWidth, 0f, 0.3f));
+            yield return StartCoroutine(Slide(-_panelWidth, 10f, 0.3f));
             OnSlidedIn?.Invoke(data.Item);
             yield return new WaitForSeconds(_displayDuration);
             yield return StartCoroutine(Slide(0f, -_panelWidth, 0.3f));
