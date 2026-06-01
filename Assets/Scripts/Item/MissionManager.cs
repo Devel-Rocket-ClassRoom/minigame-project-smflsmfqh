@@ -13,10 +13,17 @@ public class MissionManager : MonoBehaviour
         public string csvKey;
     }
 
-    [SerializeField] private ItemData[] _missionPool;
-    [SerializeField] private float[] _unlockTimes = { 2f, 10f, 10f, 20f, 30f };
-    [SerializeField] private HintEntry[] _hints;
-    [SerializeField] private ItemData _optionalMission;
+    [SerializeField]
+    private ItemData[] _missionPool;
+
+    [SerializeField]
+    private float[] _unlockTimes = { 2f, 10f, 10f, 20f, 30f };
+
+    [SerializeField]
+    private HintEntry[] _hints;
+
+    [SerializeField]
+    private ItemData _optionalMission;
 
     public event Action<ItemData> OnMissionAssigned;
     public event Action<ItemData> OnMissionCompleted;
@@ -63,7 +70,8 @@ public class MissionManager : MonoBehaviour
             }
         }
 
-        if (_hints == null) return;
+        if (_hints == null)
+            return;
 
         for (int i = 0; i < _hints.Length; i++)
         {
@@ -95,11 +103,27 @@ public class MissionManager : MonoBehaviour
             }
         }
 
-        if (_optionalMission != null && _optionalUnlocked && !_optionalCompleted
-            && _optionalMission.itemName == itemName)
+        if (
+            _optionalMission != null
+            && _optionalUnlocked
+            && !_optionalCompleted
+            && _optionalMission.itemName == itemName
+        )
         {
             _optionalCompleted = true;
             OnMissionCompleted?.Invoke(_optionalMission);
         }
+    }
+
+    public bool IsMissionAssigned(string itemName)
+    {
+        for (int i = 0; i < _missionPool.Length; i++)
+        {
+            if (_missionPool[i].itemName == itemName)
+            {
+                return _assigned[i];
+            }
+        }
+        return false;
     }
 }
