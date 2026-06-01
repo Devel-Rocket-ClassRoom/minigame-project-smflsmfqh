@@ -15,5 +15,4 @@ MonoBehaviour:
   shopName: Market
   dropItems:
   - {fileID: 11400000, guid: 4d6b39e371641a049af920615b5cd0cc, type: 2}
-  - {fileID: 11400000, guid: 146526875f38345d19dc87756eb28226, type: 2}
   - {fileID: 11400000, guid: 93d1674c77c46435d895250a1fc8ee55, type: 2}

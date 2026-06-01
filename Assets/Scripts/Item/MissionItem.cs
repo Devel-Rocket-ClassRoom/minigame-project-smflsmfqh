@@ -60,8 +60,11 @@ public class MissionItem : MonoBehaviour, IInteractive
         if (IsPooled && LifeTime > 0f)
             _lifeTimer = StartCoroutine(AutoDeactivate());
 
-        if (_itemData != null && _itemData.category == ItemCategory.Optional
-            && MissionManager.Instance != null)
+        if (
+            _itemData != null
+            && _itemData.category == ItemCategory.Optional
+            && MissionManager.Instance != null
+        )
             MissionManager.Instance.OnOptionalMissionUnlocked += ShowOnMinimap;
     }
 
@@ -73,8 +76,11 @@ public class MissionItem : MonoBehaviour, IInteractive
             _lifeTimer = null;
         }
 
-        if (_itemData != null && _itemData.category == ItemCategory.Optional
-            && MissionManager.Instance != null)
+        if (
+            _itemData != null
+            && _itemData.category == ItemCategory.Optional
+            && MissionManager.Instance != null
+        )
             MissionManager.Instance.OnOptionalMissionUnlocked -= ShowOnMinimap;
     }
 
@@ -93,7 +99,10 @@ public class MissionItem : MonoBehaviour, IInteractive
     public void Interact(PlayerController player)
     {
         // Optional 미션은 독백(선택 미션 해제) 이후에만 픽업 가능
-        if (_itemData.category == ItemCategory.Optional && !MissionManager.Instance.IsOptionalUnlocked)
+        if (
+            _itemData.category == ItemCategory.Optional
+            && !MissionManager.Instance.IsOptionalUnlocked
+        )
             return;
 
         foreach (var effect in _itemData.effects)
