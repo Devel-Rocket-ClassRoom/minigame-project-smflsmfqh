@@ -15,4 +15,3 @@ MonoBehaviour:
   shopName: FruitStore
   dropItems:
   - {fileID: 11400000, guid: 38985c95160e747589e3cb4e7fefe5a9, type: 2}
-  - {fileID: 11400000, guid: 95018dbb05d484f099c89365f4f0c89e, type: 2}

@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ShopBuilding : MonoBehaviour
@@ -17,26 +19,124 @@ public class ShopBuilding : MonoBehaviour
     [SerializeField]
     private float _dropDistanceMax = 0.8f;
 
+    [Header("파티클")]
+    [SerializeField]
+    private ParticleSystem _spotParticle;
+
+    [Header("드랍 쿨타임")]
+    [SerializeField]
+    private float _cooldown = 3f;
+
+    private List<ItemData> _remainingItems = new();
+    private Collider _collider;
     private Vector3 _spawnPos;
+
+    private void Start()
+    {
+        _collider = GetComponent<Collider>();
+
+        if (_shopData.dropItems != null)
+            _remainingItems = new List<ItemData>(_shopData.dropItems);
+
+        if (MissionManager.Instance != null)
+            MissionManager.Instance.OnMissionAssigned += HandleMissionAssigned;
+
+        if (_spotParticle != null)
+        {
+            _spotParticle.transform.position = GetParticlePosition();
+            StopParticle();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (MissionManager.Instance != null)
+            MissionManager.Instance.OnMissionAssigned -= HandleMissionAssigned;
+    }
+
+    private void HandleMissionAssigned(ItemData data)
+    {
+        if (_spotParticle == null)
+            return;
+
+        if (_remainingItems.Exists(item => item.itemName == data.itemName))
+            PlayParticle();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player"))
             return;
 
-        if (_shopData.dropItems == null || _shopData.dropItems.Length == 0)
+        if (_remainingItems.Count == 0)
         {
-            Debug.LogWarning($"[ShopBuilding] {_shopData.shopName}: dropItems가 비어있습니다.");
+            Debug.LogWarning($"[ShopBuilding] {_shopData.shopName}: 드랍할 아이템이 없습니다.");
             return;
         }
 
-        ItemData selected = _shopData.dropItems[Random.Range(0, _shopData.dropItems.Length)];
+        ItemData selected = _remainingItems[Random.Range(0, _remainingItems.Count)];
+
+        if (
+            selected.category == ItemCategory.Mission
+            && (
+                MissionManager.Instance == null
+                || !MissionManager.Instance.IsMissionAssigned(selected.itemName)
+            )
+        )
+            return;
+
+        _remainingItems.Remove(selected);
+
         _spawnPos = GetFrontSpawnPosition();
         _spawnPos.y += selected.spawnHeightOffset;
         var rot = Quaternion.Euler(selected.spawnRotation);
         Instantiate(selected.dropPrefab, _spawnPos, rot);
 
-        Debug.Log($"[아이템 드랍] {_shopData.shopName}에서 {selected.itemName} 아이템 드랍!");
+        Debug.Log(
+            $"[아이템 드랍] {_shopData.shopName}에서 {selected.itemName} 드랍! (남은 아이템: {_remainingItems.Count}개)"
+        );
+
+        if (!HasAvailableItem() && _spotParticle != null)
+            StopParticle();
+
+        StartCoroutine(CooldownRoutine());
+    }
+
+    private IEnumerator CooldownRoutine()
+    {
+        _collider.enabled = false;
+        yield return new WaitForSeconds(_cooldown);
+
+        if (_remainingItems.Count > 0)
+            _collider.enabled = true;
+    }
+
+    private bool HasAvailableItem()
+    {
+        foreach (var item in _remainingItems)
+        {
+            if (item.category != ItemCategory.Mission)
+                return true;
+
+            if (
+                MissionManager.Instance != null
+                && MissionManager.Instance.IsMissionAssigned(item.itemName)
+            )
+                return true;
+        }
+
+        return false;
+    }
+
+    private void PlayParticle()
+    {
+        _spotParticle.gameObject.SetActive(true);
+        _spotParticle.Play();
+    }
+
+    private void StopParticle()
+    {
+        _spotParticle.gameObject.SetActive(false);
     }
 
     private Vector3 GetFrontSpawnPosition()
@@ -58,5 +158,27 @@ public class ShopBuilding : MonoBehaviour
             return hit.point + Vector3.up * 0.01f;
 
         return new Vector3(horizontal.x, 0.01f, horizontal.z);
+    }
+
+    private Vector3 GetParticlePosition()
+    {
+        var col = GetComponent<BoxCollider>();
+        if (col == null)
+            return transform.position;
+
+        Vector3 center = transform.TransformPoint(col.center);
+        Vector3 outDir = center - transform.position;
+        outDir.y = 0f;
+        outDir = outDir.sqrMagnitude > 0.001f ? outDir.normalized : transform.forward;
+
+        Vector3 scale = transform.lossyScale;
+        float edgeDist =
+            Mathf.Abs(Vector3.Dot(transform.right, outDir)) * col.size.x * Mathf.Abs(scale.x) * 0.5f
+            + Mathf.Abs(Vector3.Dot(transform.forward, outDir))
+                * col.size.z
+                * Mathf.Abs(scale.z)
+                * 0.5f;
+
+        return center + outDir * edgeDist;
     }
 }
