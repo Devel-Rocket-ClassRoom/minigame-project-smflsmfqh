@@ -102,7 +102,9 @@ public class UIManager : MonoBehaviour
         if (_proximityPanelFeedbackUI != null)
             _proximityPanelFeedbackUI.ForceHide();
 
-        _gameOverDescText.text = StringTableManager.Instance.GetDeathMessage(cause);
+        string deathMsg = StringTableManager.Instance.GetDeathMessage(cause);
+        Debug.Log($"[GameOver] Language={StringTableManager.Instance.CurrentLanguage}, cause={cause}, msg={deathMsg}");
+        _gameOverDescText.text = deathMsg;
     }
 
     public void ShowGameClear(int angerSeconds)
@@ -115,7 +117,11 @@ public class UIManager : MonoBehaviour
             _proximityPanelFeedbackUI.ForceHide();
         int min = angerSeconds / 60;
         int sec = angerSeconds % 60;
-        __scoreText.text = min > 0 ? $"Wife's Patience: {min}m {sec}s" : $"Wife's Patience: {sec}s";
+        string key = min > 0 ? "GAMECLEAR_SCORE_MINSEC" : "GAMECLEAR_SCORE_SEC";
+        string fmt = StringTableManager.Instance.GetMessage(key).message;
+        __scoreText.text = min > 0
+            ? string.Format(fmt, min, sec)
+            : string.Format(fmt, sec);
     }
 
     public void ShowHUD()

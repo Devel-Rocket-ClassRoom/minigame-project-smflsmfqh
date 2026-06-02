@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb367920387d6842b3db8d89e8cf8ed, type: 3}
   m_Name: VitaminDrink
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: VitaminDrink
+  itemName: ENERGYDRINK
   dropPrefab: {fileID: 3808343180948403019, guid: ed42dababd733cf4e88fe42383aab1d7, type: 3}
   category: 1
   effects:

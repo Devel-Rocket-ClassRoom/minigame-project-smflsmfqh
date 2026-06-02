@@ -30,14 +30,9 @@ TUT_CAT_WARNING,"...Is that a cat?! [C]!! DODGE!!",Me
 TUT_ITEM_GLOW,"That glowing spot — that's where it drops. Go.",Me
 TUT_ITEM_PICKUP,"Almost there... [E]. Just press [E].",Me
 
-// ── 위험 경고 (아내, 화난 톤) ──────────────────────────────
-TUT_WIFE_FEET,"And watch where you're going. One wrong step out there and that's it.",Honey♥
-TUT_WIFE_CAT,"There are strays around the market. Don't do anything stupid.",Honey♥
-TUT_WIFE_CAR,"Cross the road properly. I'm not identifying a body today.",Honey♥
-
 // ── PHARMACY (자가 독백) ────────────────────────────────
-MONOLOGUE_PHARMACY_0,"...I feel terrible. I need something for this headache.",Me
-MISSION_VitaminDrink,"Pharmacy first. Then home.",Me
+MONOLOGUE_ENERGYDRINK,"...I feel terrible. I need something for this headache.",Me
+MISSION_ENERGYDRINK,"Pharmacy first. Then home.",Me
 
 // ── MISSIONS ──────────────────────────────────────────
 MISSION_AVOCADO,"Avocado. Fruit stall. Don't get a bruised one.",Honey♥

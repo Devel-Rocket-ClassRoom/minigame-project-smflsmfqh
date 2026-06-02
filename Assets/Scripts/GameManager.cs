@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     private AngerSystem _angerSystem;
 
     [SerializeField]
-    private TextAsset _deathMessageCsv;
+    private Language _language = Language.En;
 
     private void Awake()
     {
@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
         _score = 0;
 
-        StringTableManager.Instance.Load(_deathMessageCsv);
+        StringTableManager.Instance.SetLanguage(_language);
     }
 
     private void OnEnable()
@@ -47,6 +47,14 @@ public class GameManager : MonoBehaviour
     {
         if (!_isPaused)
             _playTime += Time.deltaTime;
+
+#if UNITY_EDITOR
+        if (UnityEngine.InputSystem.Keyboard.current.f2Key.wasPressedThisFrame)
+        {
+            MissionManager.Instance.DebugCompleteAll();
+            Debug.Log("[Debug] 모든 미션 즉시 완료");
+        }
+#endif
     }
 
     public void AddScore(int amount)

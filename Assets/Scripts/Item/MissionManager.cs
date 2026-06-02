@@ -20,6 +20,17 @@ public class MissionManager : MonoBehaviour
         public ItemData[] candidates;
     }
 
+    [Serializable]
+    private struct PreMonologueEntry
+    {
+        public string itemName;
+        public string csvKey;
+    }
+
+    [Header("인트로 독백")]
+    [SerializeField]
+    private PreMonologueEntry[] _preMonologues;
+
     [Header("고정 미션 (약국, 아이스크림)")]
     [SerializeField]
     private ItemData[] _fixedMissions;
@@ -162,6 +173,15 @@ public class MissionManager : MonoBehaviour
             if (!_assigned[i] && _elapsedTime >= _unlockTimes[i])
             {
                 _assigned[i] = true;
+                string preKey = StringTableManager.Instance.GetPreMonologueKey(
+                    _missionPool[i].itemName
+                );
+                if (!string.IsNullOrEmpty(preKey))
+                {
+                    var (msg, sender) = StringTableManager.Instance.GetMessage(preKey);
+                    if (!string.IsNullOrEmpty(msg))
+                        OnHintAssigned?.Invoke(msg, sender);
+                }
                 OnMissionAssigned?.Invoke(_missionPool[i]);
             }
         }
@@ -236,4 +256,33 @@ public class MissionManager : MonoBehaviour
 
         return false;
     }
+
+#if UNITY_EDITOR
+    public void DebugCompleteAll()
+    {
+        // 보너스 제외 미할당 미션 즉시 할당
+        for (int i = 0; i < _missionPool.Length; i++)
+        {
+            if (!_assigned[i] && i != _bonusIdx)
+            {
+                _assigned[i] = true;
+                OnMissionAssigned?.Invoke(_missionPool[i]);
+            }
+        }
+        // 일반 미션 완료 — 내부에서 TryTriggerBonus 호출됨
+        for (int i = 0; i < _missionPool.Length; i++)
+        {
+            if (_assigned[i] && !_completed[i] && i != _bonusIdx)
+                ReportCollected(_missionPool[i].itemName);
+        }
+        // 보너스 미션 강제 할당 후 완료
+        if (_bonusIdx >= 0 && !_assigned[_bonusIdx])
+        {
+            _assigned[_bonusIdx] = true;
+            OnMissionAssigned?.Invoke(_missionPool[_bonusIdx]);
+        }
+        if (_bonusIdx >= 0 && !_completed[_bonusIdx])
+            ReportCollected(_missionPool[_bonusIdx].itemName);
+    }
+#endif
 }
