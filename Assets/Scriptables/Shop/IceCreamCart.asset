@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37111890cfeaa0644a43268cd52b5757, type: 3}
   m_Name: IceCreamCart
   m_EditorClassIdentifier: Assembly-CSharp::ShopData
-  shopName: IceCreamCart
+  shopName: ICECREAMCART
   dropItems:
   - {fileID: 11400000, guid: 3211da8cf3a8c5b4c8074228a3d1f5b5, type: 2}

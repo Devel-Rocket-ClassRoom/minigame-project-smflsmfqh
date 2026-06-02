@@ -1,0 +1,64 @@
+Key,Text,Sender,ImageKey
+
+// -- DEATH -------------------------------------------------------
+DEATH_NPC_0,"Crushed underfoot. They didn't even notice.",
+DEATH_NPC_1,"One careless step. That's all it took.",
+DEATH_NPC_2,"You were in the wrong place at the wrong foot.",
+DEATH_CAT_0,"The cat was just playing. You were not.",
+DEATH_CAT_1,"To it, you were a toy. Game over.",
+DEATH_CAT_2,"The cat was bored. You paid the price.",
+DEATH_CAR_0,"The driver didn't even brake.",
+DEATH_MISSION_0,"The queen will not be pleased.",
+DEATH_ANGER_0,"The bag is packed. The door is locked. Game over.",
+
+// -- OPENING / ANGER ---------------------------------------------
+ANGER_0,"Where did you sleep last night?? ...You know what fine.",Honey♥,Honey♥
+ANGER_1,"Since you're already out there you better pick some things up on the way home.",Honey♥,Honey♥
+ANGER_2,"I'm sending you the list.",Honey♥,Honey♥
+ANGER_10,"Still not here?? It's packed out there watch those feet and hurry up.",Honey♥,Honey♥
+ANGER_25,"You said 5 minutes. That was 45 minutes ago.",Honey♥,Honey♥
+ANGER_50,"Hello?? Did you get stepped on or something??",Honey♥,Honey♥
+ANGER_75,"I'm not mad. I'm DONE. Get. Home. Now.",Honey♥,Honey♥
+ANGER_90,"...I'm packing a bag.",Honey♥,Honey♥
+
+// -- TUTORIAL ----------------------------------------------------
+TUT_ARROW,"Okay... there's an arrow. Just follow the arrow. I can do this.",Me,Me
+TUT_MINIMAP,"Wait the map. The shop should be marked. Focus.",Me,Me
+TUT_TOGGLE,"Right the list. [TAB] don't forget the list.",Me,Me
+TUT_CONTROLS,"Okay. Jump if I have to. [SPACE]. Sprint if it's bad. [SHIFT]. And if something's coming roll. [R]. Got it.",Me,Me
+TUT_CAT_WARNING,"...Is that a cat?! [C]!! DODGE!!",Me,Me
+TUT_ITEM_GLOW,"That glowing spot that's where it drops. Go.",Me,Me
+TUT_ITEM_PICKUP,"Almost there... [E]. Just press [E].",Me,Me
+
+// -- PHARMACY ----------------------------------------------------
+MONOLOGUE_ENERGYDRINK,"...I feel terrible. I need something for this headache.",Me,Me
+MISSION_ENERGYDRINK,"Pharmacy first. Then home.",Me,Me
+
+// -- MISSIONS ----------------------------------------------------
+MISSION_AVOCADO,"Avocado. Fruit stall. Don't get a bruised one.",Honey♥,Honey♥
+MISSION_BANANA,"Grab a banana. Don't forget.",Honey♥,Honey♥
+MISSION_EGG,"Eggs. From the mart. Don't get cracked ones.",Honey♥,Honey♥
+MISSION_MUSHROOM,"Oh mushrooms. The Mart. Go.",Honey♥,Honey♥
+MISSION_PIZZA,"Daddy!! Can we have pizza?? PLEASE PLEASE PLEASE!!",Kids,Kids
+MISSION_DONUT,"Daaaddy... donuts... pleeeease?? We'll be super good we promise!!",Kids,Kids
+MISSION_ICECREAM,"Ice cream. You know which one. Don't get the wrong kind.",Honey♥,Honey♥
+HINT_ICECREAM,"Oh! The ice cream Mom likes it's from the guy in the PINK HAT at the shop!!",Kids,Kids
+
+// -- MONOLOGUE ---------------------------------------------------
+MONOLOGUE_HOME,"Alright... time to head home.",Me,Me
+MONOLOGUE_WAIT,"...Oh wait.",Me,Me
+MONOLOGUE_FLOWER,"...She always loved those flowers. Maybe it'll calm her down.",Me,Me
+
+// -- ITEM DISPLAY NAMES ------------------------------------------
+ITEM_AVOCADO,"Avocado",
+ITEM_BANANA,"Banana",
+ITEM_DONUT,"Donut",
+ITEM_ICECREAM,"Ice Cream",
+ITEM_EGG,"Egg",
+ITEM_MUSHROOM,"Mushroom",
+ITEM_FLOWER,"Bouquet",
+ITEM_ENERGYDRINK,"Energy Drink",
+ITEM_PIZZA,"Pizza",
+// -- GAME CLEAR --------------------------------------------------
+GAMECLEAR_SCORE_MINSEC,"Wife's Patience: {0}m {1}s",
+GAMECLEAR_SCORE_SEC,"Wife's Patience: {0}s",

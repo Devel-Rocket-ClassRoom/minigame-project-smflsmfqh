@@ -80,7 +80,7 @@ public class MissionMessageUI : MonoBehaviour
     {
         var (message, sender) = StringTableManager.Instance.GetMissionMessage(itemData.itemName);
         if (string.IsNullOrEmpty(message))
-            return; // 버섯 등 메시지 없는 미션은 무시
+            return;
         Enqueue(new MessageData(message, sender, itemData));
     }
 
@@ -127,7 +127,10 @@ public class MissionMessageUI : MonoBehaviour
             _message.text = data.Message;
             _senderName.text = data.Sender;
             if (!string.IsNullOrEmpty(data.Sender))
-                _icon.sprite = Resources.Load<Sprite>(data.Sender);
+            {
+                string imageKey = StringTableManager.Instance.GetImageKeyBySender(data.Sender);
+                _icon.sprite = Resources.Load<Sprite>(imageKey);
+            }
 
             yield return StartCoroutine(Slide(-_panelWidth, 10f, 0.3f));
             OnSlidedIn?.Invoke(data.Item);

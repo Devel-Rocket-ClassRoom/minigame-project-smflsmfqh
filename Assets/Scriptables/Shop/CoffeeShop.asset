@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37111890cfeaa0644a43268cd52b5757, type: 3}
   m_Name: CoffeeShop
   m_EditorClassIdentifier: Assembly-CSharp::ShopData
-  shopName: CoffeeShop
+  shopName: COFFEESHOP
   dropItems:
   - {fileID: 11400000, guid: 3aca1ece8082c0648805a61240ab5347, type: 2}

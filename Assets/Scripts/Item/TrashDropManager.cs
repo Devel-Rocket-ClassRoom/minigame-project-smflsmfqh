@@ -8,6 +8,9 @@ public class TrashDropManager : MonoBehaviour
     [SerializeField]
     private float _itemLifeTime = 20f;
 
+    [SerializeField]
+    private ParticleSystem _groundParticlePrefab;
+
     private readonly Dictionary<ItemData, Stack<MissionItem>> _pool = new();
 
     private void Awake()
@@ -57,6 +60,9 @@ public class TrashDropManager : MonoBehaviour
         item.IsPooled = true;
         item.LifeTime = _itemLifeTime;
         item.OnDeactivated += (mi) => ReturnToPool(data, mi);
+
+        if (_groundParticlePrefab != null)
+            Instantiate(_groundParticlePrefab, go.transform);
 
         go.SetActive(false);
         return item;
