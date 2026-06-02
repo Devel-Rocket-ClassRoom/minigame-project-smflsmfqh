@@ -18,7 +18,7 @@ public class MissionEntryUI : MonoBehaviour
     public void Init(ItemData item)
     {
         _item = item;
-        _missionNameText.text = item.itemName;
+        _missionNameText.text = StringTableManager.Instance.GetItemDisplayName(item.itemName);
         _checkIcon.gameObject.SetActive(true);
         _strikeThrough.SetActive(false);
     }
