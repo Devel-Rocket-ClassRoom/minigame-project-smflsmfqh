@@ -7,6 +7,9 @@ public class MissionItem : MonoBehaviour, IInteractive
     [SerializeField]
     private ItemData _itemData;
 
+    [SerializeField]
+    private ParticleSystem _optionalParticle; // 선택 미션 입수 시 발동
+
     [HideInInspector]
     public bool IsPooled = false;
 
@@ -27,6 +30,9 @@ public class MissionItem : MonoBehaviour, IInteractive
 
         if (_itemData != null)
             SetupMinimapMarker();
+
+        if (_itemData != null && _itemData.category == ItemCategory.Optional && _optionalParticle != null)
+            _optionalParticle.gameObject.SetActive(false);
     }
 
     public void Init(ItemData data)
@@ -37,6 +43,9 @@ public class MissionItem : MonoBehaviour, IInteractive
 
     private void SetupMinimapMarker()
     {
+        if (_itemData.category == ItemCategory.Food)
+            return;
+
         if (!TryGetComponent(out _minimapMarker))
         {
             _minimapMarker = gameObject.AddComponent<MinimapMarker>();
@@ -50,7 +59,6 @@ public class MissionItem : MonoBehaviour, IInteractive
             _ => Color.magenta,
         };
 
-        // Optional 아이템은 미션 해제 전까지 미니맵에 표시하지 않음
         if (_itemData.category == ItemCategory.Optional)
             _minimapMarker.enabled = false;
     }
@@ -65,7 +73,7 @@ public class MissionItem : MonoBehaviour, IInteractive
             && _itemData.category == ItemCategory.Optional
             && MissionManager.Instance != null
         )
-            MissionManager.Instance.OnOptionalMissionUnlocked += ShowOnMinimap;
+            MissionManager.Instance.OnMissionDisplayed += HandleOptionalDisplayed;
     }
 
     private void OnDisable()
@@ -81,13 +89,36 @@ public class MissionItem : MonoBehaviour, IInteractive
             && _itemData.category == ItemCategory.Optional
             && MissionManager.Instance != null
         )
-            MissionManager.Instance.OnOptionalMissionUnlocked -= ShowOnMinimap;
+            MissionManager.Instance.OnMissionDisplayed -= HandleOptionalDisplayed;
+
+        if (_optionalParticle != null)
+            _optionalParticle.Stop();
     }
 
-    private void ShowOnMinimap()
+    private void HandleOptionalDisplayed(ItemData item)
     {
+        Debug.Log($"[Flower] HandleOptionalDisplayed: item={item?.itemName ?? "NULL"}, _itemData={_itemData?.itemName ?? "NULL"}, particle={_optionalParticle != null}");
+        if (item == null || item.itemName != _itemData.itemName)
+            return;
+
         if (_minimapMarker != null)
+        {
             _minimapMarker.enabled = true;
+            MinimapUI.Instance?.PingMarker(_minimapMarker);
+        }
+
+        if (_optionalParticle != null)
+        {
+            _optionalParticle.gameObject.SetActive(true);
+            _optionalParticle.Play();
+            Debug.Log("[Flower] 파티클 Play 호출");
+        }
+        else
+        {
+            Debug.LogWarning("[Flower] _optionalParticle이 null — Inspector에서 연결 확인");
+        }
+
+        MissionManager.Instance.OnMissionDisplayed -= HandleOptionalDisplayed;
     }
 
     private IEnumerator AutoDeactivate()

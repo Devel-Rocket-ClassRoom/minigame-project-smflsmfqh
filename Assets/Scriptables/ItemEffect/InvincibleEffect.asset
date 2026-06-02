@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04410124d7adc784ba9ec29276d05702, type: 3}
   m_Name: InvincibleEffect
   m_EditorClassIdentifier: Assembly-CSharp::InvincibleEffectSO
-  _duration: 10
+  _duration: 15

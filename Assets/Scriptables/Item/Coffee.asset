@@ -16,4 +16,6 @@ MonoBehaviour:
   dropPrefab: {fileID: 828334971150611086, guid: 979cec6c5b28f5844bd1fad8e2e19c96, type: 3}
   category: 0
   effects:
-  - {fileID: 11400000, guid: 21325cf8a2de78845bfb7638d69092ef, type: 2}
+  - {fileID: 11400000, guid: dda4bf8720dab174a9b4e38f295c6d49, type: 2}
+  spawnHeightOffset: 0
+  spawnRotation: {x: 0, y: 0, z: 0}

@@ -17,3 +17,6 @@ MonoBehaviour:
   category: 0
   effects:
   - {fileID: 11400000, guid: 82e79396c6adfb34cb62aecded9f141e, type: 2}
+  - {fileID: 11400000, guid: 21325cf8a2de78845bfb7638d69092ef, type: 2}
+  spawnHeightOffset: 0
+  spawnRotation: {x: 0, y: 0, z: 0}

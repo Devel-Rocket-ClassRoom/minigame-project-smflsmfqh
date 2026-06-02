@@ -35,6 +35,9 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI __scoreText;
 
     [SerializeField]
+    private TextMeshProUGUI _clearTaglineText;
+
+    [SerializeField]
     private Button _restartButton2;
 
     [SerializeField]
@@ -72,22 +75,21 @@ public class UIManager : MonoBehaviour
 
         SetPanel(_gameOverPanel, false);
         SetPanel(_gameClearPanel, false);
-        SetPanel(_missionCheckListUI, false);
         SetPanel(_pausePanel, false);
 
-        MissionManager.Instance.OnMissionAssigned += EnableMissionCheckListUI;
+        MissionManager.Instance.OnMissionDisplayed += EnableMissionCheckListUI;
     }
 
     private void OnDestroy()
     {
         if (MissionManager.Instance != null)
-            MissionManager.Instance.OnMissionAssigned -= EnableMissionCheckListUI;
+            MissionManager.Instance.OnMissionDisplayed -= EnableMissionCheckListUI;
     }
 
     private void EnableMissionCheckListUI(ItemData _)
     {
         SetPanel(_missionCheckListUI, true);
-        MissionManager.Instance.OnMissionAssigned -= EnableMissionCheckListUI;
+        MissionManager.Instance.OnMissionDisplayed -= EnableMissionCheckListUI;
     }
 
     private void Start()
@@ -122,6 +124,9 @@ public class UIManager : MonoBehaviour
         __scoreText.text = min > 0
             ? string.Format(fmt, min, sec)
             : string.Format(fmt, sec);
+
+        if (_clearTaglineText != null)
+            _clearTaglineText.text = StringTableManager.Instance.GetMessage("GAMECLEAR_TAGLINE").message;
     }
 
     public void ShowHUD()

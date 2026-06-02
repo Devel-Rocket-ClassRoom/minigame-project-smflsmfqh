@@ -62,9 +62,12 @@ public class MissionManager : MonoBehaviour
     private ItemData _optionalMission;
 
     public event Action<ItemData> OnMissionAssigned;
+    public event Action<ItemData> OnMissionDisplayed;
     public event Action<ItemData> OnMissionCompleted;
     public event Action<string, string> OnHintAssigned;
     public event Action OnOptionalMissionUnlocked;
+
+    public void NotifyMissionDisplayed(ItemData item) => OnMissionDisplayed?.Invoke(item);
 
     private float _elapsedTime;
     private ItemData[] _missionPool;
@@ -258,6 +261,15 @@ public class MissionManager : MonoBehaviour
     }
 
 #if UNITY_EDITOR
+    public void DebugUnlockOptional()
+    {
+        if (_optionalMission == null || _optionalUnlocked)
+            return;
+        _optionalUnlocked = true;
+        OnOptionalMissionUnlocked?.Invoke();
+        NotifyMissionDisplayed(_optionalMission);
+    }
+
     public void DebugCompleteAll()
     {
         // 보너스 제외 미할당 미션 즉시 할당

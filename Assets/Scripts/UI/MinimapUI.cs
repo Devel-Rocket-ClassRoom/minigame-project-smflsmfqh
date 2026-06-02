@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -168,6 +169,27 @@ public class MinimapUI : MonoBehaviour
             Mathf.Clamp(u * _mapPanel.rect.width, -halfW, halfW),
             Mathf.Clamp(v * _mapPanel.rect.height, -halfH, halfH)
         );
+    }
+
+    public void PingMarker(MinimapMarker marker)
+    {
+        if (!_icons.TryGetValue(marker, out var rt))
+            return;
+
+        rt.DOKill();
+        rt.localScale = Vector3.one;
+        rt.DOScale(Vector3.one * 1.5f, 0.4f)
+          .SetLoops(-1, LoopType.Yoyo)
+          .SetEase(Ease.InOutSine);
+    }
+
+    public void StopPingMarker(MinimapMarker marker)
+    {
+        if (!_icons.TryGetValue(marker, out var rt))
+            return;
+
+        rt.DOKill();
+        rt.localScale = Vector3.one;
     }
 
     private Color ResolveColor(MinimapMarker marker)
