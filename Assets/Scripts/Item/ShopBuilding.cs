@@ -25,16 +25,19 @@ public class ShopBuilding : MonoBehaviour
 
     [Header("드랍 쿨타임")]
     [SerializeField]
-    private float _cooldown = 3f;
+    private float _cooldown = 10f;
+    [SerializeField]
+    private float _foodCooldown = 5f;
+    private bool _isCooldown;
+
+    public float ItemCoolDown => _cooldown;
 
     private List<ItemData> _remainingItems = new();
-    private Collider _collider;
     private Vector3 _spawnPos;
+    private Coroutine _cooldownCo;
 
     private void Start()
     {
-        _collider = GetComponent<Collider>();
-
         if (_shopData.dropItems != null)
             _remainingItems = new List<ItemData>(_shopData.dropItems);
 
@@ -44,7 +47,10 @@ public class ShopBuilding : MonoBehaviour
         if (_spotParticle != null)
         {
             _spotParticle.transform.position = GetParticlePosition();
-            StopParticle();
+            if (HasFoodItem())
+                PlayParticle();
+            else
+                StopParticle();
         }
     }
 
@@ -58,14 +64,20 @@ public class ShopBuilding : MonoBehaviour
     {
         if (_spotParticle == null)
             return;
+            
+        if (_isCooldown == true)
+            StopParticle();
 
-        if (_remainingItems.Exists(item => item.itemName == data.itemName))
+        if (_remainingItems.Exists(item => item.itemName == data.itemName) && _isCooldown == false)
             PlayParticle();
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player"))
+            return;
+
+        if (_isCooldown)
             return;
 
         if (_remainingItems.Count == 0)
@@ -96,19 +108,35 @@ public class ShopBuilding : MonoBehaviour
             $"[아이템 드랍] {_shopData.shopName}에서 {selected.itemName} 드랍! (남은 아이템: {_remainingItems.Count}개)"
         );
 
-        if (!HasAvailableItem() && _spotParticle != null)
+        if (_spotParticle != null)
             StopParticle();
 
-        StartCoroutine(CooldownRoutine());
+        if (_cooldownCo != null)
+            StopCoroutine(_cooldownCo);
+
+        float cooldown = selected.category == ItemCategory.Mission ? _cooldown : _foodCooldown;
+        _cooldownCo = StartCoroutine(CooldownRoutine(cooldown, selected));
     }
 
-    private IEnumerator CooldownRoutine()
+    private IEnumerator CooldownRoutine(float cooldown, ItemData dropped)
     {
-        _collider.enabled = false;
-        yield return new WaitForSeconds(_cooldown);
+        _isCooldown = true;
+        yield return new WaitForSeconds(cooldown);
+        _isCooldown = false;
 
-        if (_remainingItems.Count > 0)
-            _collider.enabled = true;
+        if (dropped.category != ItemCategory.Mission)
+            _remainingItems.Add(dropped);
+
+        if (HasAvailableItem())
+        {
+            if (_spotParticle != null)
+                PlayParticle();
+        }
+    }
+
+    private bool HasFoodItem()
+    {
+        return _remainingItems.Exists(item => item.category != ItemCategory.Mission);
     }
 
     private bool HasAvailableItem()
