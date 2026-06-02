@@ -32,6 +32,10 @@ public class ShopBuilding : MonoBehaviour
 
     [SerializeField]
     private float _foodCooldown = 5f;
+
+    [SerializeField]
+    private CooldownBarUI _cooldownBar;
+
     private bool _isCooldown;
 
     public float ItemCoolDown => _cooldown;
@@ -46,7 +50,10 @@ public class ShopBuilding : MonoBehaviour
             _remainingItems = new List<ItemData>(_shopData.dropItems);
 
         if (MissionManager.Instance != null)
+        {
             MissionManager.Instance.OnMissionAssigned += HandleMissionAssigned;
+            MissionManager.Instance.OnMissionDisplayed += HandleMissionDisplayed;
+        }
 
         if (_spotParticle != null)
         {
@@ -56,24 +63,37 @@ public class ShopBuilding : MonoBehaviour
             else
                 StopParticle();
         }
+
     }
 
     private void OnDestroy()
     {
         if (MissionManager.Instance != null)
+        {
             MissionManager.Instance.OnMissionAssigned -= HandleMissionAssigned;
+            MissionManager.Instance.OnMissionDisplayed -= HandleMissionDisplayed;
+        }
     }
 
     private void HandleMissionAssigned(ItemData data)
     {
-        if (_spotParticle == null)
+        if (!_remainingItems.Exists(item => item.itemName == data.itemName))
             return;
 
-        if (_isCooldown == true)
+        if (_spotParticle != null && _isCooldown)
             StopParticle();
+    }
 
-        if (_remainingItems.Exists(item => item.itemName == data.itemName) && _isCooldown == false)
+    private void HandleMissionDisplayed(ItemData data)
+    {
+        if (!_remainingItems.Exists(item => item.itemName == data.itemName))
+            return;
+
+        if (_spotParticle != null && !_isCooldown)
             PlayParticle();
+
+        if (TryGetComponent(out MinimapMarker marker))
+            MinimapUI.Instance?.PingMarker(marker);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -117,6 +137,9 @@ public class ShopBuilding : MonoBehaviour
         if (_spotParticle != null)
             StopParticle();
 
+        if (TryGetComponent(out MinimapMarker marker))
+            MinimapUI.Instance?.StopPingMarker(marker);
+
         if (_cooldownCo != null)
             StopCoroutine(_cooldownCo);
 
@@ -127,17 +150,24 @@ public class ShopBuilding : MonoBehaviour
     private IEnumerator CooldownRoutine(float cooldown, ItemData dropped)
     {
         _isCooldown = true;
-        yield return new WaitForSeconds(cooldown);
+        _cooldownBar?.Show();
+
+        float elapsed = 0f;
+        while (elapsed < cooldown)
+        {
+            elapsed += Time.deltaTime;
+            _cooldownBar?.SetFill(elapsed / cooldown);
+            yield return null;
+        }
+
+        _cooldownBar?.Hide();
         _isCooldown = false;
 
         if (dropped.category != ItemCategory.Mission)
             _remainingItems.Add(dropped);
 
-        if (HasAvailableItem())
-        {
-            if (_spotParticle != null)
-                PlayParticle();
-        }
+        if (HasAvailableItem() && _spotParticle != null)
+            PlayParticle();
     }
 
     private bool HasFoodItem()

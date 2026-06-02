@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: SpeedBoostEffect
   m_EditorClassIdentifier: Assembly-CSharp::SpeedBoostEffectSO
   _speed: 2.5
-  _duration: 20
+  _duration: 5
