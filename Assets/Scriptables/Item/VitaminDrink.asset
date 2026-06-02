@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: VitaminDrink
   dropPrefab: {fileID: 3808343180948403019, guid: ed42dababd733cf4e88fe42383aab1d7, type: 3}
-  category: 0
+  category: 1
   effects:
   - {fileID: 11400000, guid: ba45f4a0a6b423c4395ec6341441ea7c, type: 2}
   - {fileID: 11400000, guid: 2819e375d9176da498606df8ac320d76, type: 2}
   - {fileID: 11400000, guid: dda4bf8720dab174a9b4e38f295c6d49, type: 2}
+  spawnHeightOffset: 0
+  spawnRotation: {x: 0, y: 0, z: 0}

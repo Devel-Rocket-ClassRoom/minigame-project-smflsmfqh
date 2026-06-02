@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [DefaultExecutionOrder(-1)]
@@ -13,15 +14,39 @@ public class MissionManager : MonoBehaviour
         public string csvKey;
     }
 
+    [Serializable]
+    private struct RandomMissionGroup
+    {
+        public ItemData[] candidates;
+    }
+
+    [Header("고정 미션 (약국, 아이스크림)")]
     [SerializeField]
-    private ItemData[] _missionPool;
+    private ItemData[] _fixedMissions;
 
     [SerializeField]
-    private float[] _unlockTimes = { 2f, 10f, 10f, 20f, 30f };
+    private float[] _fixedUnlockTimes;
 
+    [Header("랜덤 미션 그룹 (A: 아보카도/바나나  B: 달걀/버섯  C: 피자/도넛)")]
+    [SerializeField]
+    private RandomMissionGroup[] _randomGroups;
+
+    [Tooltip("랜덤 그룹 수만큼 입력 — 셔플되어 각 그룹에 배분됨")]
+    [SerializeField]
+    private float[] _randomUnlockTimes;
+
+    [Header("추가 미션 — A·B 중 랜덤 그룹의 탈락 후보")]
+    [SerializeField]
+    private int _bonusTriggerCount = 2;
+
+    [SerializeField]
+    private float _bonusDelay = 30f;
+
+    [Header("힌트")]
     [SerializeField]
     private HintEntry[] _hints;
 
+    [Header("히든 미션 (꽃)")]
     [SerializeField]
     private ItemData _optionalMission;
 
@@ -31,12 +56,18 @@ public class MissionManager : MonoBehaviour
     public event Action OnOptionalMissionUnlocked;
 
     private float _elapsedTime;
+    private ItemData[] _missionPool;
+    private float[] _unlockTimes;
     private bool[] _assigned;
     private bool[] _completed;
     private bool[] _hintTriggered;
     private int _completedCount;
     private bool _optionalUnlocked;
     private bool _optionalCompleted;
+
+    // 보너스 미션은 _missionPool에 포함, 인덱스만 기록
+    private int _bonusIdx = -1;
+    private bool _bonusTriggerFired;
 
     public bool OnAllMissionCompleted => _completedCount >= _missionPool.Length;
     public bool IsOptionalUnlocked => _optionalUnlocked;
@@ -52,9 +83,74 @@ public class MissionManager : MonoBehaviour
 
         Instance = this;
 
+        BuildMissionPool();
+
         _assigned = new bool[_missionPool.Length];
         _completed = new bool[_missionPool.Length];
         _hintTriggered = new bool[_hints?.Length ?? 0];
+    }
+
+    private void BuildMissionPool()
+    {
+        var pool = new List<(ItemData item, float time)>();
+
+        // 고정 미션
+        int fixedCount = Mathf.Min(_fixedMissions?.Length ?? 0, _fixedUnlockTimes?.Length ?? 0);
+        for (int i = 0; i < fixedCount; i++)
+            pool.Add((_fixedMissions[i], _fixedUnlockTimes[i]));
+
+        // _randomUnlockTimes를 Fisher-Yates로 셔플
+        var timeSlots = new List<float>(_randomUnlockTimes ?? Array.Empty<float>());
+        for (int i = timeSlots.Count - 1; i > 0; i--)
+        {
+            int j = UnityEngine.Random.Range(0, i + 1);
+            (timeSlots[i], timeSlots[j]) = (timeSlots[j], timeSlots[i]);
+        }
+
+        // A·B 중 하나를 추가 미션 후보 그룹으로 결정 (인덱스 0 또는 1)
+        int bonusGroupIdx = UnityEngine.Random.Range(0, Mathf.Min(2, _randomGroups?.Length ?? 0));
+        ItemData bonusItem = null;
+        int timeSlotIdx = 0;
+
+        for (int i = 0; i < (_randomGroups?.Length ?? 0); i++)
+        {
+            var group = _randomGroups[i];
+            if (group.candidates == null || group.candidates.Length == 0)
+                continue;
+
+            float unlockTime = timeSlotIdx < timeSlots.Count ? timeSlots[timeSlotIdx++] : 0f;
+            int picked = UnityEngine.Random.Range(0, group.candidates.Length);
+            pool.Add((group.candidates[picked], unlockTime));
+
+            // 보너스 그룹의 탈락 후보 수집
+            if (i == bonusGroupIdx && group.candidates.Length > 1)
+            {
+                var remaining = new List<ItemData>(group.candidates);
+                remaining.RemoveAt(picked);
+                bonusItem = remaining[UnityEngine.Random.Range(0, remaining.Count)];
+            }
+        }
+
+        // 보너스 아이템을 풀 끝에 추가 (unlockTime = float.MaxValue → 트리거 전까지 미부여)
+        if (bonusItem != null)
+        {
+            _bonusIdx = pool.Count;
+            pool.Add((bonusItem, float.MaxValue));
+        }
+
+        // unlockTime 기준 정렬 (보너스는 항상 맨 뒤)
+        pool.Sort((a, b) => a.time.CompareTo(b.time));
+
+        // 정렬 후 보너스 인덱스 재탐색
+        _missionPool = new ItemData[pool.Count];
+        _unlockTimes = new float[pool.Count];
+        for (int i = 0; i < pool.Count; i++)
+        {
+            _missionPool[i] = pool[i].item;
+            _unlockTimes[i] = pool[i].time;
+            if (pool[i].time >= float.MaxValue)
+                _bonusIdx = i;
+        }
     }
 
     private void Update()
@@ -93,12 +189,8 @@ public class MissionManager : MonoBehaviour
                 _completed[i] = true;
                 _completedCount++;
                 OnMissionCompleted?.Invoke(_missionPool[i]);
-
-                if (_completedCount >= _missionPool.Length && !_optionalUnlocked)
-                {
-                    _optionalUnlocked = true;
-                    OnOptionalMissionUnlocked?.Invoke();
-                }
+                TryTriggerBonus();
+                CheckOptionalUnlock();
                 return;
             }
         }
@@ -115,15 +207,33 @@ public class MissionManager : MonoBehaviour
         }
     }
 
+    private void TryTriggerBonus()
+    {
+        if (_bonusTriggerFired || _bonusIdx < 0)
+            return;
+
+        if (_completedCount >= _bonusTriggerCount)
+        {
+            _bonusTriggerFired = true;
+            _unlockTimes[_bonusIdx] = _elapsedTime + _bonusDelay;
+        }
+    }
+
+    private void CheckOptionalUnlock()
+    {
+        if (_completedCount >= _missionPool.Length && !_optionalUnlocked)
+        {
+            _optionalUnlocked = true;
+            OnOptionalMissionUnlocked?.Invoke();
+        }
+    }
+
     public bool IsMissionAssigned(string itemName)
     {
         for (int i = 0; i < _missionPool.Length; i++)
-        {
             if (_missionPool[i].itemName == itemName)
-            {
                 return _assigned[i];
-            }
-        }
+
         return false;
     }
 }
