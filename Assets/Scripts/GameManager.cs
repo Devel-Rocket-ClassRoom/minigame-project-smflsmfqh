@@ -54,6 +54,11 @@ public class GameManager : MonoBehaviour
             MissionManager.Instance.DebugCompleteAll();
             Debug.Log("[Debug] 모든 미션 즉시 완료");
         }
+        if (UnityEngine.InputSystem.Keyboard.current.f3Key.wasPressedThisFrame)
+        {
+            MissionManager.Instance.DebugUnlockOptional();
+            Debug.Log("[Debug] 꽃 미션 즉시 발동");
+        }
 #endif
     }
 
@@ -95,8 +100,10 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = _isPaused ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = _isPaused;
 
-        if (_isPaused) UIManager.Instance.ShowPause();
-        else           UIManager.Instance.HidePause();
+        if (_isPaused)
+            UIManager.Instance.ShowPause();
+        else
+            UIManager.Instance.HidePause();
     }
 
     public void Exit()

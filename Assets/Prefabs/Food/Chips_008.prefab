@@ -66,9 +66,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dc167779ee7cb1d49982aa413c21693e, type: 3}
       insertIndex: -1
       addedObject: {fileID: -4531698125602969723}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dc167779ee7cb1d49982aa413c21693e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3655482294349714245}
   m_SourcePrefab: {fileID: 100100000, guid: dc167779ee7cb1d49982aa413c21693e, type: 3}
 --- !u!1 &4698790389319236130 stripped
 GameObject:
@@ -112,18 +109,3 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -343855524155525904, guid: dc167779ee7cb1d49982aa413c21693e, type: 3}
---- !u!114 &3655482294349714245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4698790389319236130}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4fb329c37f86b842bf4142cde50b3ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MissionItem
-  _itemData: {fileID: 11400000, guid: 7aa7350eae82b4c0eb745f4a63060831, type: 2}
-  IsPooled: 0
-  LifeTime: 0
