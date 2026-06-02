@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb367920387d6842b3db8d89e8cf8ed, type: 3}
   m_Name: Banana
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: Banana
+  itemName: BANANA
   dropPrefab: {fileID: 2894232268450555028, guid: 929eb7645f2060440a2d6f833e9037a7, type: 3}
   category: 1
   effects: []

@@ -56,6 +56,9 @@ ITEM_DONUT,"도넛",
 ITEM_ICECREAM,"아이스크림",
 ITEM_EGG,"달걀",
 ITEM_MUSHROOM,"버섯",
-ITEM_FLOWER,"꽃다발",
+ITEM_FLOWER,"꽃",
 ITEM_ENERGYDRINK,"숙취해소제",
 ITEM_PIZZA,"피자",
+
+// -- GAME CLEAR --------------------------------------------------
+GAMECLEAR_TAGLINE,"해냈다. 그 수많은 발을 뚫고서.",

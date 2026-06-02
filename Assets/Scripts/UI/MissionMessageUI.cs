@@ -103,7 +103,11 @@ public class MissionMessageUI : MonoBehaviour
 
         var (flowerMsg, flowerSender) = StringTableManager.Instance.GetMessage("MONOLOGUE_FLOWER");
         if (!string.IsNullOrEmpty(flowerMsg))
-            Enqueue(new MessageData(flowerMsg, flowerSender));
+        {
+            var flowerItem = MissionManager.Instance?.OptionalMission;
+            Debug.Log($"[Flower] HandleMonologue: flowerItem={flowerItem?.itemName ?? "NULL"}");
+            Enqueue(new MessageData(flowerMsg, flowerSender, flowerItem));
+        }
     }
 
     private void HandleAngerMessage((string, string) data)
@@ -134,6 +138,8 @@ public class MissionMessageUI : MonoBehaviour
 
             yield return StartCoroutine(Slide(-_panelWidth, 10f, 0.3f));
             OnSlidedIn?.Invoke(data.Item);
+            if (data.Item != null)
+                MissionManager.Instance?.NotifyMissionDisplayed(data.Item);
             yield return new WaitForSeconds(_displayDuration);
             yield return StartCoroutine(Slide(0f, -_panelWidth, 0.3f));
         }

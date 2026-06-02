@@ -22,7 +22,6 @@ public class MissionCheckListUI : MonoBehaviour
     private void OnEnable()
     {
         MissionManager.Instance.OnMissionCompleted += HandleMissionCompleted;
-        MissionManager.Instance.OnOptionalMissionUnlocked += HandleOptionalUnlocked;
         if (_playerController != null)
             _playerController.OnMissionTogglePressed += ToggleList;
         if (_missionMessageUI != null)
@@ -32,7 +31,6 @@ public class MissionCheckListUI : MonoBehaviour
     private void OnDisable()
     {
         MissionManager.Instance.OnMissionCompleted -= HandleMissionCompleted;
-        MissionManager.Instance.OnOptionalMissionUnlocked -= HandleOptionalUnlocked;
         if (_playerController != null)
             _playerController.OnMissionTogglePressed -= ToggleList;
         if (_missionMessageUI != null)
@@ -45,13 +43,6 @@ public class MissionCheckListUI : MonoBehaviour
         if (item == null) return; // 분노·힌트·독백 메시지는 무시
         AddEntry(item);
         Peek();
-    }
-
-    private void HandleOptionalUnlocked()
-    {
-        var flower = MissionManager.Instance.OptionalMission;
-        if (flower != null)
-            AddEntry(flower);
     }
 
     private void AddEntry(ItemData item)
