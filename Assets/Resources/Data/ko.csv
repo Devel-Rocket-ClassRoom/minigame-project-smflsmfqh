@@ -1,0 +1,61 @@
+﻿Key,Text,Sender,ImageKey
+
+// -- DEATH -------------------------------------------------------
+DEATH_NPC_0,"발에 밟혀버렸다. 그들은 눈치조차 못 챘다.",
+DEATH_NPC_1,"한 번의 부주의한 발걸음. 그게 전부였다.",
+DEATH_NPC_2,"잘못된 장소에 잘못된 발이 있었을 뿐.",
+DEATH_CAT_0,"고양이는 그냥 놀고 있었을 뿐이다. 넌 그렇지 못했지만.",
+DEATH_CAT_1,"너는 그 고양이에게 장난감이었을 뿐. 게임 오버.",
+DEATH_CAT_2,"고양이가 심심했던 것뿐이다. 대가는 네가 치렀고.",
+DEATH_CAR_0,"운전자는 브레이크조차 밟지 않았다.",
+DEATH_MISSION_0,"여왕님이 기뻐하지 않으실 거야.",
+DEATH_ANGER_0,"짐은 쌌다. 문은 잠겼다. 게임 오버.",
+
+// -- OPENING / ANGER ---------------------------------------------
+ANGER_0,"어젯밤 어디서 잔 거야?? ...됐어. 그렇게만 해.",여보♥,Honey♥
+ANGER_1,"어차피 나와 있으니까 오는 길에 뭣  좀 사 오기나 해.",여보♥,Honey♥
+ANGER_2,"목록 보내줄게.",여보♥,Honey♥
+ANGER_10,"아직도 안 왔어?? 밖에 사람 많으니까 발 조심하고 빨리 와.",여보♥,Honey♥
+ANGER_25,"5분이라고 했잖아. 그게 45분 전이야.",여보♥,Honey♥
+ANGER_50,"여보?? 밟혀서 납작해진 거야??",여보♥,Honey♥
+ANGER_75,"화난 게 아냐. 끝났다고. 지금. 당장. 집으로 와.",여보♥,Honey♥
+ANGER_90,"...짐 싸고 있어.",여보♥,Honey♥
+
+// -- TUTORIAL ----------------------------------------------------
+TUT_ARROW,"좋아... 화살표가 있네. 그냥 따라가면 돼. 할 수 있어.",나,Me
+TUT_MINIMAP,"잠깐 지도. 상점이 표시돼 있겠지. 집중하자.",나,Me
+TUT_TOGGLE,"맞다 목록. [TAB] 잊지 말자.",나,Me
+TUT_CONTROLS,"좋아. 필요하면 점프. [SPACE]. 위험하면 달리기. [SHIFT]. 뭔가 오면 구르기. [R]. 알겠어.",나,Me
+TUT_CAT_WARNING,"...저거 고양이야?! [C]!! 피해!!",나,Me
+TUT_ITEM_GLOW,"빛나는 저 곳. 거기 떨어져 있어. 가자.",나,Me
+TUT_ITEM_PICKUP,"거의 다 왔다... [E]. 그냥 [E] 누르면 돼.",나,Me
+
+// -- PHARMACY ----------------------------------------------------
+MONOLOGUE_ENERGYDRINK,"...너무 힘들다. 속이 울렁거려.",나,Me
+MISSION_ENERGYDRINK,"약국에 가서 숙취해소제 먼저 사야겠어.",나,Me
+
+// -- MISSIONS ----------------------------------------------------
+MISSION_AVOCADO,"아보카도. 과일 가게. 멍든 거 사 오지 마.",여보♥,Honey♥
+MISSION_BANANA,"바나나도 사 와. 잊으면 안 돼.",여보♥,Honey♥
+MISSION_EGG,"달걀. 마트에서. 깨진 거 사 오지 마.",여보♥,Honey♥
+MISSION_MUSHROOM,"버섯. 마트. 가.",여보♥,Honey♥
+MISSION_PIZZA,"아빠!! 오늘 피자 먹어도 돼?? 제발제발!!",아이들,Kids
+MISSION_DONUT,"아빠아... 도넛... 제발?? 엄청 착하게 있을게 진짜!!",아이들,Kids
+MISSION_ICECREAM,"아이스크림. 뭔지 알지. 다른 거 사 오지 마.",여보♥,Honey♥
+HINT_ICECREAM,"아! 엄마가 좋아하는 아이스크림 가게에서 분홍 모자 쓴 아저씨한테서 파는 거야!!",아이들,Kids
+
+// -- MONOLOGUE ---------------------------------------------------
+MONOLOGUE_HOME,"좋아... 이제 집에 가야지.",나,Me
+MONOLOGUE_WAIT,"...잠깐만.",나,Me
+MONOLOGUE_FLOWER,"...아내가 항상 저 꽃을 좋아했었지. 좀 풀리려나.",나,Me
+
+// -- ITEM DISPLAY NAMES ------------------------------------------
+ITEM_AVOCADO,"아보카도",
+ITEM_BANANA,"바나나",
+ITEM_DONUT,"도넛",
+ITEM_ICECREAM,"아이스크림",
+ITEM_EGG,"달걀",
+ITEM_MUSHROOM,"버섯",
+ITEM_FLOWER,"꽃다발",
+ITEM_ENERGYDRINK,"숙취해소제",
+ITEM_PIZZA,"피자",

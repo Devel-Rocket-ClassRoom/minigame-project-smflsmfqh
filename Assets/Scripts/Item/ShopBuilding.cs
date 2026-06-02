@@ -23,9 +23,13 @@ public class ShopBuilding : MonoBehaviour
     [SerializeField]
     private ParticleSystem _spotParticle;
 
+    [SerializeField]
+    private ParticleSystem _groundParticlePrefab;
+
     [Header("드랍 쿨타임")]
     [SerializeField]
     private float _cooldown = 10f;
+
     [SerializeField]
     private float _foodCooldown = 5f;
     private bool _isCooldown;
@@ -64,7 +68,7 @@ public class ShopBuilding : MonoBehaviour
     {
         if (_spotParticle == null)
             return;
-            
+
         if (_isCooldown == true)
             StopParticle();
 
@@ -102,7 +106,9 @@ public class ShopBuilding : MonoBehaviour
         _spawnPos = GetFrontSpawnPosition();
         _spawnPos.y += selected.spawnHeightOffset;
         var rot = Quaternion.Euler(selected.spawnRotation);
-        Instantiate(selected.dropPrefab, _spawnPos, rot);
+        var dropped = Instantiate(selected.dropPrefab, _spawnPos, rot);
+        if (_groundParticlePrefab != null)
+            Instantiate(_groundParticlePrefab, dropped.transform);
 
         Debug.Log(
             $"[아이템 드랍] {_shopData.shopName}에서 {selected.itemName} 드랍! (남은 아이템: {_remainingItems.Count}개)"
@@ -192,7 +198,12 @@ public class ShopBuilding : MonoBehaviour
     {
         var col = GetComponent<BoxCollider>();
         if (col == null)
+        {
+            Debug.Log(
+                $"[ShopBuilding] {name}에 BoxCollider가 없습니다. 파티클 위치를 건물 중심으로 설정합니다."
+            );
             return transform.position;
+        }
 
         Vector3 center = transform.TransformPoint(col.center);
         Vector3 outDir = center - transform.position;
@@ -206,7 +217,7 @@ public class ShopBuilding : MonoBehaviour
                 * col.size.z
                 * Mathf.Abs(scale.z)
                 * 0.5f;
-
+        Debug.Log($"[ShopBuilding] {name} 파티클 위치 계산: outDir={outDir}, edgeDist={edgeDist}");
         return center + outDir * edgeDist;
     }
 }

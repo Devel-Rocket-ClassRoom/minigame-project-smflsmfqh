@@ -60,11 +60,13 @@ public class AngerSystem : MonoBehaviour
             if (!_triggered[i] && percent >= _thresholds[i])
             {
                 _triggered[i] = true;
-                (string msg, string sender) = StringTableManager.Instance.GetAngerMessage(_thresholds[i]);
+                (string msg, string sender) = StringTableManager.Instance.GetAngerMessage(
+                    _thresholds[i]
+                );
                 OnMessasgeTriggered?.Invoke((msg, sender));
             }
         }
-        
+
         OnAngerChanged?.Invoke(_currentAnger / _maxAnger);
 
         if (_currentAnger >= _maxAnger)
