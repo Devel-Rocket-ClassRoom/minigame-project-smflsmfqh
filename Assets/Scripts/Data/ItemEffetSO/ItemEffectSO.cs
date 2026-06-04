@@ -1,9 +1,15 @@
 using UnityEngine;
 
-// --- 아이템별 이펙트가 필요한 경우 사용할 예정 ---
-// 아이스크림 => 무적
-// 피로회복제 => 무적
+public enum EffectParticleType
+{
+    None,
+    HealParticle,
+    SpeedBoostParticle,
+    InvincibleParticle,
+}
+
 public abstract class ItemEffectSO : ScriptableObject
 {
+    public EffectParticleType particleType = EffectParticleType.None;
     public abstract void Apply(PlayerController player);
 }
