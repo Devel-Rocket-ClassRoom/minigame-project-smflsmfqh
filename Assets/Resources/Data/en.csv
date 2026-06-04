@@ -23,7 +23,8 @@ ANGER_90,"...I'm packing a bag.",Honey♥,Honey♥
 
 // -- TUTORIAL ----------------------------------------------------
 TUT_ARROW,"Okay... there's an arrow. Just follow the arrow. I can do this.",Me,Me
-TUT_MINIMAP,"Wait the map. The shop should be marked. Focus.",Me,Me
+TUT_MINIMAP1,"Where's the pharmacy?",Me,Me
+TUT_MINIMAP2,"Wait — the map. The shop should be marked. Focus.",Me,Me
 TUT_TOGGLE,"Right the list. [TAB] don't forget the list.",Me,Me
 TUT_CONTROLS,"Okay. Jump if I have to. [SPACE]. Sprint if it's bad. [SHIFT]. And if something's coming roll. [R]. Got it.",Me,Me
 TUT_CAT_WARNING,"...Is that a cat?! [C]!! DODGE!!",Me,Me

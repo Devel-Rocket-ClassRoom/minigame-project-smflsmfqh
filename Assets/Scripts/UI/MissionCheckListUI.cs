@@ -60,7 +60,7 @@ public class MissionCheckListUI : MonoBehaviour
         Peek();
     }
 
-    private void Peek()
+    public void Peek()
     {
         if (_peekCo != null)
             StopCoroutine(_peekCo);

@@ -26,6 +26,9 @@ public class ShopBuilding : MonoBehaviour
     [SerializeField]
     private ParticleSystem _groundParticlePrefab;
 
+    public event System.Action OnPlayerEntered;
+    public event System.Action<Transform> OnItemDropped;
+
     [Header("드랍 쿨타임")]
     [SerializeField]
     private float _cooldown = 10f;
@@ -101,6 +104,8 @@ public class ShopBuilding : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
+        OnPlayerEntered?.Invoke();
+
         if (_isCooldown)
             return;
 
@@ -127,6 +132,7 @@ public class ShopBuilding : MonoBehaviour
         _spawnPos.y += selected.spawnHeightOffset;
         var rot = Quaternion.Euler(selected.spawnRotation);
         var dropped = Instantiate(selected.dropPrefab, _spawnPos, rot);
+        OnItemDropped?.Invoke(dropped.transform);
         if (_groundParticlePrefab != null)
             Instantiate(_groundParticlePrefab, dropped.transform);
 
