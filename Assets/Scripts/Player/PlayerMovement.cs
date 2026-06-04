@@ -88,6 +88,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody _rb;
     private CapsuleCollider _collider;
+    private PlayerController _playerController;
     private Vector2 _inputDir;
     private float _currentSpeed;
     private float _boostSpeed;
@@ -114,6 +115,7 @@ public class PlayerMovement : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _collider = GetComponent<CapsuleCollider>();
         _animator = GetComponent<Animator>();
+        _playerController = GetComponent<PlayerController>();
 
         _standHeight = _collider.height;
         _crouchHeight = _standHeight * 0.5f;
@@ -290,6 +292,7 @@ public class PlayerMovement : MonoBehaviour
         if (value.isPressed && _isGrounded)
         {
             _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+            _playerController?.PlayJumpSound();
         }
     }
 
@@ -310,6 +313,7 @@ public class PlayerMovement : MonoBehaviour
             (_inputDir.magnitude > 0.1f)
                 ? (transform.forward * _inputDir.y + transform.right * _inputDir.x).normalized
                 : transform.forward;
+        _playerController?.PlayRollSound();
         _rollCoroutine = StartCoroutine(RollCoroutine());
     }
 

@@ -15,21 +15,24 @@ DEATH_ANGER_0,"The bag is packed. The door is locked. Game over.",
 ANGER_0,"Where did you sleep last night?? ...You know what fine.",Honey♥,Honey♥
 ANGER_1,"Since you're already out there you better pick some things up on the way home.",Honey♥,Honey♥
 ANGER_2,"I'm sending you the list.",Honey♥,Honey♥
-ANGER_10,"Still not here?? It's packed out there watch those feet and hurry up.",Honey♥,Honey♥
+ANGER_10,"Don't you dare forget a single thing on that list. And get home.",Honey♥,Honey♥
 ANGER_25,"You said 5 minutes. That was 45 minutes ago.",Honey♥,Honey♥
 ANGER_50,"Hello?? Did you get stepped on or something??",Honey♥,Honey♥
 ANGER_75,"I'm not mad. I'm DONE. Get. Home. Now.",Honey♥,Honey♥
 ANGER_90,"...I'm packing a bag.",Honey♥,Honey♥
 
 // -- TUTORIAL ----------------------------------------------------
-TUT_ARROW,"Okay... there's an arrow. Just follow the arrow. I can do this.",Me,Me
-TUT_MINIMAP1,"Where's the pharmacy?",Me,Me
-TUT_MINIMAP2,"Wait — the map. The shop should be marked. Focus.",Me,Me
-TUT_TOGGLE,"Right the list. [TAB] don't forget the list.",Me,Me
-TUT_CONTROLS,"Okay. Jump if I have to. [SPACE]. Sprint if it's bad. [SHIFT]. And if something's coming roll. [R]. Got it.",Me,Me
+TUT_SKIP,"Already know the ropes? Press [X] to skip.",Me,Me
+TUT_WASD,"Okay. [W][A][S][D] to move. Simple enough.",Me,Me
+TUT_MOUSE,"Mouse to look around. Keep it steady.",Me,Me
+TUT_CONTROLS,"[SHIFT] to sprint. [SPACE] to jump. [R] to roll. Got it.",Me,Me
 TUT_CAT_WARNING,"...Is that a cat?! [C]!! DODGE!!",Me,Me
+TUT_MAP,"Wait — the map. The shop should be marked. Focus.",Me,Me
+TUT_ARROW,"Okay... there's an arrow. Just follow the arrow. I can do this.",Me,Me
 TUT_ITEM_GLOW,"That glowing spot that's where it drops. Go.",Me,Me
 TUT_ITEM_PICKUP,"Almost there... [E]. Just press [E].",Me,Me
+TUT_TOGGLE,"Right the list. [TAB] don't forget the list.",Me,Me
+TUT_GOAL,"Can't upset the queen. Every single item. No excuses.",Me,Me
 
 // -- PHARMACY ----------------------------------------------------
 MONOLOGUE_ENERGYDRINK,"...I feel terrible. I need something for this headache.",Me,Me
@@ -60,6 +63,8 @@ ITEM_MUSHROOM,"Mushroom",
 ITEM_FLOWER,"Flower",
 ITEM_ENERGYDRINK,"Energy Drink",
 ITEM_PIZZA,"Pizza",
+// -- PAUSE PANEL --------------------------------------------------
+PAUSE_EXIT,"Exit game?\nYour wife exits the marriage."
 // -- GAME CLEAR --------------------------------------------------
 GAMECLEAR_SCORE_MINSEC,"Wife's Patience: {0}m {1}s",
 GAMECLEAR_SCORE_SEC,"Wife's Patience: {0}s",

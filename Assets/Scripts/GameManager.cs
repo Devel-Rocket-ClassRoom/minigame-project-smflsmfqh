@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 
     private bool _isPaused;
     private float _playTime;
+    public float PlayTime => _playTime;
 
     [SerializeField]
     private PlayerHealth _playerHealth;
@@ -30,6 +31,8 @@ public class GameManager : MonoBehaviour
         Instance = this;
         _score = 0;
 
+        if (PlayerPrefs.HasKey(TitleController.LanguagePrefKey))
+            _language = (Language)PlayerPrefs.GetInt(TitleController.LanguagePrefKey);
         StringTableManager.Instance.SetLanguage(_language);
     }
 
@@ -82,6 +85,14 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         UIManager.Instance.ShowGameClear(Mathf.RoundToInt(_playTime));
+    }
+
+    public void GoToTitle()
+    {
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        SceneManager.LoadScene("TitleScene");
     }
 
     public void Restart()

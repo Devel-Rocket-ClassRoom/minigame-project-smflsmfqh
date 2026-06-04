@@ -6,6 +6,19 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("오디오")]
+    [SerializeField]
+    private AudioSource _audioSource;
+
+    [SerializeField]
+    private AudioClip _pickupSound;
+
+    [SerializeField]
+    private AudioClip _jumpSound;
+
+    [SerializeField]
+    private AudioClip _rollSound;
+
     [SerializeField]
     private ParticleSystem healParticle;
 
@@ -93,6 +106,24 @@ public class PlayerController : MonoBehaviour
     private void HandleDied(CauseDeath _)
     {
         _pi.DeactivateInput();
+    }
+
+    public void PlayPickupSound()
+    {
+        if (_audioSource != null && _pickupSound != null)
+            _audioSource.PlayOneShot(_pickupSound);
+    }
+
+    public void PlayJumpSound()
+    {
+        if (_audioSource != null && _jumpSound != null)
+            _audioSource.PlayOneShot(_jumpSound);
+    }
+
+    public void PlayRollSound()
+    {
+        if (_audioSource != null && _rollSound != null)
+            _audioSource.PlayOneShot(_rollSound);
     }
 
     public void PlayEffect(EffectParticleType type, float duration = 0f)

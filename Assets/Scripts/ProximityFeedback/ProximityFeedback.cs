@@ -15,6 +15,8 @@ public class ProximityFeedback : MonoBehaviour
     private FollowCamera _followCam;
     public event Action<float> OnIntensityChanged;
 
+    public float DangerRadius => _dangerRadius;
+    public float PanicRadius => _panicRadius;
     public float Intensity { get; private set; }
     private GameObject[] _dangers = Array.Empty<GameObject>();
     private float _cacheTimer;

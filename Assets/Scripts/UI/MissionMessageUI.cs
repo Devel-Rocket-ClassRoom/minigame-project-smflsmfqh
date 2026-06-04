@@ -25,6 +25,13 @@ public class MissionMessageUI : MonoBehaviour
     [SerializeField]
     private AngerSystem _angerSystem;
 
+    [Header("오디오")]
+    [SerializeField]
+    private AudioSource _audioSource;
+
+    [SerializeField]
+    private AudioClip _slideInSound;
+
     // 슬라이드 완료 직후 발화 — 미션 메시지일 때만 ItemData가 non-null
     public event Action<ItemData> OnSlidedIn;
 
@@ -45,8 +52,11 @@ public class MissionMessageUI : MonoBehaviour
     }
 
     private float _panelWidth;
+    private float _currentSlideDuration = 0.3f;
     private Coroutine _slideCo;
     private readonly Queue<MessageData> _queue = new();
+
+    public void SetSlideDuration(float duration) => _currentSlideDuration = duration;
 
     private void Awake()
     {
@@ -145,13 +155,15 @@ public class MissionMessageUI : MonoBehaviour
                 _icon.sprite = Resources.Load<Sprite>(imageKey);
             }
 
-            yield return StartCoroutine(Slide(-_panelWidth, 10f, 0.3f));
+            if (_audioSource != null && _slideInSound != null)
+                _audioSource.PlayOneShot(_slideInSound);
+            yield return StartCoroutine(Slide(-_panelWidth, 10f, _currentSlideDuration));
             OnSlidedIn?.Invoke(data.Item);
             data.OnSlidedInCallback?.Invoke();
             if (data.Item != null)
                 MissionManager.Instance?.NotifyMissionDisplayed(data.Item);
-            yield return new WaitForSeconds(_displayDuration);
-            yield return StartCoroutine(Slide(0f, -_panelWidth, 0.3f));
+            yield return new WaitForSecondsRealtime(_displayDuration);
+            yield return StartCoroutine(Slide(0f, -_panelWidth, _currentSlideDuration));
         }
 
         _slideCo = null;
@@ -164,7 +176,7 @@ public class MissionMessageUI : MonoBehaviour
 
         while (elapsed < duration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             float t = Mathf.SmoothStep(0f, 1f, elapsed / duration);
             _panel.anchoredPosition = new Vector2(Mathf.Lerp(fromX, toX, t), y);
             yield return null;

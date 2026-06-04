@@ -72,6 +72,26 @@ public class MissionManager : MonoBehaviour
     public void PauseMissionAssignment()  => _missionsPaused = true;
     public void ResumeMissionAssignment() => _missionsPaused = false;
 
+    // 미할당 미션 중 가장 이른 것 하나만 즉시 배분 (튜토리얼 종료 직후 호출용)
+    public void ForceAssignNext()
+    {
+        for (int i = 0; i < _missionPool.Length; i++)
+        {
+            if (_assigned[i] || i == _bonusIdx)
+                continue;
+            _assigned[i] = true;
+            string preKey = StringTableManager.Instance.GetPreMonologueKey(_missionPool[i].itemName);
+            if (!string.IsNullOrEmpty(preKey))
+            {
+                var (msg, sender) = StringTableManager.Instance.GetMessage(preKey);
+                if (!string.IsNullOrEmpty(msg))
+                    OnHintAssigned?.Invoke(msg, sender);
+            }
+            OnMissionAssigned?.Invoke(_missionPool[i]);
+            return;
+        }
+    }
+
     private float _elapsedTime;
     private bool _missionsPaused;
     private ItemData[] _missionPool;
@@ -89,6 +109,7 @@ public class MissionManager : MonoBehaviour
 
     public bool OnAllMissionCompleted => _completedCount >= _missionPool.Length;
     public bool IsOptionalUnlocked => _optionalUnlocked;
+    public bool IsOptionalCompleted => _optionalCompleted;
     public ItemData OptionalMission => _optionalMission;
 
     private void Awake()
@@ -175,7 +196,7 @@ public class MissionManager : MonoBehaviour
     {
         if (_missionsPaused) return;
 
-        _elapsedTime += Time.deltaTime;
+        _elapsedTime += Time.unscaledDeltaTime;
 
         for (int i = 0; i < _missionPool.Length; i++)
         {

@@ -1,6 +1,8 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class UIManager : MonoBehaviour
 {
@@ -27,6 +29,9 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Button _exitButton1;
 
+    [SerializeField]
+    private Button _backButton1;
+
     // --- GameClear UI용 ---
     [SerializeField]
     private GameObject _gameClearPanel;
@@ -43,6 +48,9 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Button _exitButton2;
 
+    [SerializeField]
+    private Button _backButton2;
+
     // --- Pause UI용 ---
     [SerializeField]
     private GameObject _pausePanel;
@@ -54,7 +62,44 @@ public class UIManager : MonoBehaviour
     private Button _exitButton3;
 
     [SerializeField]
+    private Button _backButton3;
+
+    [SerializeField]
+    private TextMeshProUGUI _pauseExitText;
+
+    [SerializeField]
     private ProximityPanelFeedbackUI _proximityPanelFeedbackUI;
+
+    [Header("히든 엔딩 영상")]
+    [SerializeField]
+    private GameObject _hiddenVideoPanel;
+
+    [SerializeField]
+    private VideoPlayer _hiddenVideoPlayer;
+
+    [SerializeField]
+    private Button _hiddenSkipButton;
+
+
+    [Header("SFX")]
+    [SerializeField]
+    private AudioSource _sfxSource;
+
+    [SerializeField]
+    private AudioClip _buttonClickSound;
+
+    [Header("BGM")]
+    [SerializeField]
+    private AudioSource _bgmSource;
+
+    [SerializeField]
+    private AudioClip _gameplayBGM;
+
+    [SerializeField]
+    private AudioClip _gameOverBGM;
+
+    [SerializeField]
+    private AudioClip _clearBGM;
 
     private void Awake()
     {
@@ -66,18 +111,31 @@ public class UIManager : MonoBehaviour
 
         Instance = this;
 
-        _restartButton1.onClick.AddListener(() => GameManager.Instance.Restart());
-        _restartButton2.onClick.AddListener(() => GameManager.Instance.Restart());
-        _exitButton1.onClick.AddListener(() => GameManager.Instance.Exit());
-        _exitButton2.onClick.AddListener(() => GameManager.Instance.Exit());
-        _resumeButton.onClick.AddListener(() => GameManager.Instance.TogglePause());
-        _exitButton3.onClick.AddListener(() => GameManager.Instance.Exit());
+        _restartButton1.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.Restart(); });
+        _restartButton2.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.Restart(); });
+        _exitButton1.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.Exit(); });
+        _exitButton2.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.Exit(); });
+        _backButton1?.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.GoToTitle(); });
+        _backButton2?.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.GoToTitle(); });
+        _resumeButton.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.TogglePause(); });
+        _exitButton3.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.Exit(); });
+        _backButton3?.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.GoToTitle(); });
 
         SetPanel(_gameOverPanel, false);
         SetPanel(_gameClearPanel, false);
         SetPanel(_pausePanel, false);
+        SetPanel(_hiddenVideoPanel, false);
+
+        if (_hiddenSkipButton != null)
+            _hiddenSkipButton.onClick.AddListener(() => { PlayButtonSound(); SkipHiddenVideo(); });
 
         MissionManager.Instance.OnMissionDisplayed += EnableMissionCheckListUI;
+    }
+
+    private void PlayButtonSound()
+    {
+        if (_sfxSource != null && _buttonClickSound != null)
+            _sfxSource.PlayOneShot(_buttonClickSound);
     }
 
     private void OnDestroy()
@@ -95,10 +153,22 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         ShowHUD();
+        PlayBGM(_gameplayBGM);
+    }
+
+    private void PlayBGM(AudioClip clip)
+    {
+        if (_bgmSource == null || clip == null)
+            return;
+        _bgmSource.Stop();
+        _bgmSource.clip = clip;
+        _bgmSource.loop = true;
+        _bgmSource.Play();
     }
 
     public void ShowGameOver(CauseDeath cause)
     {
+        PlayBGM(_gameOverBGM);
         SetPanel(_hudPanel, false);
         SetPanel(_gameOverPanel, true);
         if (_proximityPanelFeedbackUI != null)
@@ -111,12 +181,67 @@ public class UIManager : MonoBehaviour
 
     public void ShowGameClear(int angerSeconds)
     {
-        Debug.Log(
-            $"[UIManager] ShowGameClear 호출, _gameClearPanel null? {_gameClearPanel == null}"
-        );
-        SetPanel(_gameClearPanel, true);
+        Time.timeScale = 0f;
         if (_proximityPanelFeedbackUI != null)
             _proximityPanelFeedbackUI.ForceHide();
+
+        if (MissionManager.Instance.IsOptionalCompleted
+            && _hiddenVideoPanel != null
+            && _hiddenVideoPlayer != null
+            && _hiddenVideoPlayer.clip != null)
+        {
+            StartCoroutine(PlayHiddenVideoThenClear(angerSeconds));
+        }
+        else
+        {
+            ShowClearPanel(angerSeconds);
+        }
+    }
+
+    private IEnumerator PlayHiddenVideoThenClear(int angerSeconds)
+    {
+        SetPanel(_hudPanel, false);
+        SetPanel(_hiddenVideoPanel, true);
+        PlayBGM(_clearBGM);
+
+        _hiddenVideoPlayer.Prepare();
+
+        // Prepare 타임아웃 5초 — isPrepared가 되거나 타임아웃이면 진행
+        float elapsed = 0f;
+        while (!_hiddenVideoPlayer.isPrepared && elapsed < 5f)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        if (_hiddenVideoPlayer.isPrepared)
+        {
+            float duration = (float)_hiddenVideoPlayer.clip.length;
+            _hiddenVideoPlayer.Play();
+            yield return new WaitForSecondsRealtime(duration);
+        }
+
+        _hiddenVideoPlayer.Stop();
+        SetPanel(_hiddenVideoPanel, false);
+        ShowClearPanel(angerSeconds);
+    }
+
+    private void SkipHiddenVideo()
+    {
+        StopAllCoroutines();
+        _hiddenVideoPlayer.Stop();
+        SetPanel(_hiddenVideoPanel, false);
+
+        // angerSeconds를 보존하지 못하므로 GameManager에서 직접 가져옴
+        ShowClearPanel(Mathf.RoundToInt(GameManager.Instance.PlayTime));
+    }
+
+    private void ShowClearPanel(int angerSeconds)
+    {
+        if (_bgmSource == null || _bgmSource.clip != _clearBGM)
+            PlayBGM(_clearBGM);
+        Debug.Log($"[UIManager] ShowGameClear 호출, _gameClearPanel null? {_gameClearPanel == null}");
+        SetPanel(_gameClearPanel, true);
         int min = angerSeconds / 60;
         int sec = angerSeconds % 60;
         string key = min > 0 ? "GAMECLEAR_SCORE_MINSEC" : "GAMECLEAR_SCORE_SEC";
@@ -136,6 +261,8 @@ public class UIManager : MonoBehaviour
 
     public void ShowPause()
     {
+        if (_pauseExitText != null)
+            _pauseExitText.text = StringTableManager.Instance.GetMessage("PAUSE_EXIT").message;
         SetPanel(_pausePanel, true);
     }
 
