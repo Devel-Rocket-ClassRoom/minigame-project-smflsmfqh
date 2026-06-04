@@ -9,5 +9,6 @@ public class HealEffectSO : ItemEffectSO
     public override void Apply(PlayerController player)
     {
         player.Heal(_healAmount);
+        player.PlayEffect(EffectParticleType.HealParticle);
     }
 }
