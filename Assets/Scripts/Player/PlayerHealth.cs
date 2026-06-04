@@ -96,6 +96,9 @@ public class PlayerHealth : MonoBehaviour
                 case CauseDeath.Car:
                     _playerMovement?.SetFaceShrink();
                     break;
+                case CauseDeath.Cat:
+                    _playerMovement?.SetFaceTrauma();
+                    break;
                 default:
                     _playerMovement?.SetFaceDamaged();
                     break;

@@ -12,5 +12,6 @@ public class SpeedBoostEffectSO : ItemEffectSO
     public override void Apply(PlayerController player)
     {
         player.SetSpeedBoost(_speed, _duration);
+        player.PlayEffect(EffectParticleType.SpeedBoostParticle, _duration);
     }
 }
