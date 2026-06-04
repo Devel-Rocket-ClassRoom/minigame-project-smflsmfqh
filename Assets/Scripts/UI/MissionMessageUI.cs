@@ -33,12 +33,14 @@ public class MissionMessageUI : MonoBehaviour
         public readonly string Message;
         public readonly string Sender;
         public readonly ItemData Item; // 분노·힌트·독백 메시지는 null
+        public readonly System.Action OnSlidedInCallback;
 
-        public MessageData(string message, string sender, ItemData item = null)
+        public MessageData(string message, string sender, ItemData item = null, System.Action onSlidedInCallback = null)
         {
             Message = message;
             Sender = sender;
             Item = item;
+            OnSlidedInCallback = onSlidedInCallback;
         }
     }
 
@@ -115,6 +117,13 @@ public class MissionMessageUI : MonoBehaviour
         Enqueue(new MessageData(data.Item1, data.Item2));
     }
 
+    public void EnqueueTutorialMessage(string csvKey, System.Action onSlidedIn = null)
+    {
+        var (message, sender) = StringTableManager.Instance.GetMessage(csvKey);
+        if (string.IsNullOrEmpty(message)) return;
+        Enqueue(new MessageData(message, sender, null, onSlidedIn));
+    }
+
     private void Enqueue(MessageData data)
     {
         _queue.Enqueue(data);
@@ -138,6 +147,7 @@ public class MissionMessageUI : MonoBehaviour
 
             yield return StartCoroutine(Slide(-_panelWidth, 10f, 0.3f));
             OnSlidedIn?.Invoke(data.Item);
+            data.OnSlidedInCallback?.Invoke();
             if (data.Item != null)
                 MissionManager.Instance?.NotifyMissionDisplayed(data.Item);
             yield return new WaitForSeconds(_displayDuration);
