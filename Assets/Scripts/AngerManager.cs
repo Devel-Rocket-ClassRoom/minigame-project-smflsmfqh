@@ -19,6 +19,10 @@ public class AngerSystem : MonoBehaviour
     private float _currentAnger;
     private bool[] _triggered;
     private bool _gameOverTriggered;
+    private bool _paused;
+
+    public void Pause()  => _paused = true;
+    public void Resume() => _paused = false;
     private CauseDeath cause = CauseDeath.Anger;
 
     public float Anger => _currentAnger;
@@ -49,7 +53,7 @@ public class AngerSystem : MonoBehaviour
 
     private void Update()
     {
-        if (_gameOverTriggered)
+        if (_gameOverTriggered || _paused)
             return;
 
         _currentAnger = Mathf.Min(_currentAnger + _angerPerSecond * Time.deltaTime, _maxAnger);

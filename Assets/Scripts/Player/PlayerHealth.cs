@@ -23,6 +23,9 @@ public class PlayerHealth : MonoBehaviour
     private const float k_damageInvincibleTime = 0.7f;
     public bool isDead = false;
     private bool _isInvincible = false;
+    private bool _tutorialInvincible = false;
+
+    public void SetTutorialInvincible(bool invincible) => _tutorialInvincible = invincible;
 
     private Coroutine _invincibleCo;
     private Animator _animator;
@@ -68,7 +71,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(float damage, CauseDeath causeDeath)
     {
-        if (_isInvincible)
+        if (_isInvincible || _tutorialInvincible)
             return;
 
         _currentHealth -= damage;
