@@ -31,7 +31,11 @@ public class MissionItem : MonoBehaviour, IInteractive
         if (_itemData != null)
             SetupMinimapMarker();
 
-        if (_itemData != null && _itemData.category == ItemCategory.Optional && _optionalParticle != null)
+        if (
+            _itemData != null
+            && _itemData.category == ItemCategory.Optional
+            && _optionalParticle != null
+        )
             _optionalParticle.gameObject.SetActive(false);
     }
 
@@ -97,7 +101,9 @@ public class MissionItem : MonoBehaviour, IInteractive
 
     private void HandleOptionalDisplayed(ItemData item)
     {
-        Debug.Log($"[Flower] HandleOptionalDisplayed: item={item?.itemName ?? "NULL"}, _itemData={_itemData?.itemName ?? "NULL"}, particle={_optionalParticle != null}");
+        Debug.Log(
+            $"[Flower] HandleOptionalDisplayed: item={item?.itemName ?? "NULL"}, _itemData={_itemData?.itemName ?? "NULL"}, particle={_optionalParticle != null}"
+        );
         if (item == null || item.itemName != _itemData.itemName)
             return;
 
@@ -139,14 +145,20 @@ public class MissionItem : MonoBehaviour, IInteractive
         foreach (var effect in _itemData.effects)
         {
             effect.Apply(player);
-            _camera.TriggerReactionCut(0.6f);
-            _playerMovement.SetFaceHappy();
         }
 
         if (_itemData.category == ItemCategory.Mission)
         {
             MissionManager.Instance.ReportCollected(_itemData.itemName);
+            _camera.TriggerReactionCut(0.6f);
+            _playerMovement.SetFaceHappy();
             GameManager.Instance.AddScore(100);
+        }
+        else if (_itemData.category == ItemCategory.Food)
+        {
+            _camera.TriggerReactionCut(0.6f);
+            _playerMovement.SetFaceExcited();
+            GameManager.Instance.AddScore(50);
         }
         else if (_itemData.category == ItemCategory.Optional)
         {

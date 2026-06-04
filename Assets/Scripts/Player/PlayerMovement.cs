@@ -94,6 +94,7 @@ public class PlayerMovement : MonoBehaviour
     private MoveMode _mode = MoveMode.Move;
     private bool _isSpeedBoost = false;
     private Coroutine _speedCo;
+
     // --- 이벤트 관련 필드 ---
     public event Action<float> OnSprintChanged;
     public event Action<bool> OnSprintActive;
@@ -253,6 +254,10 @@ public class PlayerMovement : MonoBehaviour
     public void SetFaceHappy() => PlayFace("Eyes_Happy");
 
     public void SetFaceShrink() => PlayFace("Eyes_Shrink");
+
+    public void SetFaceExcited() => PlayFace("Eyes_Excited");
+
+    public void SetFaceTrauma() => PlayFace("Eyes_Trauma");
 
     private void OnMove(InputValue value)
     {
