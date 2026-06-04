@@ -69,7 +69,11 @@ public class MissionManager : MonoBehaviour
 
     public void NotifyMissionDisplayed(ItemData item) => OnMissionDisplayed?.Invoke(item);
 
+    public void PauseMissionAssignment()  => _missionsPaused = true;
+    public void ResumeMissionAssignment() => _missionsPaused = false;
+
     private float _elapsedTime;
+    private bool _missionsPaused;
     private ItemData[] _missionPool;
     private float[] _unlockTimes;
     private bool[] _assigned;
@@ -169,6 +173,8 @@ public class MissionManager : MonoBehaviour
 
     private void Update()
     {
+        if (_missionsPaused) return;
+
         _elapsedTime += Time.deltaTime;
 
         for (int i = 0; i < _missionPool.Length; i++)
