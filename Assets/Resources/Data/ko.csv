@@ -61,4 +61,6 @@ ITEM_ENERGYDRINK,"숙취해소제",
 ITEM_PIZZA,"피자",
 
 // -- GAME CLEAR --------------------------------------------------
+GAMECLEAR_SCORE_MINSEC,"아내의 인내심: {0}분 {1}초",
+GAMECLEAR_SCORE_SEC,"아내의 인내심: {0}초",
 GAMECLEAR_TAGLINE,"해냈다. 그 수많은 발을 뚫고서.",
