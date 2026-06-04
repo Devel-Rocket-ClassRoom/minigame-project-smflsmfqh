@@ -15,20 +15,24 @@ DEATH_ANGER_0,"The bag is packed. The door is locked. Game over.",
 ANGER_0,"Where did you sleep last night?? ...You know what, fine.",Honey♥
 ANGER_1,"Since you're already out there, you better pick some things up on the way home.",Honey♥
 ANGER_2,"I'm sending you the list.",Honey♥
-ANGER_10,"Still not here?? It's packed out there — watch those feet and hurry up.",Honey♥
+ANGER_10,"Don't you dare forget a single thing on that list. And get home.",Honey♥
 ANGER_25,"You said 5 minutes. That was 45 minutes ago.",Honey♥
 ANGER_50,"Hello?? Did you get stepped on or something??",Honey♥
 ANGER_75,"I'm not mad. I'm DONE. Get. Home. Now.",Honey♥
 ANGER_90,"...I'm packing a bag.",Honey♥
 
 // ── TUTORIAL (자기 독백) ────────────────────────────────
-TUT_ARROW,"Okay... there's an arrow. Just follow the arrow. I can do this.",Me
-TUT_MINIMAP,"Wait — the map. The shop should be marked. Focus.",Me
-TUT_TOGGLE,"Right, the list. [TAB] — don't forget the list.",Me
-TUT_CONTROLS,"Okay. Jump if I have to. [SPACE]. Sprint if it's bad. [SHIFT]. And if something's coming — roll. [R]. Got it.",Me
+TUT_WASD,"Okay. [W][A][S][D] to move. Simple enough.",Me
+TUT_MOUSE,"Mouse to look around. Keep it steady.",Me
+TUT_CONTROLS,"[SHIFT] to sprint. [SPACE] to jump. [R] to roll. Got it.",Me
 TUT_CAT_WARNING,"...Is that a cat?! [C]!! DODGE!!",Me
+TUT_MAP,"Wait — the map. The shop should be marked. Focus.",Me
+TUT_ARROW,"Okay... there's an arrow. Just follow the arrow. I can do this.",Me
 TUT_ITEM_GLOW,"That glowing spot — that's where it drops. Go.",Me
 TUT_ITEM_PICKUP,"Almost there... [E]. Just press [E].",Me
+TUT_TOGGLE,"Right, the list. [TAB] — don't forget the list.",Me
+TUT_SKIP,"Already know the ropes? Press [X] to skip.",Me
+TUT_GOAL,"Can't upset the queen. Every single item. No excuses.",Me
 
 // ── PHARMACY (자가 독백) ────────────────────────────────
 MONOLOGUE_ENERGYDRINK,"...I feel terrible. I need something for this headache.",Me

@@ -47,6 +47,21 @@ public class CatMovement : MonoBehaviour
     private bool _isAttacking = false;
     private Coroutine _attackCo;
 
+    [Header("야옹 소리")]
+    [SerializeField]
+    private AudioSource _audioSource;
+
+    [SerializeField]
+    private AudioClip[] _meowClips;
+
+    [SerializeField]
+    private float _meowIntervalMin = 2f;
+
+    [SerializeField]
+    private float _meowIntervalMax = 5f;
+
+    private ProximityFeedback _proximity;
+
     [Header("NavMesh 영역 설정")]
     private NavMeshAgent _agent;
     private Animator _animator;
@@ -66,11 +81,20 @@ public class CatMovement : MonoBehaviour
     private bool _initialized;
     private bool _hasDestination = false;
     private string _currentAnim = string.Empty;
+    private Coroutine _meowCo;
+    private bool _isTutorialCat;
+
+    public void MarkAsTutorialCat() => _isTutorialCat = true;
 
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
         _animator = GetComponent<Animator>();
+        if (_audioSource != null)
+        {
+            _audioSource.spatialBlend = 0f;
+            _audioSource.volume = 0f;
+        }
     }
 
     private void Start()
@@ -78,13 +102,23 @@ public class CatMovement : MonoBehaviour
         Setup();
         SetWanderTarget();
         if (_player != null)
+        {
             _playerMovement = _player.GetComponent<PlayerMovement>();
+            _proximity = _player.GetComponent<ProximityFeedback>();
+        }
+        if (_audioSource != null && _meowClips != null && _meowClips.Length > 0)
+            StartMeowLoop();
     }
 
     private void Update()
     {
         if (!_initialized)
             return;
+
+        if (!_isTutorialCat && TutorialManager.Instance != null && TutorialManager.Instance.IsActive)
+            return;
+
+        UpdateMeowVolume();
 
         bool detected =
             Physics.CheckSphere(transform.position, _detectionRadius, _playerLayer)
@@ -267,6 +301,33 @@ public class CatMovement : MonoBehaviour
             _currentAnim = targetMove;
             _animator.Play(targetMove);
             _animator.SetBool("isFound", _isFound);
+        }
+    }
+
+    private void UpdateMeowVolume()
+    {
+        if (_audioSource == null || _player == null || _proximity == null)
+            return;
+
+        float dist = Vector3.Distance(transform.position, _player.transform.position);
+        float t = Mathf.Clamp01((dist - _proximity.PanicRadius) / (_detectionRadius - _proximity.PanicRadius));
+        _audioSource.volume = 1f - t;
+    }
+
+    private void StartMeowLoop()
+    {
+        if (_meowCo != null)
+            StopCoroutine(_meowCo);
+        _meowCo = StartCoroutine(MeowLoop());
+    }
+
+    private IEnumerator MeowLoop()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(Random.Range(_meowIntervalMin, _meowIntervalMax));
+            var clip = _meowClips[Random.Range(0, _meowClips.Length)];
+            _audioSource.PlayOneShot(clip);
         }
     }
 

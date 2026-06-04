@@ -2,6 +2,16 @@ using UnityEngine;
 
 public class CarMovement : MonoBehaviour
 {
+    [Header("오디오")]
+    [SerializeField]
+    private AudioSource _audioSource;
+
+    [SerializeField]
+    private AudioClip _hornSound;
+
+    private ProximityFeedback _proximity;
+    private bool _hornPlaying = false;
+
     private enum CarState
     {
         Running,
@@ -41,6 +51,19 @@ public class CarMovement : MonoBehaviour
 
     private void Start()
     {
+        var player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+            _proximity = player.GetComponent<ProximityFeedback>();
+
+        if (_audioSource != null && _hornSound != null)
+        {
+            _audioSource.clip = _hornSound;
+            _audioSource.loop = true;
+            _audioSource.spatialBlend = 0f;
+            _audioSource.volume = 0f;
+            _audioSource.Stop();
+        }
+
         if (_path != null && !_initialized)
             InitializeMovement();
     }
@@ -79,6 +102,8 @@ public class CarMovement : MonoBehaviour
         if (!_initialized)
             return;
 
+        UpdateEngineVolume();
+
         switch (_state)
         {
             case CarState.Running:
@@ -93,6 +118,32 @@ public class CarMovement : MonoBehaviour
                     _lastStopZone = null;
                 }
                 break;
+        }
+    }
+
+    private void UpdateEngineVolume()
+    {
+        if (_audioSource == null || _proximity == null)
+            return;
+
+        float dist = Vector3.Distance(transform.position, _proximity.transform.position);
+        bool inRange = dist <= _proximity.DangerRadius;
+
+        if (inRange && !_hornPlaying)
+        {
+            _audioSource.Play();
+            _hornPlaying = true;
+        }
+        else if (!inRange && _hornPlaying)
+        {
+            _audioSource.Stop();
+            _hornPlaying = false;
+        }
+
+        if (_hornPlaying)
+        {
+            float t = Mathf.Clamp01((dist - _proximity.PanicRadius) / (_proximity.DangerRadius - _proximity.PanicRadius));
+            _audioSource.volume = 1f - t;
         }
     }
 

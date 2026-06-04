@@ -17,6 +17,20 @@ public class TitleController : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button _startButton;
     [SerializeField] private Button _skipButton;
+    [SerializeField] private Button _languageButton;
+
+    [Header("언어 선택")]
+    [SerializeField] private GameObject _languagePanel;
+    [SerializeField] private Button _koreanButton;
+    [SerializeField] private Button _englishButton;
+    [SerializeField] private Button _backButton;
+
+    public static readonly string LanguagePrefKey = "SelectedLanguage";
+
+    [Header("오디오")]
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _buttonClickSound;
+    [SerializeField] private AudioClip _titleBGM;
 
     private bool _sceneLoading = false;
 
@@ -28,12 +42,63 @@ public class TitleController : MonoBehaviour
         if (_skipButton != null)
             _skipButton.onClick.AddListener(SkipVideo);
 
+        if (_languageButton != null)
+            _languageButton.onClick.AddListener(ToggleLanguagePanel);
+
+        if (_koreanButton != null)
+            _koreanButton.onClick.AddListener(() => SelectLanguage(Language.Ko));
+
+        if (_englishButton != null)
+            _englishButton.onClick.AddListener(() => SelectLanguage(Language.En));
+
+        if (_backButton != null)
+            _backButton.onClick.AddListener(CloseLanguagePanel);
+
         if (_titlePanel != null) _titlePanel.SetActive(true);
         if (_videoPanel != null) _videoPanel.SetActive(false);
+        if (_languagePanel != null) _languagePanel.SetActive(false);
+
+        if (_audioSource != null && _titleBGM != null)
+        {
+            _audioSource.clip = _titleBGM;
+            _audioSource.loop = true;
+            _audioSource.Play();
+        }
+    }
+
+    private void ToggleLanguagePanel()
+    {
+        PlayButtonSound();
+        if (_languagePanel != null)
+            _languagePanel.SetActive(!_languagePanel.activeSelf);
+    }
+
+    private void CloseLanguagePanel()
+    {
+        PlayButtonSound();
+        if (_languagePanel != null)
+            _languagePanel.SetActive(false);
+    }
+
+    private void SelectLanguage(Language language)
+    {
+        PlayButtonSound();
+        PlayerPrefs.SetInt(LanguagePrefKey, (int)language);
+        PlayerPrefs.Save();
+        StringTableManager.Instance.SetLanguage(language);
+        if (_languagePanel != null)
+            _languagePanel.SetActive(false);
+    }
+
+    private void PlayButtonSound()
+    {
+        if (_audioSource != null && _buttonClickSound != null)
+            _audioSource.PlayOneShot(_buttonClickSound);
     }
 
     private void StartGameSequence()
     {
+        PlayButtonSound();
         if (_videoPlayer != null && _videoPlayer.clip != null)
         {
             if (_titlePanel != null) _titlePanel.SetActive(false);
@@ -69,6 +134,7 @@ public class TitleController : MonoBehaviour
 
     private void SkipVideo()
     {
+        PlayButtonSound();
         StopAllCoroutines();
         if (_videoPlayer != null)
             _videoPlayer.Stop();

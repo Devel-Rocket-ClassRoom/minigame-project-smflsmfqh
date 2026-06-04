@@ -10,6 +10,7 @@ public class MissionItem : MonoBehaviour, IInteractive
     [SerializeField]
     private ParticleSystem _optionalParticle; // 선택 미션 입수 시 발동
 
+
     [HideInInspector]
     public bool IsPooled = false;
 
@@ -141,6 +142,8 @@ public class MissionItem : MonoBehaviour, IInteractive
             && !MissionManager.Instance.IsOptionalUnlocked
         )
             return;
+
+        player.PlayPickupSound();
 
         foreach (var effect in _itemData.effects)
         {

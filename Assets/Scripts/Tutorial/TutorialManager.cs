@@ -19,10 +19,10 @@ public class TutorialManager : MonoBehaviour
 
     [Header("약국")]
     [SerializeField]
-    private ShopBuilding _pharmacyShop;
+    private MinimapMarker _pharmacyMarker;
 
     [SerializeField]
-    private MinimapMarker _pharmacyMarker;
+    private TriggerZone _pharmacyZone;
 
     [Header("분노 시스템")]
     [SerializeField]
@@ -33,16 +33,25 @@ public class TutorialManager : MonoBehaviour
     private CatMovement _catPrefab;
 
     [SerializeField]
-    private PlayerHealth _player;
-
-    [SerializeField]
     private float _catSpawnDistance = 6f;
 
     [SerializeField]
     private float _catLifetime = 8f;
 
+    [Header("플레이어")]
+    [SerializeField]
+    private PlayerHealth _player;
+
+    [SerializeField]
+    private SphereCollider _movementZone;
+
+    public bool IsActive => _active;
+
     private bool _active = true;
     private Coroutine _mainCo;
+
+    private static readonly float FastSlide   = 4f / 60f;
+    private static readonly float NormalSlide = 0.3f;
 
     private void Awake()
     {
@@ -52,6 +61,12 @@ public class TutorialManager : MonoBehaviour
             return;
         }
         Instance = this;
+        if (_directionArrowParticle != null)
+            _directionArrowParticle.gameObject.SetActive(false);
+
+        // ANGER 메시지가 Start()에서 발화되기 전에 정지 + 빠른 슬라이드 설정
+        Time.timeScale = 0f;
+        _messageUI?.SetSlideDuration(FastSlide);
     }
 
     private void Start()
@@ -72,18 +87,9 @@ public class TutorialManager : MonoBehaviour
     {
         if (MissionManager.Instance != null)
         {
-            MissionManager.Instance.OnMissionAssigned -= HandleMissionAssigned;
+            MissionManager.Instance.OnMissionAssigned  -= HandleMissionAssigned;
             MissionManager.Instance.OnMissionDisplayed -= HandleMissionDisplayed;
         }
-        UnsubscribeShop();
-    }
-
-    private void HandleMissionDisplayed(ItemData item)
-    {
-        if (item == null || item.itemName.ToUpper() != "ENERGYDRINK")
-            return;
-        MissionManager.Instance.OnMissionDisplayed -= HandleMissionDisplayed;
-        _mainCo = StartCoroutine(RunTutorial());
     }
 
     private void HandleMissionAssigned(ItemData item)
@@ -94,24 +100,57 @@ public class TutorialManager : MonoBehaviour
         MissionManager.Instance.PauseMissionAssignment();
         if (_angerSystem != null)
             _angerSystem.Pause();
+        if (_player != null)
+            _player.SetTutorialInvincible(true);
+    }
+
+    private void HandleMissionDisplayed(ItemData item)
+    {
+        if (item == null || item.itemName.ToUpper() != "ENERGYDRINK")
+            return;
+        MissionManager.Instance.OnMissionDisplayed -= HandleMissionDisplayed;
+
+        // 약국 미션 슬라이드 인 완료 후 시간 재개 (NPC 이동, AngerSystem/MissionManager는 Pause 유지)
+        Time.timeScale = 1f;
+        _messageUI?.SetSlideDuration(NormalSlide);
+        _mainCo = StartCoroutine(RunTutorial());
     }
 
     private IEnumerator RunTutorial()
     {
-        if (_player != null)
-            _player.SetTutorialInvincible(true);
+        // 스킵 안내
+        yield return EnqueueAndWait("TUT_SKIP");
 
-        if (_pharmacyShop != null)
+        // 1. WASD 이동 설명
+        yield return EnqueueAndWait("TUT_WASD");
+
+        // 2. 이동 체험 — 구 콜라이더 반경 벗어나면 다음 단계
+        Vector3 startPos = _player != null ? _player.transform.position : Vector3.zero;
+        float radius = _movementZone != null
+            ? _movementZone.radius * _movementZone.transform.lossyScale.x
+            : 3f;
+        yield return new WaitUntil(() =>
+            _player != null
+            && Vector3.Distance(_player.transform.position, startPos) >= radius
+        );
+
+        // 3. 마우스 회전 + Shift/Space/R 설명
+        yield return EnqueueAndWait("TUT_MOUSE");
+        yield return EnqueueAndWait("TUT_CONTROLS");
+
+        // 4. CAT_WARNING 슬라이드 인 시점에 고양이 스폰
+        bool catDone = false;
+        _messageUI.EnqueueTutorialMessage("TUT_CAT_WARNING", () =>
         {
-            _pharmacyShop.OnPlayerEntered += HandlePharmacyEntered;
-            _pharmacyShop.OnItemDropped += HandleItemDropped;
-        }
+            SpawnTutorialCat();
+            catDone = true;
+        });
+        yield return new WaitUntil(() => catDone);
 
-        yield return EnqueueAndWait("TUT_MINIMAP1");
-
+        // 5. 맵 지도 + 화살표 설명
         if (_pharmacyMarker != null)
             MinimapUI.Instance?.PingMarker(_pharmacyMarker);
-        yield return EnqueueAndWait("TUT_MINIMAP2");
+        yield return EnqueueAndWait("TUT_MAP");
 
         if (_directionArrowParticle != null)
         {
@@ -120,39 +159,21 @@ public class TutorialManager : MonoBehaviour
         }
         yield return EnqueueAndWait("TUT_ARROW");
 
-        yield return EnqueueAndWait("TUT_CONTROLS");
-        if (_player != null)
-            _player.SetTutorialInvincible(false);
+        // 6. 약국 앞 콜라이더 진입 대기 (이미 진입했으면 즉시 통과)
+        if (_pharmacyZone != null && !_pharmacyZone.Triggered)
+        {
+            bool entered = false;
+            _pharmacyZone.OnPlayerEntered += () => entered = true;
+            yield return new WaitUntil(() => entered);
+        }
 
-        yield return EnqueueAndWait("TUT_CAT_WARNING");
-        SpawnTutorialCat();
-
+        // 7. 약국 안내
+        yield return EnqueueAndWait("TUT_ITEM_GLOW");
+        yield return EnqueueAndWait("TUT_ITEM_PICKUP");
         _checkListUI?.Peek();
         yield return EnqueueAndWait("TUT_TOGGLE");
-    }
+        yield return EnqueueAndWait("TUT_GOAL");
 
-    private void HandlePharmacyEntered()
-    {
-        if (!_active)
-            return;
-        _pharmacyShop.OnPlayerEntered -= HandlePharmacyEntered;
-        _messageUI.EnqueueTutorialMessage("TUT_ITEM_GLOW");
-    }
-
-    private void HandleItemDropped(Transform droppedItem)
-    {
-        if (!_active)
-            return;
-        UnsubscribeShop();
-        StartCoroutine(WaitNearItemThenPickupHint(droppedItem));
-    }
-
-    private IEnumerator WaitNearItemThenPickupHint(Transform item)
-    {
-        yield return new WaitUntil(() =>
-            item != null && Vector3.Distance(_player.transform.position, item.position) < 1.5f
-        );
-        yield return EnqueueAndWait("TUT_ITEM_PICKUP");
         Complete();
     }
 
@@ -165,9 +186,10 @@ public class TutorialManager : MonoBehaviour
 
     private void SpawnTutorialCat()
     {
-        if (_catPrefab == null || _player == null) return;
+        if (_catPrefab == null || _player == null)
+            return;
 
-        Vector3 dir = (-_player.transform.forward + Random.insideUnitSphere * 0.5f).normalized;
+        Vector3 dir = (_player.transform.forward + Random.insideUnitSphere * 0.5f).normalized;
         Vector3 origin = _player.transform.position + dir * _catSpawnDistance;
         origin.y = _player.transform.position.y;
 
@@ -175,6 +197,7 @@ public class TutorialManager : MonoBehaviour
             origin = hit.position;
 
         var cat = Instantiate(_catPrefab, origin, Quaternion.identity);
+        cat.MarkAsTutorialCat();
         cat.SetPlayer(_player);
         StartCoroutine(DestroyCatAfter(cat));
     }
@@ -186,29 +209,25 @@ public class TutorialManager : MonoBehaviour
             Destroy(cat.gameObject);
     }
 
-    private void UnsubscribeShop()
-    {
-        if (_pharmacyShop == null)
-            return;
-        _pharmacyShop.OnPlayerEntered -= HandlePharmacyEntered;
-        _pharmacyShop.OnItemDropped -= HandleItemDropped;
-    }
-
     public void Skip()
     {
         if (_mainCo != null)
             StopCoroutine(_mainCo);
-        UnsubscribeShop();
         Complete();
     }
 
     private void Complete()
     {
         _active = false;
+        Time.timeScale = 1f;
+        _messageUI?.SetSlideDuration(NormalSlide);
         if (_player != null)
             _player.SetTutorialInvincible(false);
         if (MissionManager.Instance != null)
+        {
             MissionManager.Instance.ResumeMissionAssignment();
+            MissionManager.Instance.ForceAssignNext();
+        }
         if (_angerSystem != null)
             _angerSystem.Resume();
         if (_directionArrowParticle != null)
