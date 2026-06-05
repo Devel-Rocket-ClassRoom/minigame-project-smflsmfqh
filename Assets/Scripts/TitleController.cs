@@ -104,6 +104,7 @@ public class TitleController : MonoBehaviour
             if (_titlePanel != null) _titlePanel.SetActive(false);
             if (_videoPanel != null) _videoPanel.SetActive(true);
 
+            _videoPlayer.skipOnDrop = false;
             _videoPlayer.prepareCompleted += OnVideoPrepared;
             _videoPlayer.Prepare();
         }
