@@ -11,6 +11,8 @@ public class CarMovement : MonoBehaviour
 
     private ProximityFeedback _proximity;
     private bool _hornPlaying = false;
+    private float _hornMinPlayTime = 1.5f;
+    private float _hornPlayedTime = 0f;
 
     private enum CarState
     {
@@ -51,13 +53,16 @@ public class CarMovement : MonoBehaviour
 
     private void Start()
     {
+        _audioSource = GetComponentInChildren<AudioSource>();
+
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
             _proximity = player.GetComponent<ProximityFeedback>();
 
-        if (_audioSource != null && _hornSound != null)
+        if (_audioSource != null)
         {
-            _audioSource.clip = _hornSound;
+            if (_hornSound != null)
+                _audioSource.clip = _hornSound;
             _audioSource.loop = true;
             _audioSource.spatialBlend = 0f;
             _audioSource.volume = 0f;
@@ -66,6 +71,20 @@ public class CarMovement : MonoBehaviour
 
         if (_path != null && !_initialized)
             InitializeMovement();
+    }
+
+    public void SetHornClip(AudioClip clip)
+    {
+        _hornSound = clip;
+        var audio = GetComponentInChildren<AudioSource>();
+        if (audio != null)
+        {
+            audio.clip = clip;
+            audio.loop = true;
+            audio.spatialBlend = 0f;
+            audio.volume = 0f;
+            _audioSource = audio;
+        }
     }
 
     public void Initialize(
@@ -123,8 +142,16 @@ public class CarMovement : MonoBehaviour
 
     private void UpdateEngineVolume()
     {
-        if (_audioSource == null || _proximity == null)
+        if (_audioSource == null)
             return;
+
+        if (_proximity == null)
+        {
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+                _proximity = player.GetComponent<ProximityFeedback>();
+            return;
+        }
 
         float dist = Vector3.Distance(transform.position, _proximity.transform.position);
         bool inRange = dist <= _proximity.DangerRadius;
@@ -133,11 +160,16 @@ public class CarMovement : MonoBehaviour
         {
             _audioSource.Play();
             _hornPlaying = true;
+            _hornPlayedTime = 0f;
         }
         else if (!inRange && _hornPlaying)
         {
-            _audioSource.Stop();
-            _hornPlaying = false;
+            _hornPlayedTime += Time.deltaTime;
+            if (_hornPlayedTime >= _hornMinPlayTime)
+            {
+                _audioSource.Stop();
+                _hornPlaying = false;
+            }
         }
 
         if (_hornPlaying)

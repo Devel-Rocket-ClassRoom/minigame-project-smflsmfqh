@@ -15,6 +15,9 @@ public class CarSpawnManager : MonoBehaviour
     [Header("차량 프리팹")]
     [SerializeField] private CarMovement[] _carPrefabs;
 
+    [Header("경적 사운드")]
+    [SerializeField] private AudioClip _hornClip;
+
     [Header("차선별 스폰 설정")]
     [SerializeField] private LaneSpawnConfig[] _laneConfigs;
 
@@ -70,6 +73,8 @@ public class CarSpawnManager : MonoBehaviour
             CarMovement prefab = _carPrefabs[Random.Range(0, _carPrefabs.Length)];
             Vector3 spawnPos = config.drivingZone.GetWaypointPosition(config.laneIndex, startIndex, config.laneOffset);
             CarMovement car = Instantiate(prefab, spawnPos, Quaternion.identity, transform);
+            if (_hornClip != null)
+                car.SetHornClip(_hornClip);
             car.Initialize(config.drivingZone, config.laneIndex, startIndex, config.laneOffset);
         }
     }
