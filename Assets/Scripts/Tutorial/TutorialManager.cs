@@ -45,12 +45,19 @@ public class TutorialManager : MonoBehaviour
     [SerializeField]
     private SphereCollider _movementZone;
 
+    [Header("튜토리얼 패널 존")]
+    [SerializeField] private GameObject _skipTextZone;
+    [SerializeField] private GameObject _keyInfoTextZone;
+    [SerializeField] private GameObject _pressCZone;
+    [SerializeField] private GameObject _itemTextZone;
+
     public bool IsActive => _active;
 
     private bool _active = true;
+    private bool _arrowActive = false;
     private Coroutine _mainCo;
 
-    private static readonly float FastSlide   = 4f / 60f;
+    private static readonly float FastSlide = 4f / 60f;
     private static readonly float NormalSlide = 0.3f;
 
     private void Awake()
@@ -71,7 +78,7 @@ public class TutorialManager : MonoBehaviour
 
     private void Start()
     {
-        MissionManager.Instance.OnMissionAssigned  += HandleMissionAssigned;
+        MissionManager.Instance.OnMissionAssigned += HandleMissionAssigned;
         MissionManager.Instance.OnMissionDisplayed += HandleMissionDisplayed;
     }
 
@@ -79,15 +86,38 @@ public class TutorialManager : MonoBehaviour
     {
         if (!_active)
             return;
-        if (Keyboard.current != null && Keyboard.current.xKey.wasPressedThisFrame)
+        if (Keyboard.current != null && Keyboard.current.qKey.wasPressedThisFrame)
             Skip();
+
+        UpdateArrowDirection();
+    }
+
+    private void UpdateArrowDirection()
+    {
+        if (
+            !_arrowActive
+            || _directionArrowParticle == null
+            || _player == null
+            || _pharmacyMarker == null
+        )
+            return;
+
+        Vector3 playerPos = _player.transform.position;
+        Vector3 targetPos = _pharmacyMarker.transform.position;
+        Vector3 dir = targetPos - playerPos;
+        dir.y = 0f;
+
+        _directionArrowParticle.transform.position = new Vector3(playerPos.x, 0f, playerPos.z);
+
+        if (dir.sqrMagnitude > 0.01f)
+            _directionArrowParticle.transform.rotation = Quaternion.LookRotation(dir.normalized);
     }
 
     private void OnDestroy()
     {
         if (MissionManager.Instance != null)
         {
-            MissionManager.Instance.OnMissionAssigned  -= HandleMissionAssigned;
+            MissionManager.Instance.OnMissionAssigned -= HandleMissionAssigned;
             MissionManager.Instance.OnMissionDisplayed -= HandleMissionDisplayed;
         }
     }
@@ -118,7 +148,8 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator RunTutorial()
     {
-        // 스킵 안내
+        // 스킵 안내 — SkipTextZone 활성화
+        _skipTextZone?.SetActive(true);
         yield return EnqueueAndWait("TUT_SKIP");
 
         // 1. WASD 이동 설명
@@ -126,25 +157,30 @@ public class TutorialManager : MonoBehaviour
 
         // 2. 이동 체험 — 구 콜라이더 반경 벗어나면 다음 단계
         Vector3 startPos = _player != null ? _player.transform.position : Vector3.zero;
-        float radius = _movementZone != null
-            ? _movementZone.radius * _movementZone.transform.lossyScale.x
-            : 3f;
+        float radius =
+            _movementZone != null
+                ? _movementZone.radius * _movementZone.transform.lossyScale.x
+                : 3f;
         yield return new WaitUntil(() =>
-            _player != null
-            && Vector3.Distance(_player.transform.position, startPos) >= radius
+            _player != null && Vector3.Distance(_player.transform.position, startPos) >= radius
         );
 
-        // 3. 마우스 회전 + Shift/Space/R 설명
+        // 3. 마우스 회전 + Shift/Space/R 설명 — KeyInfoTextZone 활성화
         yield return EnqueueAndWait("TUT_MOUSE");
+        _keyInfoTextZone?.SetActive(true);
         yield return EnqueueAndWait("TUT_CONTROLS");
 
-        // 4. CAT_WARNING 슬라이드 인 시점에 고양이 스폰
+        // 4. CAT_WARNING 슬라이드 인 시점에 고양이 스폰 — PressCZone 활성화
         bool catDone = false;
-        _messageUI.EnqueueTutorialMessage("TUT_CAT_WARNING", () =>
-        {
-            SpawnTutorialCat();
-            catDone = true;
-        });
+        _messageUI.EnqueueTutorialMessage(
+            "TUT_CAT_WARNING",
+            () =>
+            {
+                SpawnTutorialCat();
+                _pressCZone?.SetActive(true);
+                catDone = true;
+            }
+        );
         yield return new WaitUntil(() => catDone);
 
         // 5. 맵 지도 + 화살표 설명
@@ -156,6 +192,7 @@ public class TutorialManager : MonoBehaviour
         {
             _directionArrowParticle.gameObject.SetActive(true);
             _directionArrowParticle.Play();
+            _arrowActive = true;
         }
         yield return EnqueueAndWait("TUT_ARROW");
 
@@ -167,7 +204,16 @@ public class TutorialManager : MonoBehaviour
             yield return new WaitUntil(() => entered);
         }
 
-        // 7. 약국 안내
+        // 약국 진입 → 아이템 드랍 시점에 화살표 비활성화
+        if (_directionArrowParticle != null)
+        {
+            _arrowActive = false;
+            _directionArrowParticle.Stop();
+            _directionArrowParticle.gameObject.SetActive(false);
+        }
+
+        // 7. 약국 안내 — ItemTextZone 활성화
+        _itemTextZone?.SetActive(true);
         yield return EnqueueAndWait("TUT_ITEM_GLOW");
         yield return EnqueueAndWait("TUT_ITEM_PICKUP");
         _checkListUI?.Peek();
@@ -207,6 +253,7 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitForSeconds(_catLifetime);
         if (cat != null)
             Destroy(cat.gameObject);
+        _pressCZone?.SetActive(false);
     }
 
     public void Skip()
@@ -219,6 +266,10 @@ public class TutorialManager : MonoBehaviour
     private void Complete()
     {
         _active = false;
+        _skipTextZone?.SetActive(false);
+        _keyInfoTextZone?.SetActive(false);
+        _pressCZone?.SetActive(false);
+        _itemTextZone?.SetActive(false);
         Time.timeScale = 1f;
         _messageUI?.SetSlideDuration(NormalSlide);
         if (_player != null)
@@ -232,6 +283,7 @@ public class TutorialManager : MonoBehaviour
             _angerSystem.Resume();
         if (_directionArrowParticle != null)
         {
+            _arrowActive = false;
             _directionArrowParticle.Stop();
             _directionArrowParticle.gameObject.SetActive(false);
         }

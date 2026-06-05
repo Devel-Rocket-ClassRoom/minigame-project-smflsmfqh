@@ -38,16 +38,12 @@ public class TrashDropper : MonoBehaviour
     {
         if (_dropTable == null || _dropTable.Length == 0)
         {
-            Debug.LogWarning(
-                $"[TrashDropper] {name}: _dropTable이 비어있습니다. 컴포넌트를 비활성화합니다."
-            );
             enabled = false;
             return;
         }
 
         if (TrashDropManager.Instance == null)
         {
-            Debug.LogError("[TrashDropper] TrashDropManager가 씬에 없습니다.");
             enabled = false;
             return;
         }
@@ -73,14 +69,9 @@ public class TrashDropper : MonoBehaviour
             {
                 ItemData data = _dropTable[Random.Range(0, _dropTable.Length)];
                 TrashDropManager.Instance.SpawnItem(data, pos);
-                Debug.Log($"[TrashDropper] {name} → {data.itemName} 드랍 at {pos}");
                 return;
             }
         }
-
-        Debug.LogWarning(
-            $"[TrashDropper] {name}: {_maxRetries}번 시도 후 유효 위치를 찾지 못했습니다."
-        );
     }
 
     private bool TryGetValidPosition(out Vector3 result)

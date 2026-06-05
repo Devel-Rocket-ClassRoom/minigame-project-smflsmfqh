@@ -80,7 +80,6 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Button _hiddenSkipButton;
 
-
     [Header("SFX")]
     [SerializeField]
     private AudioSource _sfxSource;
@@ -111,15 +110,51 @@ public class UIManager : MonoBehaviour
 
         Instance = this;
 
-        _restartButton1.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.Restart(); });
-        _restartButton2.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.Restart(); });
-        _exitButton1.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.Exit(); });
-        _exitButton2.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.Exit(); });
-        _backButton1?.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.GoToTitle(); });
-        _backButton2?.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.GoToTitle(); });
-        _resumeButton.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.TogglePause(); });
-        _exitButton3.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.Exit(); });
-        _backButton3?.onClick.AddListener(() => { PlayButtonSound(); GameManager.Instance.GoToTitle(); });
+        _restartButton1.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            GameManager.Instance.Restart();
+        });
+        _restartButton2.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            GameManager.Instance.Restart();
+        });
+        _exitButton1.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            GameManager.Instance.Exit();
+        });
+        _exitButton2.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            GameManager.Instance.Exit();
+        });
+        _backButton1?.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            GameManager.Instance.GoToTitle();
+        });
+        _backButton2?.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            GameManager.Instance.GoToTitle();
+        });
+        _resumeButton.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            GameManager.Instance.TogglePause();
+        });
+        _exitButton3.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            GameManager.Instance.Exit();
+        });
+        _backButton3?.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            GameManager.Instance.GoToTitle();
+        });
 
         SetPanel(_gameOverPanel, false);
         SetPanel(_gameClearPanel, false);
@@ -127,7 +162,11 @@ public class UIManager : MonoBehaviour
         SetPanel(_hiddenVideoPanel, false);
 
         if (_hiddenSkipButton != null)
-            _hiddenSkipButton.onClick.AddListener(() => { PlayButtonSound(); SkipHiddenVideo(); });
+            _hiddenSkipButton.onClick.AddListener(() =>
+            {
+                PlayButtonSound();
+                SkipHiddenVideo();
+            });
 
         MissionManager.Instance.OnMissionDisplayed += EnableMissionCheckListUI;
     }
@@ -168,6 +207,8 @@ public class UIManager : MonoBehaviour
 
     public void ShowGameOver(CauseDeath cause)
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         PlayBGM(_gameOverBGM);
         SetPanel(_hudPanel, false);
         SetPanel(_gameOverPanel, true);
@@ -175,7 +216,9 @@ public class UIManager : MonoBehaviour
             _proximityPanelFeedbackUI.ForceHide();
 
         string deathMsg = StringTableManager.Instance.GetDeathMessage(cause);
-        Debug.Log($"[GameOver] Language={StringTableManager.Instance.CurrentLanguage}, cause={cause}, msg={deathMsg}");
+        Debug.Log(
+            $"[GameOver] Language={StringTableManager.Instance.CurrentLanguage}, cause={cause}, msg={deathMsg}"
+        );
         _gameOverDescText.text = deathMsg;
     }
 
@@ -185,10 +228,12 @@ public class UIManager : MonoBehaviour
         if (_proximityPanelFeedbackUI != null)
             _proximityPanelFeedbackUI.ForceHide();
 
-        if (MissionManager.Instance.IsOptionalCompleted
+        if (
+            MissionManager.Instance.IsOptionalCompleted
             && _hiddenVideoPanel != null
             && _hiddenVideoPlayer != null
-            && _hiddenVideoPlayer.clip != null)
+            && _hiddenVideoPlayer.clip != null
+        )
         {
             StartCoroutine(PlayHiddenVideoThenClear(angerSeconds));
         }
@@ -238,20 +283,24 @@ public class UIManager : MonoBehaviour
 
     private void ShowClearPanel(int angerSeconds)
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         if (_bgmSource == null || _bgmSource.clip != _clearBGM)
             PlayBGM(_clearBGM);
-        Debug.Log($"[UIManager] ShowGameClear 호출, _gameClearPanel null? {_gameClearPanel == null}");
+        Debug.Log(
+            $"[UIManager] ShowGameClear 호출, _gameClearPanel null? {_gameClearPanel == null}"
+        );
         SetPanel(_gameClearPanel, true);
         int min = angerSeconds / 60;
         int sec = angerSeconds % 60;
         string key = min > 0 ? "GAMECLEAR_SCORE_MINSEC" : "GAMECLEAR_SCORE_SEC";
         string fmt = StringTableManager.Instance.GetMessage(key).message;
-        __scoreText.text = min > 0
-            ? string.Format(fmt, min, sec)
-            : string.Format(fmt, sec);
+        __scoreText.text = min > 0 ? string.Format(fmt, min, sec) : string.Format(fmt, sec);
 
         if (_clearTaglineText != null)
-            _clearTaglineText.text = StringTableManager.Instance.GetMessage("GAMECLEAR_TAGLINE").message;
+            _clearTaglineText.text = StringTableManager
+                .Instance.GetMessage("GAMECLEAR_TAGLINE")
+                .message;
     }
 
     public void ShowHUD()

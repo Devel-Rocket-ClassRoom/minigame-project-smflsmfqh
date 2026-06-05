@@ -22,7 +22,7 @@ ANGER_75,"화난 게 아냐. 끝났다고. 지금. 당장. 집으로 와.",여�
 ANGER_90,"...짐 싸고 있어.",여보♥,Honey♥
 
 // -- TUTORIAL ----------------------------------------------------
-TUT_SKIP,"조작법 알면 [X] 눌러서 건너뛸 수 있어.",나,Me
+TUT_SKIP,"조작법 알면 [Q] 눌러서 건너뛸 수 있어.",나,Me
 TUT_WASD,"[W][A][S][D]로 움직이면 돼. 일단 해보자.",나,Me
 TUT_MOUSE,"마우스로 방향을 잡으면 돼. 천천히.",나,Me
 TUT_CONTROLS,"[SHIFT]는 달리기. [SPACE]는 점프. [R]은 구르기. 기억해둬.",나,Me
@@ -70,3 +70,26 @@ PAUSE_EXIT,"게임 종료?\n아내가 결혼에서 퇴장합니다."
 GAMECLEAR_SCORE_MINSEC,"아내의 인내심: {0}분 {1}초",
 GAMECLEAR_SCORE_SEC,"아내의 인내심: {0}초",
 GAMECLEAR_TAGLINE,"해냈다. 그 수많은 발을 뚫고서.",
+
+// -- TUTORIAL PANEL -----------------------------------------------
+PANEL_SKIP_DESC,"건너뛰기"
+PANEL_KEY_MOVE_DESC,"이동"
+PANEL_KEY_SPRINT_DESC,"달리기"
+PANEL_KEY_JUMP_DESC,"점프"
+PANEL_KEY_ROLL_DESC,"구르기"
+PANEL_KEY_HIDE_DESC,"[C] 누르는 동안 고양이 회피"
+PANEL_KEY_PICKUP_DESC,"[E] 아이템 줍기"
+PANEL_KEY_LIST_DESC,"심부름 목록"
+
+// -- LABELS -------------------------------------------------------
+LABEL_MISSION_LIST,"심부름 목록"
+
+// -- TITLE SCENE --------------------------------------------------
+BTN_RESTART,"다시 시작"
+BTN_LANGUAGE,"언어"
+BTN_SETTING,"설정"
+BTN_KO,"한국어"
+BTN_EN,"영어"
+BTN_BACK,"뒤로"
+BTN_EXIT,"나가기"
+BTN_RESUME,"재개"

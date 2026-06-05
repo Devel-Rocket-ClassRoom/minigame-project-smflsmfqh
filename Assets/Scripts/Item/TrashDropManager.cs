@@ -49,9 +49,6 @@ public class TrashDropManager : MonoBehaviour
 
         if (item == null)
         {
-            Debug.LogError(
-                $"[TrashDropManager] {data.itemName}의 dropPrefab에 MissionItem 컴포넌트가 없습니다."
-            );
             Destroy(go);
             return null;
         }
@@ -76,6 +73,5 @@ public class TrashDropManager : MonoBehaviour
             _pool[data] = stack;
         }
         stack.Push(item);
-        Debug.Log($"[TrashDropManager] {data.itemName} 풀 반납 (잔여: {stack.Count})");
     }
 }

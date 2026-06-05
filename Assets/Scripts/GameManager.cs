@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        _playerHealth.GetComponent<UnityEngine.InputSystem.PlayerInput>()?.DeactivateInput();
         UIManager.Instance.ShowGameClear(Mathf.RoundToInt(_playTime));
     }
 
@@ -111,10 +112,17 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = _isPaused ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = _isPaused;
 
+        var playerInput = _playerHealth.GetComponent<UnityEngine.InputSystem.PlayerInput>();
         if (_isPaused)
+        {
+            playerInput?.DeactivateInput();
             UIManager.Instance.ShowPause();
+        }
         else
+        {
+            playerInput?.ActivateInput();
             UIManager.Instance.HidePause();
+        }
     }
 
     public void Exit()

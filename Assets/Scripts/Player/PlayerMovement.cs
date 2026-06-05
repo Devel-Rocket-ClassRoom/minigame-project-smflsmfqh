@@ -95,6 +95,7 @@ public class PlayerMovement : MonoBehaviour
     private MoveMode _mode = MoveMode.Move;
     private bool _isSpeedBoost = false;
     private Coroutine _speedCo;
+    private float _hangoverMultiplier = 1f;
 
     // --- 이벤트 관련 필드 ---
     public event Action<float> OnSprintChanged;
@@ -152,7 +153,7 @@ public class PlayerMovement : MonoBehaviour
         {
             case MoveMode.Move:
                 {
-                    _currentSpeed = _moveSpeed;
+                    _currentSpeed = _moveSpeed * _hangoverMultiplier;
                     _collider.height = _standHeight;
                     _collider.center = _prevColliderCenter;
 
@@ -165,7 +166,7 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case MoveMode.Sprint:
                 {
-                    _currentSpeed = _moveSpeed + _sprintSpeed;
+                    _currentSpeed = (_moveSpeed + _sprintSpeed) * _hangoverMultiplier;
                     _sprintDuration -= Time.fixedDeltaTime;
 
                     if (_sprintDuration <= 0)
@@ -186,7 +187,7 @@ public class PlayerMovement : MonoBehaviour
             }
             case MoveMode.Crouch:
                 {
-                    _currentSpeed = _crouchSpeed;
+                    _currentSpeed = _crouchSpeed * _hangoverMultiplier;
                     _collider.height = _crouchHeight;
                     _collider.center = new Vector3(
                         _prevColliderCenter.x,
@@ -369,6 +370,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void SetHangoverDebuff(float multiplier)
+    {
+        _hangoverMultiplier = multiplier;
     }
 
     public void SetSpeedBoost(float speed, float sec)

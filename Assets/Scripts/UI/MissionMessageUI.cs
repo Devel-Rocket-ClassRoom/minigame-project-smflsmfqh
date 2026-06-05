@@ -41,13 +41,15 @@ public class MissionMessageUI : MonoBehaviour
         public readonly string Sender;
         public readonly ItemData Item; // 분노·힌트·독백 메시지는 null
         public readonly System.Action OnSlidedInCallback;
+        public readonly float DisplayDuration; // <=0이면 _displayDuration 사용
 
-        public MessageData(string message, string sender, ItemData item = null, System.Action onSlidedInCallback = null)
+        public MessageData(string message, string sender, ItemData item = null, System.Action onSlidedInCallback = null, float displayDuration = -1f)
         {
             Message = message;
             Sender = sender;
             Item = item;
             OnSlidedInCallback = onSlidedInCallback;
+            DisplayDuration = displayDuration;
         }
     }
 
@@ -127,11 +129,11 @@ public class MissionMessageUI : MonoBehaviour
         Enqueue(new MessageData(data.Item1, data.Item2));
     }
 
-    public void EnqueueTutorialMessage(string csvKey, System.Action onSlidedIn = null)
+    public void EnqueueTutorialMessage(string csvKey, System.Action onSlidedIn = null, float displayDuration = 3f)
     {
         var (message, sender) = StringTableManager.Instance.GetMessage(csvKey);
         if (string.IsNullOrEmpty(message)) return;
-        Enqueue(new MessageData(message, sender, null, onSlidedIn));
+        Enqueue(new MessageData(message, sender, null, onSlidedIn, displayDuration));
     }
 
     private void Enqueue(MessageData data)
@@ -162,7 +164,8 @@ public class MissionMessageUI : MonoBehaviour
             data.OnSlidedInCallback?.Invoke();
             if (data.Item != null)
                 MissionManager.Instance?.NotifyMissionDisplayed(data.Item);
-            yield return new WaitForSecondsRealtime(_displayDuration);
+            float waitTime = data.DisplayDuration > 0 ? data.DisplayDuration : _displayDuration;
+            yield return new WaitForSecondsRealtime(waitTime);
             yield return StartCoroutine(Slide(0f, -_panelWidth, _currentSlideDuration));
         }
 
