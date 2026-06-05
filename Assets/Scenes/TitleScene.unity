@@ -683,6 +683,14 @@ MonoBehaviour:
   _koreanButton: {fileID: 1792672532}
   _englishButton: {fileID: 123069045}
   _backButton: {fileID: 2147260075}
+  _titleImage: {fileID: 634539850}
+  _languagePanelImage: {fileID: 1904775465}
+  _titleSprites:
+  - {fileID: 21300000, guid: c267b9805de0e4b53a16d92bebffdbc1, type: 3}
+  - {fileID: 21300000, guid: 759b5d6a6c2b1604695bf0620951a786, type: 3}
+  _languagePanelSprites:
+  - {fileID: 21300000, guid: 196e729dcd0d9e04aa1ef0bb3d1b85c2, type: 3}
+  - {fileID: 21300000, guid: 573440f0191c5344bbcf419a0c7dbf51, type: 3}
   _audioSource: {fileID: 1006186013}
   _buttonClickSound: {fileID: 8300000, guid: 1b2e8cabfed4e46dc93bb57232ce45ba, type: 3}
   _titleBGM: {fileID: 8300000, guid: 4ce8f018a294b4973a80a5bda52f20ff, type: 3}
@@ -813,7 +821,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1423033945
 RectTransform:
   m_ObjectHideFlags: 0

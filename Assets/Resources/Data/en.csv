@@ -22,7 +22,7 @@ ANGER_75,"I'm not mad. I'm DONE. Get. Home. Now.",Honey♥,Honey♥
 ANGER_90,"...I'm packing a bag.",Honey♥,Honey♥
 
 // -- TUTORIAL ----------------------------------------------------
-TUT_SKIP,"Already know the ropes? Press [X] to skip.",Me,Me
+TUT_SKIP,"Already know the ropes? Press [Q] to skip.",Me,Me
 TUT_WASD,"Okay. [W][A][S][D] to move. Simple enough.",Me,Me
 TUT_MOUSE,"Mouse to look around. Keep it steady.",Me,Me
 TUT_CONTROLS,"[SHIFT] to sprint. [SPACE] to jump. [R] to roll. Got it.",Me,Me
@@ -69,3 +69,26 @@ PAUSE_EXIT,"Exit game?\nYour wife exits the marriage."
 GAMECLEAR_SCORE_MINSEC,"Wife's Patience: {0}m {1}s",
 GAMECLEAR_SCORE_SEC,"Wife's Patience: {0}s",
 GAMECLEAR_TAGLINE,"You made it. Against all feet.",
+
+// -- TUTORIAL PANEL -----------------------------------------------
+PANEL_SKIP_DESC,"Skip"
+PANEL_KEY_MOVE_DESC,"Move"
+PANEL_KEY_SPRINT_DESC,"Sprint"
+PANEL_KEY_JUMP_DESC,"Jump"
+PANEL_KEY_ROLL_DESC,"Roll"
+PANEL_KEY_HIDE_DESC,"[C] Hold to dodge cat"
+PANEL_KEY_PICKUP_DESC,"[E] Pick Up"
+PANEL_KEY_LIST_DESC,"Errand List"
+
+// -- LABELS -------------------------------------------------------
+LABEL_MISSION_LIST,"Mission List"
+
+// -- PANEL BUTTON --------------------------------------------------
+BTN_RESTART,"RESTART"
+BTN_LANGUAGE,"LANGUAGE"
+BTN_SETTING,"SETTING"
+BTN_KO,"KOREAN"
+BTN_EN,"ENGLISH"
+BTN_BACK,"BACK"
+BTN_EXIT,"EXIT"
+BTN_RESUME,"RESUME"

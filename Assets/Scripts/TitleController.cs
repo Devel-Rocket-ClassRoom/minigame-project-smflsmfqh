@@ -25,6 +25,12 @@ public class TitleController : MonoBehaviour
     [SerializeField] private Button _englishButton;
     [SerializeField] private Button _backButton;
 
+    [Header("언어별 이미지")]
+    [SerializeField] private Image _titleImage;
+    [SerializeField] private Image _languagePanelImage;
+    [SerializeField] private Sprite[] _titleSprites;          // [0]=En [1]=Ko
+    [SerializeField] private Sprite[] _languagePanelSprites;  // [0]=En [1]=Ko
+
     public static readonly string LanguagePrefKey = "SelectedLanguage";
 
     [Header("오디오")]
@@ -58,6 +64,11 @@ public class TitleController : MonoBehaviour
         if (_videoPanel != null) _videoPanel.SetActive(false);
         if (_languagePanel != null) _languagePanel.SetActive(false);
 
+        // 저장된 언어로 초기 이미지 설정
+        Language savedLang = (Language)PlayerPrefs.GetInt(LanguagePrefKey, (int)Language.Ko);
+        StringTableManager.Instance.SetLanguage(savedLang);
+        UpdateImages(savedLang);
+
         if (_audioSource != null && _titleBGM != null)
         {
             _audioSource.clip = _titleBGM;
@@ -86,8 +97,18 @@ public class TitleController : MonoBehaviour
         PlayerPrefs.SetInt(LanguagePrefKey, (int)language);
         PlayerPrefs.Save();
         StringTableManager.Instance.SetLanguage(language);
+        UpdateImages(language);
         if (_languagePanel != null)
             _languagePanel.SetActive(false);
+    }
+
+    private void UpdateImages(Language language)
+    {
+        int idx = (int)language;
+        if (_titleImage != null && _titleSprites != null && idx < _titleSprites.Length && _titleSprites[idx] != null)
+            _titleImage.sprite = _titleSprites[idx];
+        if (_languagePanelImage != null && _languagePanelSprites != null && idx < _languagePanelSprites.Length && _languagePanelSprites[idx] != null)
+            _languagePanelImage.sprite = _languagePanelSprites[idx];
     }
 
     private void PlayButtonSound()
