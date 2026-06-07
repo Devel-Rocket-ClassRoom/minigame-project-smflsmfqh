@@ -27,9 +27,6 @@ public class MissionMessageUI : MonoBehaviour
 
     [Header("오디오")]
     [SerializeField]
-    private AudioSource _audioSource;
-
-    [SerializeField]
     private AudioClip _slideInSound;
 
     // 슬라이드 완료 직후 발화 — 미션 메시지일 때만 ItemData가 non-null
@@ -59,6 +56,17 @@ public class MissionMessageUI : MonoBehaviour
     private readonly Queue<MessageData> _queue = new();
 
     public void SetSlideDuration(float duration) => _currentSlideDuration = duration;
+
+    public void ClearQueue()
+    {
+        _queue.Clear();
+        if (_slideCo != null)
+        {
+            StopCoroutine(_slideCo);
+            _slideCo = null;
+        }
+        _panel.anchoredPosition = new Vector2(-_panelWidth, _panel.anchoredPosition.y);
+    }
 
     private void Awake()
     {
@@ -119,9 +127,12 @@ public class MissionMessageUI : MonoBehaviour
         if (!string.IsNullOrEmpty(flowerMsg))
         {
             var flowerItem = MissionManager.Instance?.OptionalMission;
-            Debug.Log($"[Flower] HandleMonologue: flowerItem={flowerItem?.itemName ?? "NULL"}");
             Enqueue(new MessageData(flowerMsg, flowerSender, flowerItem));
         }
+
+        var (optMsg, optSender) = StringTableManager.Instance.GetMessage("MONOLOGUE_FLOWER_OPTIONAL");
+        if (!string.IsNullOrEmpty(optMsg))
+            Enqueue(new MessageData(optMsg, optSender));
     }
 
     private void HandleAngerMessage((string, string) data)
@@ -134,6 +145,23 @@ public class MissionMessageUI : MonoBehaviour
         var (message, sender) = StringTableManager.Instance.GetMessage(csvKey);
         if (string.IsNullOrEmpty(message)) return;
         Enqueue(new MessageData(message, sender, null, onSlidedIn, displayDuration));
+    }
+
+    // 현재 표시 중인 메시지는 유지하고, 대기 중인 메시지들 맨 앞에 삽입
+    public void EnqueueFrontTutorialMessage(string csvKey, System.Action onSlidedIn = null, float displayDuration = 3f)
+    {
+        var (message, sender) = StringTableManager.Instance.GetMessage(csvKey);
+        if (string.IsNullOrEmpty(message)) return;
+
+        var newData = new MessageData(message, sender, null, onSlidedIn, displayDuration);
+        var temp = new Queue<MessageData>(_queue);
+        _queue.Clear();
+        _queue.Enqueue(newData);
+        while (temp.Count > 0)
+            _queue.Enqueue(temp.Dequeue());
+
+        if (_slideCo == null)
+            _slideCo = StartCoroutine(ProcessQueue());
     }
 
     private void Enqueue(MessageData data)
@@ -157,8 +185,7 @@ public class MissionMessageUI : MonoBehaviour
                 _icon.sprite = Resources.Load<Sprite>(imageKey);
             }
 
-            if (_audioSource != null && _slideInSound != null)
-                _audioSource.PlayOneShot(_slideInSound);
+            AudioManager.Instance?.PlaySFX(_slideInSound);
             yield return StartCoroutine(Slide(-_panelWidth, 10f, _currentSlideDuration));
             OnSlidedIn?.Invoke(data.Item);
             data.OnSlidedInCallback?.Invoke();

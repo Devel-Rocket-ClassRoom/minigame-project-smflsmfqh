@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour
     private AngerSystem _angerSystem;
 
     [SerializeField]
+    private MissionMessageUI _missionMessageUI;
+
+    [SerializeField]
     private Language _language = Language.En;
 
     private void Awake()
@@ -53,15 +56,9 @@ public class GameManager : MonoBehaviour
 
 #if UNITY_EDITOR
         if (UnityEngine.InputSystem.Keyboard.current.f2Key.wasPressedThisFrame)
-        {
             MissionManager.Instance.DebugCompleteAll();
-            Debug.Log("[Debug] 모든 미션 즉시 완료");
-        }
         if (UnityEngine.InputSystem.Keyboard.current.f3Key.wasPressedThisFrame)
-        {
             MissionManager.Instance.DebugUnlockOptional();
-            Debug.Log("[Debug] 꽃 미션 즉시 발동");
-        }
 #endif
     }
 
@@ -72,9 +69,8 @@ public class GameManager : MonoBehaviour
 
     public void GameOver(CauseDeath cause)
     {
-        Debug.Log($"[게임 오버] {cause}가 죽임");
-        if (cause == CauseDeath.Mission || cause == CauseDeath.Anger)
-            Time.timeScale = 0f;
+        MissionManager.Instance.PauseMissionAssignment();
+        _missionMessageUI?.ClearQueue();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         UIManager.Instance.ShowGameOver(cause);
@@ -82,6 +78,8 @@ public class GameManager : MonoBehaviour
 
     public void GameClear()
     {
+        MissionManager.Instance.PauseMissionAssignment();
+        _missionMessageUI?.ClearQueue();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         _playerHealth.GetComponent<UnityEngine.InputSystem.PlayerInput>()?.DeactivateInput();
@@ -98,10 +96,11 @@ public class GameManager : MonoBehaviour
 
     public void Restart()
     {
-        Debug.Log("[게임 오버] RESTART 버튼 눌림");
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        PlayerPrefs.SetInt("SkipTutorial", 1);
+        PlayerPrefs.Save();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 

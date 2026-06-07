@@ -11,19 +11,6 @@ public class TutorialManager : MonoBehaviour
     [SerializeField]
     private MissionMessageUI _messageUI;
 
-    [SerializeField]
-    private MissionCheckListUI _checkListUI;
-
-    [SerializeField]
-    private ParticleSystem _directionArrowParticle;
-
-    [Header("약국")]
-    [SerializeField]
-    private MinimapMarker _pharmacyMarker;
-
-    [SerializeField]
-    private TriggerZone _pharmacyZone;
-
     [Header("분노 시스템")]
     [SerializeField]
     private AngerSystem _angerSystem;
@@ -45,17 +32,35 @@ public class TutorialManager : MonoBehaviour
     [SerializeField]
     private SphereCollider _movementZone;
 
+    [Header("약국 진입 트리거")]
+    [SerializeField]
+    private TriggerZone _pharmacyZone;
+
+    [Header("방향 화살표 파티클")]
+    [SerializeField]
+    private ParticleSystem _arrowParticle;
+
     [Header("튜토리얼 패널 존")]
-    [SerializeField] private GameObject _skipTextZone;
-    [SerializeField] private GameObject _keyInfoTextZone;
-    [SerializeField] private GameObject _pressCZone;
-    [SerializeField] private GameObject _itemTextZone;
+    [SerializeField]
+    private GameObject _skipTextZone;
+
+    [SerializeField]
+    private GameObject _keyInfoTextZone;
+
+    [SerializeField]
+    private GameObject _pressCZone;
 
     public bool IsActive => _active;
 
     private bool _active = true;
-    private bool _arrowActive = false;
+    private bool _firstMissionDisplayed;
+    private bool _pharmacyEntered;
+    private bool _energyDrinkCollected;
     private Coroutine _mainCo;
+
+    private NPCMovement[] _pausedNPCs;
+    private CatMovement[] _pausedCats;
+    private CarMovement[] _pausedCars;
 
     private static readonly float FastSlide = 4f / 60f;
     private static readonly float NormalSlide = 0.3f;
@@ -68,109 +73,98 @@ public class TutorialManager : MonoBehaviour
             return;
         }
         Instance = this;
-        if (_directionArrowParticle != null)
-            _directionArrowParticle.gameObject.SetActive(false);
 
-        // ANGER 메시지가 Start()에서 발화되기 전에 정지 + 빠른 슬라이드 설정
-        Time.timeScale = 0f;
+        // TutorialPanel 부모가 에디터에서 비활성화되어 있으므로 먼저 활성화
+        _skipTextZone?.transform.parent?.gameObject.SetActive(true);
+        _skipTextZone?.SetActive(true);
+        _keyInfoTextZone?.SetActive(true);
         _messageUI?.SetSlideDuration(FastSlide);
+
+        // 화살표 파티클: 약국 진입 전까지 꺼둠
+        if (_arrowParticle != null)
+            _arrowParticle.gameObject.SetActive(false);
     }
 
     private void Start()
     {
-        MissionManager.Instance.OnMissionAssigned += HandleMissionAssigned;
-        MissionManager.Instance.OnMissionDisplayed += HandleMissionDisplayed;
+        MissionManager.Instance.PauseMissionAssignment();
+        _angerSystem?.Pause();
+
+        if (_player != null)
+            _player.SetTutorialInvincible(true);
+
+        _pausedNPCs = FindObjectsByType<NPCMovement>(FindObjectsSortMode.None);
+        foreach (var npc in _pausedNPCs)
+            npc.SetExternalPause(true);
+
+        _pausedCats = FindObjectsByType<CatMovement>(FindObjectsSortMode.None);
+        foreach (var cat in _pausedCats)
+            cat.SetExternalPause(true);
+
+        _pausedCars = FindObjectsByType<CarMovement>(FindObjectsSortMode.None);
+        foreach (var car in _pausedCars)
+            car.SetTutorialPause(true);
+
+        if (_pharmacyZone == null)
+            _pharmacyZone = FindFirstObjectByType<TriggerZone>();
+        if (_pharmacyZone != null)
+            _pharmacyZone.OnPlayerEntered += OnPharmacyEntered;
+
+        // 재시작(게임오버 후)이면 튜토리얼 자동 스킵
+        if (PlayerPrefs.GetInt("SkipTutorial", 0) == 1)
+        {
+            PlayerPrefs.DeleteKey("SkipTutorial");
+            Skip();
+            return;
+        }
+
+        _mainCo = StartCoroutine(RunTutorial());
     }
 
     private void Update()
     {
-        if (!_active)
-            return;
-        if (Keyboard.current != null && Keyboard.current.qKey.wasPressedThisFrame)
+        if (_active && Keyboard.current != null && Keyboard.current.qKey.wasPressedThisFrame)
             Skip();
 
-        UpdateArrowDirection();
+        UpdateArrowParticle();
     }
 
-    private void UpdateArrowDirection()
+    private void UpdateArrowParticle()
     {
-        if (
-            !_arrowActive
-            || _directionArrowParticle == null
-            || _player == null
-            || _pharmacyMarker == null
-        )
-            return;
+        if (_arrowParticle == null || !_arrowParticle.gameObject.activeSelf) return;
+        if (_player == null || _pharmacyZone == null) return;
 
         Vector3 playerPos = _player.transform.position;
-        Vector3 targetPos = _pharmacyMarker.transform.position;
+        Vector3 targetPos = _pharmacyZone.transform.position;
         Vector3 dir = targetPos - playerPos;
         dir.y = 0f;
 
-        _directionArrowParticle.transform.position = new Vector3(playerPos.x, 0f, playerPos.z);
+        _arrowParticle.transform.position = new Vector3(playerPos.x, 0f, playerPos.z);
 
         if (dir.sqrMagnitude > 0.01f)
-            _directionArrowParticle.transform.rotation = Quaternion.LookRotation(dir.normalized);
-    }
-
-    private void OnDestroy()
-    {
-        if (MissionManager.Instance != null)
-        {
-            MissionManager.Instance.OnMissionAssigned -= HandleMissionAssigned;
-            MissionManager.Instance.OnMissionDisplayed -= HandleMissionDisplayed;
-        }
-    }
-
-    private void HandleMissionAssigned(ItemData item)
-    {
-        if (item == null || item.itemName.ToUpper() != "ENERGYDRINK")
-            return;
-        MissionManager.Instance.OnMissionAssigned -= HandleMissionAssigned;
-        MissionManager.Instance.PauseMissionAssignment();
-        if (_angerSystem != null)
-            _angerSystem.Pause();
-        if (_player != null)
-            _player.SetTutorialInvincible(true);
-    }
-
-    private void HandleMissionDisplayed(ItemData item)
-    {
-        if (item == null || item.itemName.ToUpper() != "ENERGYDRINK")
-            return;
-        MissionManager.Instance.OnMissionDisplayed -= HandleMissionDisplayed;
-
-        // 약국 미션 슬라이드 인 완료 후 시간 재개 (NPC 이동, AngerSystem/MissionManager는 Pause 유지)
-        Time.timeScale = 1f;
-        _messageUI?.SetSlideDuration(NormalSlide);
-        _mainCo = StartCoroutine(RunTutorial());
+            _arrowParticle.transform.rotation = Quaternion.LookRotation(dir.normalized);
     }
 
     private IEnumerator RunTutorial()
     {
-        // 스킵 안내 — SkipTextZone 활성화
-        _skipTextZone?.SetActive(true);
-        yield return EnqueueAndWait("TUT_SKIP");
+        // 1. anger_0/1/2 메시지가 모두 큐잉될 때까지 대기
+        yield return new WaitUntil(() => _angerSystem == null || _angerSystem.IntroQueued);
 
-        // 1. WASD 이동 설명
+        // 1-1. 이동·카메라·조작 안내 (이동 감지 전에 방법 먼저 알려주기)
         yield return EnqueueAndWait("TUT_WASD");
+        yield return EnqueueAndWait("TUT_MOUSE");
+        yield return EnqueueAndWait("TUT_CONTROLS");
 
-        // 2. 이동 체험 — 구 콜라이더 반경 벗어나면 다음 단계
+        // 2. 분노 메시지 큐잉 이후부터 스피어 이탈을 유효한 트리거로 인정
         Vector3 startPos = _player != null ? _player.transform.position : Vector3.zero;
-        float radius =
-            _movementZone != null
-                ? _movementZone.radius * _movementZone.transform.lossyScale.x
-                : 3f;
+        float radius = _movementZone != null
+            ? _movementZone.radius * _movementZone.transform.lossyScale.x
+            : 3f;
         yield return new WaitUntil(() =>
             _player != null && Vector3.Distance(_player.transform.position, startPos) >= radius
         );
 
-        // 3. 마우스 회전 + Shift/Space/R 설명 — KeyInfoTextZone 활성화
-        yield return EnqueueAndWait("TUT_MOUSE");
-        _keyInfoTextZone?.SetActive(true);
-        yield return EnqueueAndWait("TUT_CONTROLS");
-
-        // 4. CAT_WARNING 슬라이드 인 시점에 고양이 스폰 — PressCZone 활성화
+        // 3. TUT_CAT_WARNING 슬라이드인 시점에 고양이 스폰 + C키 안내 UI 활성화
         bool catDone = false;
         _messageUI.EnqueueTutorialMessage(
             "TUT_CAT_WARNING",
@@ -183,44 +177,75 @@ public class TutorialManager : MonoBehaviour
         );
         yield return new WaitUntil(() => catDone);
 
-        // 5. 맵 지도 + 화살표 설명
-        if (_pharmacyMarker != null)
-            MinimapUI.Instance?.PingMarker(_pharmacyMarker);
-        yield return EnqueueAndWait("TUT_MAP");
+        // 5. 고양이 처리 시간 대기 후 게임 재개 + 첫 미션(약국) 할당
+        yield return new WaitForSeconds(_catLifetime);
+        ResumeGame();
 
-        if (_directionArrowParticle != null)
-        {
-            _directionArrowParticle.gameObject.SetActive(true);
-            _directionArrowParticle.Play();
-            _arrowActive = true;
-        }
-        yield return EnqueueAndWait("TUT_ARROW");
+        // 6. 약국 미션 메시지가 화면에 표시될 때까지 대기
+        MissionManager.Instance.OnMissionDisplayed += OnFirstMissionDisplayed;
+        yield return new WaitUntil(() => _firstMissionDisplayed);
 
-        // 6. 약국 앞 콜라이더 진입 대기 (이미 진입했으면 즉시 통과)
-        if (_pharmacyZone != null && !_pharmacyZone.Triggered)
+        // 7. 지도 + 방향 화살표 설명 (약국 콜라이더 진입 전인 경우만)
+        if (!_pharmacyEntered)
         {
-            bool entered = false;
-            _pharmacyZone.OnPlayerEntered += () => entered = true;
-            yield return new WaitUntil(() => entered);
-        }
+            yield return EnqueueAndWait("TUT_MAP");
 
-        // 약국 진입 → 아이템 드랍 시점에 화살표 비활성화
-        if (_directionArrowParticle != null)
-        {
-            _arrowActive = false;
-            _directionArrowParticle.Stop();
-            _directionArrowParticle.gameObject.SetActive(false);
+            if (_arrowParticle != null)
+            {
+                _arrowParticle.gameObject.SetActive(true);
+                _arrowParticle.Play(true);
+            }
+
+            yield return EnqueueAndWait("TUT_ARROW");
         }
 
-        // 7. 약국 안내 — ItemTextZone 활성화
-        _itemTextZone?.SetActive(true);
-        yield return EnqueueAndWait("TUT_ITEM_GLOW");
-        yield return EnqueueAndWait("TUT_ITEM_PICKUP");
-        _checkListUI?.Peek();
-        yield return EnqueueAndWait("TUT_TOGGLE");
+        // 8. 약국 숙취해소제 픽업 대기
+        MissionManager.Instance.OnMissionCompleted += OnEnergyDrinkCollected;
+        yield return new WaitUntil(() => _energyDrinkCollected);
+
+        // 9. 픽업 완료 후 미션 목표 안내
         yield return EnqueueAndWait("TUT_GOAL");
 
-        Complete();
+        // 10. 다음 미션 즉시 할당
+        MissionManager.Instance?.ForceAssignNext();
+
+        Finalize();
+    }
+
+    // 약국 앞 콜라이더 진입 — 약국 미션이 표시된 후에만 아이템 튜토리얼 출력
+    private void OnPharmacyEntered()
+    {
+        _pharmacyEntered = true;
+        if (_firstMissionDisplayed)
+            ShowItemTutorial();
+        // 아직 미션 미표시 상태면 OnFirstMissionDisplayed에서 처리
+    }
+
+    // 첫 미션(약국) 표시 완료 콜백
+    private void OnFirstMissionDisplayed(ItemData _)
+    {
+        _firstMissionDisplayed = true;
+        if (MissionManager.Instance != null)
+            MissionManager.Instance.OnMissionDisplayed -= OnFirstMissionDisplayed;
+
+        // 미션 표시 전에 이미 약국 콜라이더에 진입했다면 지금 아이템 튜토리얼 표시
+        if (_pharmacyEntered)
+            ShowItemTutorial();
+    }
+
+    private void ShowItemTutorial()
+    {
+        // ITEM_PICKUP → ITEM_GLOW 순으로 Front 삽입해야 GLOW가 먼저 나옴
+        _messageUI.EnqueueFrontTutorialMessage("TUT_ITEM_PICKUP");
+        _messageUI.EnqueueFrontTutorialMessage("TUT_ITEM_GLOW");
+    }
+
+    // 약국 숙취해소제 픽업 완료 콜백
+    private void OnEnergyDrinkCollected(ItemData _)
+    {
+        _energyDrinkCollected = true;
+        if (MissionManager.Instance != null)
+            MissionManager.Instance.OnMissionCompleted -= OnEnergyDrinkCollected;
     }
 
     private IEnumerator EnqueueAndWait(string csvKey)
@@ -260,33 +285,86 @@ public class TutorialManager : MonoBehaviour
     {
         if (_mainCo != null)
             StopCoroutine(_mainCo);
-        Complete();
+
+        if (MissionManager.Instance != null)
+        {
+            MissionManager.Instance.OnMissionDisplayed -= OnFirstMissionDisplayed;
+            MissionManager.Instance.OnMissionCompleted -= OnEnergyDrinkCollected;
+        }
+
+        // 약국 트리거 비활성화 — 스킵 후 약국 진입해도 아이템 튜토리얼 안 뜨도록
+        if (_pharmacyZone != null)
+        {
+            _pharmacyZone.OnPlayerEntered -= OnPharmacyEntered;
+            _pharmacyZone.gameObject.SetActive(false);
+        }
+
+        // 메시지 큐 즉시 비우기
+        _messageUI?.ClearQueue();
+
+        // 스킵 UI 즉시 비활성화
+        _skipTextZone?.transform.parent?.gameObject.SetActive(false);
+        _skipTextZone?.SetActive(false);
+        _keyInfoTextZone?.SetActive(false);
+
+        _mainCo = StartCoroutine(RunSkip());
     }
 
-    private void Complete()
+    private IEnumerator RunSkip()
+    {
+        // 타이머 포함해서 즉시 게임 재개
+        ResumeGame(resumeTimers: true);
+        yield return EnqueueAndWait("TUT_GOAL");
+        Finalize(resumeTimers: false);
+    }
+
+    // NPC/차/고양이 재개 + 플레이어 무적 해제 + 약국 미션 메시지 표시
+    private void ResumeGame(bool resumeTimers = false)
     {
         _active = false;
+        _messageUI?.SetSlideDuration(NormalSlide);
+
+        if (_pausedNPCs != null)
+            foreach (var npc in _pausedNPCs)
+                if (npc != null) npc.SetExternalPause(false);
+        if (_pausedCats != null)
+            foreach (var cat in _pausedCats)
+                if (cat != null) cat.SetExternalPause(false);
+        if (_pausedCars != null)
+            foreach (var car in _pausedCars)
+                if (car != null) car.SetTutorialPause(false);
+
+        if (_player != null)
+            _player.SetTutorialInvincible(false);
+
+        MissionManager.Instance?.ForceAssignNext();
+
+        if (resumeTimers)
+        {
+            MissionManager.Instance?.ResumeMissionAssignment();
+            _angerSystem?.Resume();
+        }
+    }
+
+    // UI 정리 + TutorialManager 비활성화
+    // resumeTimers=true(기본)면 분노 게이지·미션 타이머도 재개
+    private void Finalize(bool resumeTimers = true)
+    {
+        if (resumeTimers)
+        {
+            MissionManager.Instance?.ResumeMissionAssignment();
+            _angerSystem?.Resume();
+        }
+
+        if (_arrowParticle != null)
+        {
+            _arrowParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            _arrowParticle.gameObject.SetActive(false);
+        }
+        _skipTextZone?.transform.parent?.gameObject.SetActive(false);
         _skipTextZone?.SetActive(false);
         _keyInfoTextZone?.SetActive(false);
         _pressCZone?.SetActive(false);
-        _itemTextZone?.SetActive(false);
-        Time.timeScale = 1f;
-        _messageUI?.SetSlideDuration(NormalSlide);
-        if (_player != null)
-            _player.SetTutorialInvincible(false);
-        if (MissionManager.Instance != null)
-        {
-            MissionManager.Instance.ResumeMissionAssignment();
-            MissionManager.Instance.ForceAssignNext();
-        }
-        if (_angerSystem != null)
-            _angerSystem.Resume();
-        if (_directionArrowParticle != null)
-        {
-            _arrowActive = false;
-            _directionArrowParticle.Stop();
-            _directionArrowParticle.gameObject.SetActive(false);
-        }
         gameObject.SetActive(false);
     }
 }

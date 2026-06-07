@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class FootStompCollider : MonoBehaviour
@@ -9,12 +8,62 @@ public class FootStompCollider : MonoBehaviour
     [SerializeField]
     private float _damage = 25f;
 
+    [Header("발소리")]
+    [SerializeField]
+    private AudioSource _audioSource;
+
+    [SerializeField]
+    private AudioClip _footstepClip;
+
+    [SerializeField]
+    private float _hearRadius = 6f;
+
+    private Transform _playerTransform;
+    private ProximityFeedback _proximity;
+
+    private void Start()
+    {
+        var player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            _playerTransform = player.transform;
+            _proximity = player.GetComponent<ProximityFeedback>();
+        }
+
+        if (_audioSource != null && _footstepClip != null)
+        {
+            _audioSource.clip = _footstepClip;
+            _audioSource.spatialBlend = 0f;
+            _audioSource.loop = true;
+            _audioSource.volume = 0f;
+            _audioSource.Play();
+        }
+    }
+
+    private void Update()
+    {
+        UpdateFootVolume();
+    }
+
+    private void UpdateFootVolume()
+    {
+        if (_audioSource == null || _playerTransform == null)
+            return;
+
+        float panicRadius = _proximity != null ? _proximity.PanicRadius : 1f;
+        float dist = Vector3.Distance(transform.position, _playerTransform.position);
+        float t = Mathf.Clamp01((dist - panicRadius) / (_hearRadius - panicRadius));
+        _audioSource.volume = 1f - t;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log($"[Foot Stomp] {_cause}가 플레이어 밟음! 데미지: {_damage}");
-            other.GetComponent<PlayerHealth>().TakeDamage(_damage, _cause);
-        }
+        if (!other.CompareTag("Player"))
+            return;
+
+        if (!other.TryGetComponent<PlayerHealth>(out var health))
+            return;
+
+        health.TakeDamage(_damage, _cause);
     }
 }

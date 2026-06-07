@@ -8,9 +8,6 @@ public class PlayerController : MonoBehaviour
 {
     [Header("오디오")]
     [SerializeField]
-    private AudioSource _audioSource;
-
-    [SerializeField]
     private AudioClip _pickupSound;
 
     [SerializeField]
@@ -69,7 +66,6 @@ public class PlayerController : MonoBehaviour
         {
             if (hit.TryGetComponent<IInteractive>(out var item))
             {
-                Debug.Log($"[아이템 획득] 아이템: {item.GetItemName()}");
                 item.Interact(this);
                 break;
             }
@@ -108,23 +104,11 @@ public class PlayerController : MonoBehaviour
         _pi.DeactivateInput();
     }
 
-    public void PlayPickupSound()
-    {
-        if (_audioSource != null && _pickupSound != null)
-            _audioSource.PlayOneShot(_pickupSound);
-    }
+    public void PlayPickupSound() => AudioManager.Instance?.PlaySFX(_pickupSound);
 
-    public void PlayJumpSound()
-    {
-        if (_audioSource != null && _jumpSound != null)
-            _audioSource.PlayOneShot(_jumpSound);
-    }
+    public void PlayJumpSound() => AudioManager.Instance?.PlaySFX(_jumpSound);
 
-    public void PlayRollSound()
-    {
-        if (_audioSource != null && _rollSound != null)
-            _audioSource.PlayOneShot(_rollSound);
-    }
+    public void PlayRollSound() => AudioManager.Instance?.PlaySFX(_rollSound);
 
     public void PlayEffect(EffectParticleType type, float duration = 0f)
     {
@@ -143,12 +127,7 @@ public class PlayerController : MonoBehaviour
         }
 
         if (particle == null)
-        {
-            Debug.LogWarning(
-                $"[PlayerController] PlayEffect: ParticleSystem이 null입니다. 타입: {type}"
-            );
             return;
-        }
 
         if (_particleCorutine.TryGetValue(type, out var prev) && prev != null)
         {

@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -59,6 +60,9 @@ public class UIManager : MonoBehaviour
     private Button _resumeButton;
 
     [SerializeField]
+    private Button _settingsButton;
+
+    [SerializeField]
     private Button _exitButton3;
 
     [SerializeField]
@@ -66,6 +70,13 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private TextMeshProUGUI _pauseExitText;
+
+    // --- 볼륨 설정 패널 ---
+    [SerializeField]
+    private GameObject _volumeSettingsPanel;
+
+    [SerializeField]
+    private Button _closeVolumeButton;
 
     [SerializeField]
     private ProximityPanelFeedbackUI _proximityPanelFeedbackUI;
@@ -80,17 +91,18 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Button _hiddenSkipButton;
 
-    [Header("SFX")]
+    [Header("히든 엔딩 암전 연출")]
     [SerializeField]
-    private AudioSource _sfxSource;
+    private GameObject _blackFadePanel;
 
+    [SerializeField]
+    private CanvasGroup _blackFadeCanvasGroup;
+
+    [Header("SFX")]
     [SerializeField]
     private AudioClip _buttonClickSound;
 
     [Header("BGM")]
-    [SerializeField]
-    private AudioSource _bgmSource;
-
     [SerializeField]
     private AudioClip _gameplayBGM;
 
@@ -145,6 +157,11 @@ public class UIManager : MonoBehaviour
             PlayButtonSound();
             GameManager.Instance.TogglePause();
         });
+        _settingsButton?.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            ShowVolumeSettings();
+        });
         _exitButton3.onClick.AddListener(() =>
         {
             PlayButtonSound();
@@ -155,11 +172,19 @@ public class UIManager : MonoBehaviour
             PlayButtonSound();
             GameManager.Instance.GoToTitle();
         });
+        _closeVolumeButton?.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            HideVolumeSettings();
+        });
 
         SetPanel(_gameOverPanel, false);
         SetPanel(_gameClearPanel, false);
         SetPanel(_pausePanel, false);
+        SetPanel(_volumeSettingsPanel, false);
         SetPanel(_hiddenVideoPanel, false);
+        SetPanel(_blackFadePanel, false);
+
 
         if (_hiddenSkipButton != null)
             _hiddenSkipButton.onClick.AddListener(() =>
@@ -173,8 +198,7 @@ public class UIManager : MonoBehaviour
 
     private void PlayButtonSound()
     {
-        if (_sfxSource != null && _buttonClickSound != null)
-            _sfxSource.PlayOneShot(_buttonClickSound);
+        AudioManager.Instance?.PlaySFX(_buttonClickSound);
     }
 
     private void OnDestroy()
@@ -192,33 +216,20 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         ShowHUD();
-        PlayBGM(_gameplayBGM);
-    }
-
-    private void PlayBGM(AudioClip clip)
-    {
-        if (_bgmSource == null || clip == null)
-            return;
-        _bgmSource.Stop();
-        _bgmSource.clip = clip;
-        _bgmSource.loop = true;
-        _bgmSource.Play();
+        AudioManager.Instance?.PlayBGM(_gameplayBGM);
     }
 
     public void ShowGameOver(CauseDeath cause)
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        PlayBGM(_gameOverBGM);
+        AudioManager.Instance?.PlayBGM(_gameOverBGM);
         SetPanel(_hudPanel, false);
         SetPanel(_gameOverPanel, true);
         if (_proximityPanelFeedbackUI != null)
             _proximityPanelFeedbackUI.ForceHide();
 
         string deathMsg = StringTableManager.Instance.GetDeathMessage(cause);
-        Debug.Log(
-            $"[GameOver] Language={StringTableManager.Instance.CurrentLanguage}, cause={cause}, msg={deathMsg}"
-        );
         _gameOverDescText.text = deathMsg;
     }
 
@@ -245,18 +256,50 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator PlayHiddenVideoThenClear(int angerSeconds)
     {
+        // 1. 화면 서서히 암전 (1.2초)
+        if (_blackFadePanel != null && _blackFadeCanvasGroup != null)
+        {
+            SetPanel(_blackFadePanel, true);
+            _blackFadeCanvasGroup.alpha = 0f;
+            float elapsed = 0f;
+            const float fadeDuration = 1.2f;
+            while (elapsed < fadeDuration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                _blackFadeCanvasGroup.alpha = Mathf.Clamp01(elapsed / fadeDuration);
+                yield return null;
+            }
+            _blackFadeCanvasGroup.alpha = 1f;
+        }
+
+        // 2. 비디오 패널 준비 (암전 상태에서 백그라운드 Prepare)
         SetPanel(_hudPanel, false);
         SetPanel(_hiddenVideoPanel, true);
-        PlayBGM(_clearBGM);
+        AudioManager.Instance?.PlayBGM(_clearBGM);
 
         _hiddenVideoPlayer.Prepare();
 
-        // Prepare 타임아웃 5초 — isPrepared가 되거나 타임아웃이면 진행
-        float elapsed = 0f;
-        while (!_hiddenVideoPlayer.isPrepared && elapsed < 5f)
+        // Prepare 타임아웃 5초
+        float prepElapsed = 0f;
+        while (!_hiddenVideoPlayer.isPrepared && prepElapsed < 5f)
         {
-            elapsed += Time.unscaledDeltaTime;
+            prepElapsed += Time.unscaledDeltaTime;
             yield return null;
+        }
+
+        // 3. 암전 페이드 아웃 (0.5초) 하면서 영상 공개
+        if (_blackFadePanel != null && _blackFadeCanvasGroup != null)
+        {
+            float elapsed = 0f;
+            const float fadeOutDuration = 0.5f;
+            while (elapsed < fadeOutDuration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                _blackFadeCanvasGroup.alpha = Mathf.Clamp01(1f - elapsed / fadeOutDuration);
+                yield return null;
+            }
+            _blackFadeCanvasGroup.alpha = 0f;
+            SetPanel(_blackFadePanel, false);
         }
 
         if (_hiddenVideoPlayer.isPrepared)
@@ -276,6 +319,7 @@ public class UIManager : MonoBehaviour
         StopAllCoroutines();
         _hiddenVideoPlayer.Stop();
         SetPanel(_hiddenVideoPanel, false);
+        SetPanel(_blackFadePanel, false);
 
         // angerSeconds를 보존하지 못하므로 GameManager에서 직접 가져옴
         ShowClearPanel(Mathf.RoundToInt(GameManager.Instance.PlayTime));
@@ -283,13 +327,10 @@ public class UIManager : MonoBehaviour
 
     private void ShowClearPanel(int angerSeconds)
     {
+        SetPanel(_hudPanel, false);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        if (_bgmSource == null || _bgmSource.clip != _clearBGM)
-            PlayBGM(_clearBGM);
-        Debug.Log(
-            $"[UIManager] ShowGameClear 호출, _gameClearPanel null? {_gameClearPanel == null}"
-        );
+        AudioManager.Instance?.PlayBGM(_clearBGM);
         SetPanel(_gameClearPanel, true);
         int min = angerSeconds / 60;
         int sec = angerSeconds % 60;
@@ -301,6 +342,12 @@ public class UIManager : MonoBehaviour
             _clearTaglineText.text = StringTableManager
                 .Instance.GetMessage("GAMECLEAR_TAGLINE")
                 .message;
+    }
+
+    private void Update()
+    {
+        if (IsVolumeSettingsOpen && Keyboard.current.escapeKey.wasPressedThisFrame)
+            HideVolumeSettings();
     }
 
     public void ShowHUD()
@@ -317,8 +364,16 @@ public class UIManager : MonoBehaviour
 
     public void HidePause()
     {
+        HideVolumeSettings();
         SetPanel(_pausePanel, false);
     }
+
+    public bool IsVolumeSettingsOpen =>
+        _volumeSettingsPanel != null && _volumeSettingsPanel.activeSelf;
+
+    public void ShowVolumeSettings() => SetPanel(_volumeSettingsPanel, true);
+
+    public void HideVolumeSettings() => SetPanel(_volumeSettingsPanel, false);
 
     public void SetPanel(GameObject panel, bool active)
     {
