@@ -52,6 +52,7 @@ HINT_ICECREAM,"아! 엄마가 좋아하는 아이스크림은 분홍 모자 쓴 
 MONOLOGUE_HOME,"좋아... 이제 집에 가야지.",나,Me
 MONOLOGUE_WAIT,"...잠깐만.",나,Me
 MONOLOGUE_FLOWER,"...아내가 항상 저 꽃을 좋아했었지. 좀 풀리려나.",나,Me
+MONOLOGUE_FLOWER_OPTIONAL,"근데 꼭 해야되는 건 아니지…",나,Me
 
 // -- ITEM DISPLAY NAMES ------------------------------------------
 ITEM_AVOCADO,"아보카도",

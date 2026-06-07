@@ -50,6 +50,9 @@ public class CarMovement : MonoBehaviour
     private CarStopZone _lastStopZone;
     private Vector3 _currentDestination;
     private bool _initialized = false;
+    private bool _tutorialPaused = false;
+
+    public void SetTutorialPause(bool paused) => _tutorialPaused = paused;
 
     private void Start()
     {
@@ -118,7 +121,7 @@ public class CarMovement : MonoBehaviour
 
     private void Update()
     {
-        if (!_initialized)
+        if (!_initialized || _tutorialPaused)
             return;
 
         UpdateEngineVolume();

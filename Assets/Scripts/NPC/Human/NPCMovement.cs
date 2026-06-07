@@ -145,8 +145,6 @@ public class NPCMovement : MonoBehaviour
             int area = NavMesh.GetAreaFromName(areaName);
             if (area >= 0)
                 mask &= ~(1 << area);
-            else
-                Debug.LogWarning($"[NPCMovement] NavMesh area '{areaName}'를 찾을 수 없습니다.");
         }
         return mask;
     }

@@ -83,8 +83,16 @@ public class CatMovement : MonoBehaviour
     private string _currentAnim = string.Empty;
     private Coroutine _meowCo;
     private bool _isTutorialCat;
+    private bool _externallyPaused;
 
     public void MarkAsTutorialCat() => _isTutorialCat = true;
+
+    public void SetExternalPause(bool paused)
+    {
+        _externallyPaused = paused;
+        if (_agent != null)
+            _agent.isStopped = paused;
+    }
 
     private void Awake()
     {
@@ -112,10 +120,7 @@ public class CatMovement : MonoBehaviour
 
     private void Update()
     {
-        if (!_initialized)
-            return;
-
-        if (!_isTutorialCat && TutorialManager.Instance != null && TutorialManager.Instance.IsActive)
+        if (!_initialized || _externallyPaused)
             return;
 
         UpdateMeowVolume();

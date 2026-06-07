@@ -32,18 +32,12 @@ public class CarSpawnManager : MonoBehaviour
     private void SpawnAllCars()
     {
         if (_carPrefabs == null || _carPrefabs.Length == 0)
-        {
-            Debug.LogWarning("[CarSpawnManager] Car 프리팹이 지정되지 않았습니다.");
             return;
-        }
 
         foreach (LaneSpawnConfig config in _laneConfigs)
         {
             if (config.drivingZone == null)
-            {
-                Debug.LogWarning("[CarSpawnManager] drivingZone이 비어 있는 차선 설정이 있습니다.");
                 continue;
-            }
 
             int totalWaypoints = config.drivingZone.GetWaypointCount(config.laneIndex);
             if (totalWaypoints == 0)
@@ -64,11 +58,7 @@ public class CarSpawnManager : MonoBehaviour
         {
             int startIndex = PickRandomIndex(totalWaypoints, usedIndices);
             if (startIndex < 0)
-            {
-                Debug.LogWarning($"[CarSpawnManager] '{config.drivingZone.name}' lane{config.laneIndex}: " +
-                                 $"웨이포인트 간격 부족으로 {i + 1}번째 차량 스폰 생략");
                 break;
-            }
 
             CarMovement prefab = _carPrefabs[Random.Range(0, _carPrefabs.Length)];
             Vector3 spawnPos = config.drivingZone.GetWaypointPosition(config.laneIndex, startIndex, config.laneOffset);

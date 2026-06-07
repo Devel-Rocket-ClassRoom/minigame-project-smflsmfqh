@@ -15,9 +15,6 @@ public class HealthUI : MonoBehaviour
 
     private void Start()
     {
-        if (_heart == null || _fillImage == null || _playerHealth == null)
-            Debug.Log("[HealthUI] 인스펙터 연결이 필요합니다.");
-
         _heart.color = Color.red;
     }
 

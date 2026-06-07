@@ -2,8 +2,8 @@ Key,Text,Sender,ImageKey
 
 // -- DEATH -------------------------------------------------------
 DEATH_NPC_0,"Crushed underfoot. They didn't even notice.",
-DEATH_NPC_1,"One careless step. That's all it took.",
-DEATH_NPC_2,"You were in the wrong place at the wrong foot.",
+DEATH_NPC_1,"One careless step. That was all it took.",
+DEATH_NPC_2,"Wrong place. Wrong foot.",
 DEATH_CAT_0,"The cat was just playing. You were not.",
 DEATH_CAT_1,"To it, you were a toy. Game over.",
 DEATH_CAT_2,"The cat was bored. You paid the price.",
@@ -12,8 +12,8 @@ DEATH_MISSION_0,"The queen will not be pleased.",
 DEATH_ANGER_0,"The bag is packed. The door is locked. Game over.",
 
 // -- OPENING / ANGER ---------------------------------------------
-ANGER_0,"Where did you sleep last night?? ...You know what fine.",Honey♥,Honey♥
-ANGER_1,"Since you're already out there you better pick some things up on the way home.",Honey♥,Honey♥
+ANGER_0,"Where did you even sleep last night?? ...Fine. Whatever. Just do it.",Honey♥,Honey♥
+ANGER_1,"Since you're already out, you may as well pick a few things up on your way home.",Honey♥,Honey♥
 ANGER_2,"I'm sending you the list.",Honey♥,Honey♥
 ANGER_10,"Don't you dare forget a single thing on that list. And get home.",Honey♥,Honey♥
 ANGER_25,"You said 5 minutes. That was 45 minutes ago.",Honey♥,Honey♥
@@ -22,36 +22,37 @@ ANGER_75,"I'm not mad. I'm DONE. Get. Home. Now.",Honey♥,Honey♥
 ANGER_90,"...I'm packing a bag.",Honey♥,Honey♥
 
 // -- TUTORIAL ----------------------------------------------------
-TUT_SKIP,"Already know the ropes? Press [Q] to skip.",Me,Me
-TUT_WASD,"Okay. [W][A][S][D] to move. Simple enough.",Me,Me
+TUT_SKIP,"Already know the controls? Press [Q] to skip.",Me,Me
+TUT_WASD,"Okay. [W][A][S][D] to move. Let's do this.",Me,Me
 TUT_MOUSE,"Mouse to look around. Keep it steady.",Me,Me
 TUT_CONTROLS,"[SHIFT] to sprint. [SPACE] to jump. [R] to roll. Got it.",Me,Me
-TUT_CAT_WARNING,"...Is that a cat?! [C]!! DODGE!!",Me,Me
-TUT_MAP,"Wait — the map. The shop should be marked. Focus.",Me,Me
-TUT_ARROW,"Okay... there's an arrow. Just follow the arrow. I can do this.",Me,Me
-TUT_ITEM_GLOW,"That glowing spot that's where it drops. Go.",Me,Me
+TUT_CAT_WARNING,"...Is that a CAT?! [C]!! DODGE!!",Me,Me
+TUT_MAP,"Wait — the map. Shops should be marked on it. Focus.",Me,Me
+TUT_ARROW,"Okay... there's an arrow. Just follow it. I can do this.",Me,Me
+TUT_ITEM_GLOW,"That glowing spot — that's where it is. Go.",Me,Me
 TUT_ITEM_PICKUP,"Almost there... [E]. Just press [E].",Me,Me
-TUT_TOGGLE,"Right the list. [TAB] don't forget the list.",Me,Me
+TUT_TOGGLE,"Right — the errand list. [TAB] — don't forget.",Me,Me
 TUT_GOAL,"Can't upset the queen. Every single item. No excuses.",Me,Me
 
 // -- PHARMACY ----------------------------------------------------
-MONOLOGUE_ENERGYDRINK,"...I feel terrible. I need something for this headache.",Me,Me
-MISSION_ENERGYDRINK,"Pharmacy first. Then home.",Me,Me
+MONOLOGUE_ENERGYDRINK,"She's furious... I drank way too much last night. My stomach is wrecked.",Me,Me
+MISSION_ENERGYDRINK,"Pharmacy first. I need a hangover cure.",Me,Me
 
 // -- MISSIONS ----------------------------------------------------
 MISSION_AVOCADO,"Avocado. Fruit stall. Don't get a bruised one.",Honey♥,Honey♥
-MISSION_BANANA,"Grab a banana. Don't forget.",Honey♥,Honey♥
+MISSION_BANANA,"Grab a banana too. Don't forget.",Honey♥,Honey♥
 MISSION_EGG,"Eggs. From the mart. Don't get cracked ones.",Honey♥,Honey♥
-MISSION_MUSHROOM,"Oh mushrooms. The Mart. Go.",Honey♥,Honey♥
-MISSION_PIZZA,"Daddy!! Can we have pizza?? PLEASE PLEASE PLEASE!!",Kids,Kids
-MISSION_DONUT,"Daaaddy... donuts... pleeeease?? We'll be super good we promise!!",Kids,Kids
-MISSION_ICECREAM,"Ice cream. You know which one. Don't get the wrong kind.",Honey♥,Honey♥
-HINT_ICECREAM,"Oh! The ice cream Mom likes it's from the guy in the PINK HAT at the shop!!",Kids,Kids
+MISSION_MUSHROOM,"Mushrooms. Mart. Go.",Honey♥,Honey♥
+MISSION_PIZZA,"Daddy!! Can we have pizza tonight?? PLEASE PLEASE PLEASE!!",Kids,Kids
+MISSION_DONUT,"Daaaddy... donuts... pleeeease?? We'll be SO good, we promise!!",Kids,Kids
+MISSION_ICECREAM,"Ice cream. You know the one. Don't get the wrong kind.",Honey♥,Honey♥
+HINT_ICECREAM,"Oh! The ice cream Mom likes — it's from the guy with the PINK HAT at the shop!!",Kids,Kids
 
 // -- MONOLOGUE ---------------------------------------------------
 MONOLOGUE_HOME,"Alright... time to head home.",Me,Me
 MONOLOGUE_WAIT,"...Oh wait.",Me,Me
-MONOLOGUE_FLOWER,"...She always loved those flowers. Maybe it'll calm her down.",Me,Me
+MONOLOGUE_FLOWER,"...She always loved those flowers. Maybe they'll help.",Me,Me
+MONOLOGUE_FLOWER_OPTIONAL,"...it's not like I HAVE to, though.",Me,Me
 
 // -- ITEM DISPLAY NAMES ------------------------------------------
 ITEM_AVOCADO,"Avocado",
@@ -61,10 +62,11 @@ ITEM_ICECREAM,"Ice Cream",
 ITEM_EGG,"Egg",
 ITEM_MUSHROOM,"Mushroom",
 ITEM_FLOWER,"Flower",
-ITEM_ENERGYDRINK,"Energy Drink",
+ITEM_ENERGYDRINK,"Hangover Cure",
 ITEM_PIZZA,"Pizza",
+
 // -- PAUSE PANEL --------------------------------------------------
-PAUSE_EXIT,"Exit game?\nYour wife exits the marriage."
+PAUSE_EXIT,"Quit the game?\nYour wife exits the marriage."
 // -- GAME CLEAR --------------------------------------------------
 GAMECLEAR_SCORE_MINSEC,"Wife's Patience: {0}m {1}s",
 GAMECLEAR_SCORE_SEC,"Wife's Patience: {0}s",
@@ -81,12 +83,12 @@ PANEL_KEY_PICKUP_DESC,"[E] Pick Up"
 PANEL_KEY_LIST_DESC,"Errand List"
 
 // -- LABELS -------------------------------------------------------
-LABEL_MISSION_LIST,"Mission List"
+LABEL_MISSION_LIST,"Errand List"
 
-// -- PANEL BUTTON --------------------------------------------------
+// -- TITLE SCENE --------------------------------------------------
 BTN_RESTART,"RESTART"
 BTN_LANGUAGE,"LANGUAGE"
-BTN_SETTING,"SETTING"
+BTN_SETTING,"SETTINGS"
 BTN_KO,"KOREAN"
 BTN_EN,"ENGLISH"
 BTN_BACK,"BACK"

@@ -110,10 +110,7 @@ public class ShopBuilding : MonoBehaviour
             return;
 
         if (_remainingItems.Count == 0)
-        {
-            Debug.LogWarning($"[ShopBuilding] {_shopData.shopName}: 드랍할 아이템이 없습니다.");
             return;
-        }
 
         ItemData selected = _remainingItems[Random.Range(0, _remainingItems.Count)];
 
@@ -135,10 +132,6 @@ public class ShopBuilding : MonoBehaviour
         OnItemDropped?.Invoke(dropped.transform);
         if (_groundParticlePrefab != null)
             Instantiate(_groundParticlePrefab, dropped.transform);
-
-        Debug.Log(
-            $"[아이템 드랍] {_shopData.shopName}에서 {selected.itemName} 드랍! (남은 아이템: {_remainingItems.Count}개)"
-        );
 
         if (_spotParticle != null)
             StopParticle();
@@ -234,12 +227,7 @@ public class ShopBuilding : MonoBehaviour
     {
         var col = GetComponent<BoxCollider>();
         if (col == null)
-        {
-            Debug.Log(
-                $"[ShopBuilding] {name}에 BoxCollider가 없습니다. 파티클 위치를 건물 중심으로 설정합니다."
-            );
             return transform.position;
-        }
 
         Vector3 center = transform.TransformPoint(col.center);
         Vector3 outDir = center - transform.position;
@@ -253,7 +241,6 @@ public class ShopBuilding : MonoBehaviour
                 * col.size.z
                 * Mathf.Abs(scale.z)
                 * 0.5f;
-        Debug.Log($"[ShopBuilding] {name} 파티클 위치 계산: outDir={outDir}, edgeDist={edgeDist}");
         return center + outDir * edgeDist;
     }
 }

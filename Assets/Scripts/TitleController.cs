@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using UnityEngine.SceneManagement;
@@ -34,9 +35,16 @@ public class TitleController : MonoBehaviour
     public static readonly string LanguagePrefKey = "SelectedLanguage";
 
     [Header("오디오")]
-    [SerializeField] private AudioSource _audioSource;
     [SerializeField] private AudioClip _buttonClickSound;
     [SerializeField] private AudioClip _titleBGM;
+
+    [Header("볼륨 설정")]
+    [SerializeField] private GameObject _volumeSettingsPanel;
+    [SerializeField] private Button _settingsButton;
+    [SerializeField] private Button _closeVolumeButton;
+
+    [Header("게임 종료")]
+    [SerializeField] private Button _quitButton;
 
     private bool _sceneLoading = false;
 
@@ -60,21 +68,47 @@ public class TitleController : MonoBehaviour
         if (_backButton != null)
             _backButton.onClick.AddListener(CloseLanguagePanel);
 
+        if (_settingsButton != null)
+            _settingsButton.onClick.AddListener(() => { PlayButtonSound(); ShowVolumeSettings(); });
+
+        if (_quitButton != null)
+            _quitButton.onClick.AddListener(() => { PlayButtonSound(); Application.Quit(); });
+
+        if (_closeVolumeButton != null)
+            _closeVolumeButton.onClick.AddListener(() => { PlayButtonSound(); HideVolumeSettings(); });
+
         if (_titlePanel != null) _titlePanel.SetActive(true);
         if (_videoPanel != null) _videoPanel.SetActive(false);
         if (_languagePanel != null) _languagePanel.SetActive(false);
+        if (_volumeSettingsPanel != null) _volumeSettingsPanel.SetActive(false);
 
         // 저장된 언어로 초기 이미지 설정
         Language savedLang = (Language)PlayerPrefs.GetInt(LanguagePrefKey, (int)Language.Ko);
         StringTableManager.Instance.SetLanguage(savedLang);
         UpdateImages(savedLang);
 
-        if (_audioSource != null && _titleBGM != null)
-        {
-            _audioSource.clip = _titleBGM;
-            _audioSource.loop = true;
-            _audioSource.Play();
-        }
+    }
+
+    private void Start()
+    {
+        AudioManager.Instance?.PlayBGM(_titleBGM);
+    }
+
+    private void Update()
+    {
+        if (_volumeSettingsPanel != null && _volumeSettingsPanel.activeSelf &&
+            Keyboard.current.escapeKey.wasPressedThisFrame)
+            HideVolumeSettings();
+    }
+
+    private void ShowVolumeSettings()
+    {
+        if (_volumeSettingsPanel != null) _volumeSettingsPanel.SetActive(true);
+    }
+
+    private void HideVolumeSettings()
+    {
+        if (_volumeSettingsPanel != null) _volumeSettingsPanel.SetActive(false);
     }
 
     private void ToggleLanguagePanel()
@@ -113,8 +147,7 @@ public class TitleController : MonoBehaviour
 
     private void PlayButtonSound()
     {
-        if (_audioSource != null && _buttonClickSound != null)
-            _audioSource.PlayOneShot(_buttonClickSound);
+        AudioManager.Instance?.PlaySFX(_buttonClickSound);
     }
 
     private void StartGameSequence()
@@ -131,7 +164,6 @@ public class TitleController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("VideoPlayer or VideoClip is missing. Skipping to game.");
             SkipVideo();
         }
     }
@@ -140,7 +172,6 @@ public class TitleController : MonoBehaviour
     {
         vp.prepareCompleted -= OnVideoPrepared;
         float duration = (float)vp.clip.length;
-        Debug.Log($"[TitleController] 비디오 준비 완료 — 길이: {duration}s, 프레임수: {vp.clip.frameCount}");
         vp.Play();
         StartCoroutine(WaitForVideoEnd(duration));
     }
@@ -149,7 +180,6 @@ public class TitleController : MonoBehaviour
     {
         // 타임스탬프 버그로 clip.length가 0 반환할 경우 최소 5초 보장
         float waitTime = Mathf.Max(clipDuration, 5f);
-        Debug.Log($"[TitleController] {waitTime}초 대기 후 씬 전환");
         yield return new WaitForSeconds(waitTime);
         LoadGameScene();
     }
@@ -171,7 +201,5 @@ public class TitleController : MonoBehaviour
 
         if (!string.IsNullOrEmpty(_nextSceneName))
             SceneManager.LoadScene(_nextSceneName);
-        else
-            Debug.LogError("Next scene name is not specified!");
     }
 }

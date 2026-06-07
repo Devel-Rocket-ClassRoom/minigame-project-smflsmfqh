@@ -339,8 +339,6 @@ public class PlayerMovement : MonoBehaviour
         _rollCoroutine = null;
         _isRolling = false;
         OnRollActive?.Invoke(false);
-
-        Debug.Log($"[Roll] 롤 종료 t={Time.time:F3}");
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -389,8 +387,6 @@ public class PlayerMovement : MonoBehaviour
     {
         _isSpeedBoost = true;
         _boostSpeed = speed;
-        Debug.Log($"[아이템 획득] 속도 부스터 효과: 속도 - {_currentSpeed}, 지속 시간 - {sec}");
-
         yield return new WaitForSeconds(sec);
 
         _isSpeedBoost = false;

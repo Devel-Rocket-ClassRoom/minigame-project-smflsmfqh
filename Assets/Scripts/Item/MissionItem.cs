@@ -26,8 +26,13 @@ public class MissionItem : MonoBehaviour, IInteractive
     private void Awake()
     {
         var player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null)
+            return;
         _playerMovement = player.GetComponent<PlayerMovement>();
-        _camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<FollowCamera>();
+
+        var mainCameraObj = GameObject.FindGameObjectWithTag("MainCamera");
+        if (mainCameraObj != null)
+            _camera = mainCameraObj.GetComponent<FollowCamera>();
 
         if (_itemData != null)
             SetupMinimapMarker();
@@ -102,9 +107,6 @@ public class MissionItem : MonoBehaviour, IInteractive
 
     private void HandleOptionalDisplayed(ItemData item)
     {
-        Debug.Log(
-            $"[Flower] HandleOptionalDisplayed: item={item?.itemName ?? "NULL"}, _itemData={_itemData?.itemName ?? "NULL"}, particle={_optionalParticle != null}"
-        );
         if (item == null || item.itemName != _itemData.itemName)
             return;
 
@@ -118,11 +120,6 @@ public class MissionItem : MonoBehaviour, IInteractive
         {
             _optionalParticle.gameObject.SetActive(true);
             _optionalParticle.Play();
-            Debug.Log("[Flower] 파티클 Play 호출");
-        }
-        else
-        {
-            Debug.LogWarning("[Flower] _optionalParticle이 null — Inspector에서 연결 확인");
         }
 
         MissionManager.Instance.OnMissionDisplayed -= HandleOptionalDisplayed;
@@ -153,13 +150,13 @@ public class MissionItem : MonoBehaviour, IInteractive
         if (_itemData.category == ItemCategory.Mission)
         {
             MissionManager.Instance.ReportCollected(_itemData.itemName);
-            _camera.TriggerReactionCut(0.6f);
+            _camera?.TriggerReactionCut(0.6f);
             _playerMovement.SetFaceHappy();
             GameManager.Instance.AddScore(100);
         }
         else if (_itemData.category == ItemCategory.Food)
         {
-            _camera.TriggerReactionCut(0.6f);
+            _camera?.TriggerReactionCut(0.6f);
             _playerMovement.SetFaceExcited();
             GameManager.Instance.AddScore(50);
         }

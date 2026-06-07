@@ -83,10 +83,6 @@ public class PlayerHealth : MonoBehaviour
         }
         OnHealthChanged?.Invoke(_currentHealth / k_maxHealth);
 
-        Debug.Log(
-            $"[Player Health] 데미지 {causeDeath}가 줌, 데미지 입음: {damage}, 현재 체력: {_currentHealth}"
-        );
-
         if (_currentHealth <= 0f)
         {
             Die(causeDeath);
@@ -118,8 +114,6 @@ public class PlayerHealth : MonoBehaviour
             _currentHealth = k_maxHealth;
         }
         OnHealthChanged?.Invoke(_currentHealth / k_maxHealth);
-
-        Debug.Log($"[아이템 획득] 치료 효과: {prevH} -> {_currentHealth}");
     }
 
     public void SetInvincible(float sec, string source = "unknown")
@@ -133,12 +127,8 @@ public class PlayerHealth : MonoBehaviour
     private IEnumerator InvincibleCoroutine(float sec, string source)
     {
         _isInvincible = true;
-        Debug.Log($"[무적 시작] source={source} duration={sec} t={Time.time:F3}");
-
         yield return new WaitForSeconds(sec);
-
         _isInvincible = false;
-        Debug.Log($"[무적 종료] source={source} t={Time.time:F3}");
     }
 
     private void Die(CauseDeath cause)
@@ -147,12 +137,10 @@ public class PlayerHealth : MonoBehaviour
             return;
         _pendingCause = cause;
         isDead = true;
-        _animator.SetBool("IsDead", isDead);
+        _animator?.SetBool("IsDead", isDead);
 
         _followCamera?.TriggerReactionCut(2f);
         _playerMovement?.SetFaceDead();
-
-        Debug.Log($"[Player Health] 게임 오버! 플레이어 죽음: isDead {isDead}");
     }
 
     public void OnDieAnimationEnd()

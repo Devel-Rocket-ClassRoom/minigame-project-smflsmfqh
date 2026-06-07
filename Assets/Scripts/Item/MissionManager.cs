@@ -196,7 +196,7 @@ public class MissionManager : MonoBehaviour
     {
         if (_missionsPaused) return;
 
-        _elapsedTime += Time.unscaledDeltaTime;
+        _elapsedTime += Time.deltaTime;
 
         for (int i = 0; i < _missionPool.Length; i++)
         {

@@ -29,10 +29,7 @@ public class StringTableManager
         string fileName = _languageFiles[language];
         var csv = Resources.Load<TextAsset>($"Data/{fileName}");
         if (csv == null)
-        {
-            Debug.LogWarning($"[StringTableManager] Language file not found: Data/{fileName}");
             return;
-        }
         Load(csv);
         CurrentLanguage = language;
         OnLanguageChanged?.Invoke();
