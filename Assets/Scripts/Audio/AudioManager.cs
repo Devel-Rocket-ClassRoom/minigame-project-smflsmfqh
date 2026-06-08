@@ -4,8 +4,11 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
-    [SerializeField] private AudioSource _bgmSource;
-    [SerializeField] private AudioSource _sfxSource;
+    [SerializeField]
+    private AudioSource _bgmSource;
+
+    [SerializeField]
+    private AudioSource _sfxSource;
 
     private void Awake()
     {
@@ -20,8 +23,10 @@ public class AudioManager : MonoBehaviour
 
     public void PlayBGM(AudioClip clip)
     {
-        if (clip == null) return;
-        if (_bgmSource.clip == clip && _bgmSource.isPlaying) return;
+        if (clip == null)
+            return;
+        if (_bgmSource.clip == clip && _bgmSource.isPlaying)
+            return;
         _bgmSource.Stop();
         _bgmSource.clip = clip;
         _bgmSource.loop = true;
@@ -32,7 +37,8 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFX(AudioClip clip)
     {
-        if (clip == null) return;
+        if (clip == null)
+            return;
         _sfxSource.PlayOneShot(clip);
     }
 }

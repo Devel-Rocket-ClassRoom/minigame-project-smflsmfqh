@@ -9,20 +9,27 @@ public class CarSpawnManager : MonoBehaviour
         public CarDrivingZone drivingZone;
         public int laneIndex = 0;
         public float laneOffset = 0f;
-        [Min(1)] public int spawnCount = 1;
+
+        [Min(1)]
+        public int spawnCount = 1;
     }
 
     [Header("차량 프리팹")]
-    [SerializeField] private CarMovement[] _carPrefabs;
+    [SerializeField]
+    private CarMovement[] _carPrefabs;
 
     [Header("경적 사운드")]
-    [SerializeField] private AudioClip _hornClip;
+    [SerializeField]
+    private AudioClip _hornClip;
 
     [Header("차선별 스폰 설정")]
-    [SerializeField] private LaneSpawnConfig[] _laneConfigs;
+    [SerializeField]
+    private LaneSpawnConfig[] _laneConfigs;
 
     [Header("스폰 간격")]
-    [Min(1)] [SerializeField] private int _minWaypointGap = 2;
+    [Min(1)]
+    [SerializeField]
+    private int _minWaypointGap = 2;
 
     private void Start()
     {
@@ -61,7 +68,11 @@ public class CarSpawnManager : MonoBehaviour
                 break;
 
             CarMovement prefab = _carPrefabs[Random.Range(0, _carPrefabs.Length)];
-            Vector3 spawnPos = config.drivingZone.GetWaypointPosition(config.laneIndex, startIndex, config.laneOffset);
+            Vector3 spawnPos = config.drivingZone.GetWaypointPosition(
+                config.laneIndex,
+                startIndex,
+                config.laneOffset
+            );
             CarMovement car = Instantiate(prefab, spawnPos, Quaternion.identity, transform);
             if (_hornClip != null)
                 car.SetHornClip(_hornClip);

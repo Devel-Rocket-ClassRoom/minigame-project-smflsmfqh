@@ -8,7 +8,8 @@ public class TriggerZone : MonoBehaviour
     private bool _triggered;
 
     private void OnTriggerEnter(Collider other) => TryTrigger(other);
-    private void OnTriggerStay(Collider other)  => TryTrigger(other);
+
+    private void OnTriggerStay(Collider other) => TryTrigger(other);
 
     private void TryTrigger(Collider other)
     {

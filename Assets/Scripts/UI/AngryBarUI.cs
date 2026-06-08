@@ -8,9 +8,10 @@ public class AngryBarUI : MonoBehaviour
 
     [SerializeField]
     private Sprite _angryQueenFace;
+
     [SerializeField]
     private Sprite _veryAngryQueenFace;
-    
+
     [SerializeField]
     private Image _faceImage;
 
@@ -27,6 +28,7 @@ public class AngryBarUI : MonoBehaviour
     {
         _faceImage.sprite = _queenFace;
     }
+
     private void OnEnable()
     {
         if (_angerSystem != null)
@@ -51,7 +53,7 @@ public class AngryBarUI : MonoBehaviour
         }
         else
         {
-            _faceImage.sprite= _queenFace;
+            _faceImage.sprite = _queenFace;
         }
 
         _fillImage.fillAmount = normalized;

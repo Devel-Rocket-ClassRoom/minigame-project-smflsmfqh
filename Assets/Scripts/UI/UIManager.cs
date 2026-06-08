@@ -185,7 +185,6 @@ public class UIManager : MonoBehaviour
         SetPanel(_hiddenVideoPanel, false);
         SetPanel(_blackFadePanel, false);
 
-
         if (_hiddenSkipButton != null)
             _hiddenSkipButton.onClick.AddListener(() =>
             {
@@ -194,6 +193,7 @@ public class UIManager : MonoBehaviour
             });
 
         MissionManager.Instance.OnMissionDisplayed += EnableMissionCheckListUI;
+        StringTableManager.Instance.OnLanguageChanged += RefreshLocalizedTexts;
     }
 
     private void PlayButtonSound()
@@ -205,6 +205,13 @@ public class UIManager : MonoBehaviour
     {
         if (MissionManager.Instance != null)
             MissionManager.Instance.OnMissionDisplayed -= EnableMissionCheckListUI;
+        StringTableManager.Instance.OnLanguageChanged -= RefreshLocalizedTexts;
+    }
+
+    private void RefreshLocalizedTexts()
+    {
+        if (_pausePanel != null && _pausePanel.activeSelf && _pauseExitText != null)
+            _pauseExitText.text = StringTableManager.Instance.GetMessage("PAUSE_EXIT").message;
     }
 
     private void EnableMissionCheckListUI(ItemData _)

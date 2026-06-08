@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
+        Application.targetFrameRate = 60;
         _score = 0;
 
         if (PlayerPrefs.HasKey(TitleController.LanguagePrefKey))

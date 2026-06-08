@@ -131,8 +131,10 @@ public class TutorialManager : MonoBehaviour
 
     private void UpdateArrowParticle()
     {
-        if (_arrowParticle == null || !_arrowParticle.gameObject.activeSelf) return;
-        if (_player == null || _pharmacyZone == null) return;
+        if (_arrowParticle == null || !_arrowParticle.gameObject.activeSelf)
+            return;
+        if (_player == null || _pharmacyZone == null)
+            return;
 
         Vector3 playerPos = _player.transform.position;
         Vector3 targetPos = _pharmacyZone.transform.position;
@@ -157,9 +159,10 @@ public class TutorialManager : MonoBehaviour
 
         // 2. 분노 메시지 큐잉 이후부터 스피어 이탈을 유효한 트리거로 인정
         Vector3 startPos = _player != null ? _player.transform.position : Vector3.zero;
-        float radius = _movementZone != null
-            ? _movementZone.radius * _movementZone.transform.lossyScale.x
-            : 3f;
+        float radius =
+            _movementZone != null
+                ? _movementZone.radius * _movementZone.transform.lossyScale.x
+                : 3f;
         yield return new WaitUntil(() =>
             _player != null && Vector3.Distance(_player.transform.position, startPos) >= radius
         );
@@ -235,9 +238,7 @@ public class TutorialManager : MonoBehaviour
 
     private void ShowItemTutorial()
     {
-        // ITEM_PICKUP → ITEM_GLOW 순으로 Front 삽입해야 GLOW가 먼저 나옴
-        _messageUI.EnqueueFrontTutorialMessage("TUT_ITEM_PICKUP");
-        _messageUI.EnqueueFrontTutorialMessage("TUT_ITEM_GLOW");
+        _messageUI.EnqueueFrontTutorialMessages("TUT_ITEM_GLOW", "TUT_ITEM_PICKUP");
     }
 
     // 약국 숙취해소제 픽업 완료 콜백
@@ -326,13 +327,16 @@ public class TutorialManager : MonoBehaviour
 
         if (_pausedNPCs != null)
             foreach (var npc in _pausedNPCs)
-                if (npc != null) npc.SetExternalPause(false);
+                if (npc != null)
+                    npc.SetExternalPause(false);
         if (_pausedCats != null)
             foreach (var cat in _pausedCats)
-                if (cat != null) cat.SetExternalPause(false);
+                if (cat != null)
+                    cat.SetExternalPause(false);
         if (_pausedCars != null)
             foreach (var car in _pausedCars)
-                if (car != null) car.SetTutorialPause(false);
+                if (car != null)
+                    car.SetTutorialPause(false);
 
         if (_player != null)
             _player.SetTutorialInvincible(false);
