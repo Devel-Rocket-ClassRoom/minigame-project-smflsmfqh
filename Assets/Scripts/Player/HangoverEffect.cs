@@ -2,10 +2,17 @@ using UnityEngine;
 
 public class HangoverEffect : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem _particle;
-    [SerializeField] private Material _hangoverMaterial;
-    [SerializeField] private float _hangoverSpeedMultiplier = 0.6f;
-    [SerializeField] private float _flickerSpeed = 3f;   // 깜빡임 빠르기
+    [SerializeField]
+    private ParticleSystem _particle;
+
+    [SerializeField]
+    private Material _hangoverMaterial;
+
+    [SerializeField]
+    private float _hangoverSpeedMultiplier = 0.6f;
+
+    [SerializeField]
+    private float _flickerSpeed = 3f; // 깜빡임 빠르기
 
     private Renderer[] _renderers;
     private Material[][] _originalMaterials;
@@ -50,7 +57,8 @@ public class HangoverEffect : MonoBehaviour
 
     private void Update()
     {
-        if (!_active || _ghostMatInstance == null) return;
+        if (!_active || _ghostMatInstance == null)
+            return;
 
         // 0~1 사인 파형으로 _Transparency 깜빡임
         float t = Mathf.Sin(Time.unscaledTime * _flickerSpeed) * 0.5f + 0.5f;

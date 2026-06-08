@@ -5,17 +5,24 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class CrosswalkWaitZone : MonoBehaviour
 {
-    private enum SignalState { CarGreen, PedestrianGreen }
+    private enum SignalState
+    {
+        CarGreen,
+        PedestrianGreen,
+    }
 
     [Header("신호 타이밍")]
     [Tooltip("차가 지나가는 시간 (보행자 빨간불 유지 시간)")]
-    [SerializeField] private float _carGreenDuration = 8f;
+    [SerializeField]
+    private float _carGreenDuration = 8f;
 
     [Tooltip("보행자가 건너는 시간 (차 빨간불 유지 시간)")]
-    [SerializeField] private float _pedestrianGreenDuration = 5f;
+    [SerializeField]
+    private float _pedestrianGreenDuration = 5f;
 
     [Tooltip("게임 시작 시 보행자 초록불로 먼저 시작할지 여부")]
-    [SerializeField] private bool _startWithPedestrianGreen = false;
+    [SerializeField]
+    private bool _startWithPedestrianGreen = false;
 
     private SignalState _signal;
     private readonly List<NPCMovement> _waitingNPCs = new();

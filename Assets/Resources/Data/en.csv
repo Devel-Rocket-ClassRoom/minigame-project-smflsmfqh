@@ -65,6 +65,9 @@ ITEM_FLOWER,"Flower",
 ITEM_ENERGYDRINK,"Hangover Cure",
 ITEM_PIZZA,"Pizza",
 
+// -- DESTINATION WARNING ------------------------------------------
+WARN_EARLY_RETURN,"Where do you think you're going?? I'm not done with you. Finish the errands first.",Honey♥,Honey♥
+
 // -- PAUSE PANEL --------------------------------------------------
 PAUSE_EXIT,"Quit the game?\nYour wife exits the marriage."
 // -- GAME CLEAR --------------------------------------------------

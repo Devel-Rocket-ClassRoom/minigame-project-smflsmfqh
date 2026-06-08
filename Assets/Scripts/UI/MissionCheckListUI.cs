@@ -4,11 +4,20 @@ using UnityEngine;
 
 public class MissionCheckListUI : MonoBehaviour
 {
-    [SerializeField] private GameObject _listPanel;
-    [SerializeField] private GameObject _entryPrefab;
-    [SerializeField] private Transform _entryContainer;
-    [SerializeField] private PlayerController _playerController;
-    [SerializeField] private MissionMessageUI _missionMessageUI;
+    [SerializeField]
+    private GameObject _listPanel;
+
+    [SerializeField]
+    private GameObject _entryPrefab;
+
+    [SerializeField]
+    private Transform _entryContainer;
+
+    [SerializeField]
+    private PlayerController _playerController;
+
+    [SerializeField]
+    private MissionMessageUI _missionMessageUI;
 
     private readonly List<MissionEntryUI> _entries = new();
     private bool _isOpen = false;
@@ -40,7 +49,8 @@ public class MissionCheckListUI : MonoBehaviour
     // 미션 메시지가 슬라이딩 인 될 때 항목 추가 + 리스트 잠깐 표시
     private void HandleSlidedIn(ItemData item)
     {
-        if (item == null) return; // 분노·힌트·독백 메시지는 무시
+        if (item == null)
+            return; // 분노·힌트·독백 메시지는 무시
         AddEntry(item);
         Peek();
     }

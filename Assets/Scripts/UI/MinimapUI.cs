@@ -29,6 +29,7 @@ public class MinimapUI : MonoBehaviour
 
     [SerializeField]
     private float _playerIconSize = 16f;
+
     [SerializeField]
     private float _flowerIconSize = 30f;
 
@@ -178,9 +179,7 @@ public class MinimapUI : MonoBehaviour
 
         rt.DOKill();
         rt.localScale = Vector3.one;
-        rt.DOScale(Vector3.one * 1.5f, 0.4f)
-          .SetLoops(-1, LoopType.Yoyo)
-          .SetEase(Ease.InOutSine);
+        rt.DOScale(Vector3.one * 1.5f, 0.4f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
     }
 
     public void StopPingMarker(MinimapMarker marker)

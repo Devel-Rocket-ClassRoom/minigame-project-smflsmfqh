@@ -29,7 +29,7 @@ public class AngerSystem : MonoBehaviour
     public float AngerPerSecond => _angerPerSecond;
     public bool IntroQueued { get; private set; }
     public event Action<float> OnAngerChanged;
-    public event Action<(string, string)> OnMessasgeTriggered;
+    public event Action<string> OnMessasgeTriggered;
     public event Action OnIntroQueued;
 
     private void Start()
@@ -39,9 +39,9 @@ public class AngerSystem : MonoBehaviour
 
         foreach (var key in _introKeys)
         {
-            var (msg, sender) = StringTableManager.Instance.GetMessage(key);
+            var (msg, _) = StringTableManager.Instance.GetMessage(key);
             if (!string.IsNullOrEmpty(msg))
-                OnMessasgeTriggered?.Invoke((msg, sender));
+                OnMessasgeTriggered?.Invoke(key);
         }
 
         IntroQueued = true;
@@ -69,10 +69,7 @@ public class AngerSystem : MonoBehaviour
             if (!_triggered[i] && percent >= _thresholds[i])
             {
                 _triggered[i] = true;
-                (string msg, string sender) = StringTableManager.Instance.GetAngerMessage(
-                    _thresholds[i]
-                );
-                OnMessasgeTriggered?.Invoke((msg, sender));
+                OnMessasgeTriggered?.Invoke($"ANGER_{(int)_thresholds[i]}");
             }
         }
 

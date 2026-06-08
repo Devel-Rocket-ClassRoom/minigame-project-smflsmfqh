@@ -66,7 +66,6 @@ public class ShopBuilding : MonoBehaviour
             else
                 StopParticle();
         }
-
     }
 
     private void OnDestroy()

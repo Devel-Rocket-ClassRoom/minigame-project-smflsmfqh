@@ -3,7 +3,8 @@ using UnityEngine.UI;
 
 public class CooldownBarUI : MonoBehaviour
 {
-    [SerializeField] private Image _fill;
+    [SerializeField]
+    private Image _fill;
 
     private Camera _cam;
 
@@ -16,7 +17,9 @@ public class CooldownBarUI : MonoBehaviour
     private void LateUpdate()
     {
         if (_cam != null)
-            transform.rotation = Quaternion.LookRotation(transform.position - _cam.transform.position);
+            transform.rotation = Quaternion.LookRotation(
+                transform.position - _cam.transform.position
+            );
     }
 
     public void SetFill(float t) => _fill.fillAmount = Mathf.Clamp01(t);
@@ -44,8 +47,9 @@ public class CooldownBarUI : MonoBehaviour
                 outDir = outDir.sqrMagnitude > 0.001f ? outDir.normalized : parent.forward;
 
                 // 콜라이더 바깥 경계(입구 앞)에 배치
-                float extent = Mathf.Abs(outDir.x) * col.bounds.extents.x
-                             + Mathf.Abs(outDir.z) * col.bounds.extents.z;
+                float extent =
+                    Mathf.Abs(outDir.x) * col.bounds.extents.x
+                    + Mathf.Abs(outDir.z) * col.bounds.extents.z;
                 transform.position = new Vector3(
                     center.x + outDir.x * extent,
                     col.bounds.center.y,

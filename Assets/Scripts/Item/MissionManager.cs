@@ -64,12 +64,13 @@ public class MissionManager : MonoBehaviour
     public event Action<ItemData> OnMissionAssigned;
     public event Action<ItemData> OnMissionDisplayed;
     public event Action<ItemData> OnMissionCompleted;
-    public event Action<string, string> OnHintAssigned;
+    public event Action<string> OnHintAssigned;
     public event Action OnOptionalMissionUnlocked;
 
     public void NotifyMissionDisplayed(ItemData item) => OnMissionDisplayed?.Invoke(item);
 
-    public void PauseMissionAssignment()  => _missionsPaused = true;
+    public void PauseMissionAssignment() => _missionsPaused = true;
+
     public void ResumeMissionAssignment() => _missionsPaused = false;
 
     // 미할당 미션 중 가장 이른 것 하나만 즉시 배분 (튜토리얼 종료 직후 호출용)
@@ -80,13 +81,11 @@ public class MissionManager : MonoBehaviour
             if (_assigned[i] || i == _bonusIdx)
                 continue;
             _assigned[i] = true;
-            string preKey = StringTableManager.Instance.GetPreMonologueKey(_missionPool[i].itemName);
+            string preKey = StringTableManager.Instance.GetPreMonologueKey(
+                _missionPool[i].itemName
+            );
             if (!string.IsNullOrEmpty(preKey))
-            {
-                var (msg, sender) = StringTableManager.Instance.GetMessage(preKey);
-                if (!string.IsNullOrEmpty(msg))
-                    OnHintAssigned?.Invoke(msg, sender);
-            }
+                OnHintAssigned?.Invoke(preKey);
             OnMissionAssigned?.Invoke(_missionPool[i]);
             return;
         }
@@ -108,6 +107,19 @@ public class MissionManager : MonoBehaviour
     private bool _bonusTriggerFired;
 
     public bool OnAllMissionCompleted => _completedCount >= _missionPool.Length;
+
+    // 보너스 제외, 아직 unlockTime에 도달하지 않아 할당되지 않은 일반 미션이 있는지
+    public bool HasUnassignedMissions
+    {
+        get
+        {
+            for (int i = 0; i < _missionPool.Length; i++)
+                if (!_assigned[i] && i != _bonusIdx)
+                    return true;
+            return false;
+        }
+    }
+
     public bool IsOptionalUnlocked => _optionalUnlocked;
     public bool IsOptionalCompleted => _optionalCompleted;
     public ItemData OptionalMission => _optionalMission;
@@ -194,7 +206,8 @@ public class MissionManager : MonoBehaviour
 
     private void Update()
     {
-        if (_missionsPaused) return;
+        if (_missionsPaused)
+            return;
 
         _elapsedTime += Time.deltaTime;
 
@@ -207,11 +220,7 @@ public class MissionManager : MonoBehaviour
                     _missionPool[i].itemName
                 );
                 if (!string.IsNullOrEmpty(preKey))
-                {
-                    var (msg, sender) = StringTableManager.Instance.GetMessage(preKey);
-                    if (!string.IsNullOrEmpty(msg))
-                        OnHintAssigned?.Invoke(msg, sender);
-                }
+                    OnHintAssigned?.Invoke(preKey);
                 OnMissionAssigned?.Invoke(_missionPool[i]);
             }
         }
@@ -224,8 +233,7 @@ public class MissionManager : MonoBehaviour
             if (!_hintTriggered[i] && _elapsedTime >= _hints[i].unlockTime)
             {
                 _hintTriggered[i] = true;
-                var (msg, sender) = StringTableManager.Instance.GetMessage(_hints[i].csvKey);
-                OnHintAssigned?.Invoke(msg, sender);
+                OnHintAssigned?.Invoke(_hints[i].csvKey);
             }
         }
     }

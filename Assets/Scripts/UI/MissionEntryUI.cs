@@ -6,8 +6,10 @@ public class MissionEntryUI : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI _missionNameText;
+
     [SerializeField]
     private Image _checkIcon;
+
     [SerializeField]
     private GameObject _strikeThrough;
 
@@ -35,7 +37,8 @@ public class MissionEntryUI : MonoBehaviour
 
     private void RefreshText()
     {
-        if (_item == null) return;
+        if (_item == null)
+            return;
         _missionNameText.text = StringTableManager.Instance.GetItemDisplayName(_item.itemName);
     }
 

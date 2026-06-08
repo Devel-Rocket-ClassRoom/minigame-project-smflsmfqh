@@ -34,16 +34,19 @@ public class MissionMessageUI : MonoBehaviour
 
     private readonly struct MessageData
     {
-        public readonly string Message;
-        public readonly string Sender;
-        public readonly ItemData Item; // 분노·힌트·독백 메시지는 null
+        public readonly string MsgKey; // csvKey — dequeue 시점에 StringTable 재조회
+        public readonly ItemData Item; // 체크리스트·NotifyMissionDisplayed용 (분노·힌트는 null)
         public readonly System.Action OnSlidedInCallback;
         public readonly float DisplayDuration; // <=0이면 _displayDuration 사용
 
-        public MessageData(string message, string sender, ItemData item = null, System.Action onSlidedInCallback = null, float displayDuration = -1f)
+        public MessageData(
+            string msgKey,
+            ItemData item = null,
+            System.Action onSlidedInCallback = null,
+            float displayDuration = -1f
+        )
         {
-            Message = message;
-            Sender = sender;
+            MsgKey = msgKey;
             Item = item;
             OnSlidedInCallback = onSlidedInCallback;
             DisplayDuration = displayDuration;
@@ -53,6 +56,7 @@ public class MissionMessageUI : MonoBehaviour
     private float _panelWidth;
     private float _currentSlideDuration = 0.3f;
     private Coroutine _slideCo;
+    private string _currentMsgKey;
     private readonly Queue<MessageData> _queue = new();
 
     public void SetSlideDuration(float duration) => _currentSlideDuration = duration;
@@ -65,6 +69,7 @@ public class MissionMessageUI : MonoBehaviour
             StopCoroutine(_slideCo);
             _slideCo = null;
         }
+        _currentMsgKey = null;
         _panel.anchoredPosition = new Vector2(-_panelWidth, _panel.anchoredPosition.y);
     }
 
@@ -84,6 +89,7 @@ public class MissionMessageUI : MonoBehaviour
         }
         if (_angerSystem != null)
             _angerSystem.OnMessasgeTriggered += HandleAngerMessage;
+        StringTableManager.Instance.OnLanguageChanged += HandleLanguageChanged;
     }
 
     private void OnDisable()
@@ -96,67 +102,118 @@ public class MissionMessageUI : MonoBehaviour
         }
         if (_angerSystem != null)
             _angerSystem.OnMessasgeTriggered -= HandleAngerMessage;
+        StringTableManager.Instance.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    // 언어 변경 시 현재 화면에 표시 중인 메시지를 즉시 재번역
+    private void HandleLanguageChanged()
+    {
+        if (string.IsNullOrEmpty(_currentMsgKey))
+            return;
+
+        var (msg, sender) = StringTableManager.Instance.GetMessage(_currentMsgKey);
+        _message.text = msg;
+        _senderName.text = sender;
+        if (!string.IsNullOrEmpty(sender))
+        {
+            string imageKey = StringTableManager.Instance.GetImageKeyBySender(sender);
+            _icon.sprite = Resources.Load<Sprite>(imageKey);
+        }
     }
 
     private void HandleMissionAssigned(ItemData itemData)
     {
-        var (message, sender) = StringTableManager.Instance.GetMissionMessage(itemData.itemName);
+        string key = $"MISSION_{itemData.itemName}";
+        var (message, _) = StringTableManager.Instance.GetMessage(key);
         if (string.IsNullOrEmpty(message))
             return;
-        Enqueue(new MessageData(message, sender, itemData));
+        Enqueue(new MessageData(key, itemData));
     }
 
-    private void HandleHint(string message, string sender)
+    private void HandleHint(string key)
     {
-        if (string.IsNullOrEmpty(message))
+        if (string.IsNullOrEmpty(key))
             return;
-        Enqueue(new MessageData(message, sender));
+        Enqueue(new MessageData(key));
     }
 
     private void HandleMonologue()
     {
-        var (homeMsg, homeSender) = StringTableManager.Instance.GetMessage("MONOLOGUE_HOME");
-        if (!string.IsNullOrEmpty(homeMsg))
-            Enqueue(new MessageData(homeMsg, homeSender));
+        EnqueueIfExists("MONOLOGUE_HOME");
+        EnqueueIfExists("MONOLOGUE_WAIT");
 
-        var (waitMsg, waitSender) = StringTableManager.Instance.GetMessage("MONOLOGUE_WAIT");
-        if (!string.IsNullOrEmpty(waitMsg))
-            Enqueue(new MessageData(waitMsg, waitSender));
-
-        var (flowerMsg, flowerSender) = StringTableManager.Instance.GetMessage("MONOLOGUE_FLOWER");
+        var (flowerMsg, _) = StringTableManager.Instance.GetMessage("MONOLOGUE_FLOWER");
         if (!string.IsNullOrEmpty(flowerMsg))
-        {
-            var flowerItem = MissionManager.Instance?.OptionalMission;
-            Enqueue(new MessageData(flowerMsg, flowerSender, flowerItem));
-        }
+            Enqueue(new MessageData("MONOLOGUE_FLOWER", MissionManager.Instance?.OptionalMission));
 
-        var (optMsg, optSender) = StringTableManager.Instance.GetMessage("MONOLOGUE_FLOWER_OPTIONAL");
-        if (!string.IsNullOrEmpty(optMsg))
-            Enqueue(new MessageData(optMsg, optSender));
+        EnqueueIfExists("MONOLOGUE_FLOWER_OPTIONAL");
     }
 
-    private void HandleAngerMessage((string, string) data)
+    private void EnqueueIfExists(string key)
     {
-        Enqueue(new MessageData(data.Item1, data.Item2));
+        var (msg, _) = StringTableManager.Instance.GetMessage(key);
+        if (!string.IsNullOrEmpty(msg))
+            Enqueue(new MessageData(key));
     }
 
-    public void EnqueueTutorialMessage(string csvKey, System.Action onSlidedIn = null, float displayDuration = 3f)
+    private void HandleAngerMessage(string key)
     {
-        var (message, sender) = StringTableManager.Instance.GetMessage(csvKey);
-        if (string.IsNullOrEmpty(message)) return;
-        Enqueue(new MessageData(message, sender, null, onSlidedIn, displayDuration));
+        if (string.IsNullOrEmpty(key))
+            return;
+        Enqueue(new MessageData(key));
+    }
+
+    public void EnqueueTutorialMessage(
+        string csvKey,
+        System.Action onSlidedIn = null,
+        float displayDuration = 3f
+    )
+    {
+        var (message, _) = StringTableManager.Instance.GetMessage(csvKey);
+        if (string.IsNullOrEmpty(message))
+            return;
+        Enqueue(new MessageData(csvKey, null, onSlidedIn, displayDuration));
     }
 
     // 현재 표시 중인 메시지는 유지하고, 대기 중인 메시지들 맨 앞에 삽입
-    public void EnqueueFrontTutorialMessage(string csvKey, System.Action onSlidedIn = null, float displayDuration = 3f)
+    public void EnqueueFrontTutorialMessage(
+        string csvKey,
+        System.Action onSlidedIn = null,
+        float displayDuration = 3f
+    )
     {
-        var (message, sender) = StringTableManager.Instance.GetMessage(csvKey);
-        if (string.IsNullOrEmpty(message)) return;
+        var (message, _) = StringTableManager.Instance.GetMessage(csvKey);
+        if (string.IsNullOrEmpty(message))
+            return;
 
-        var newData = new MessageData(message, sender, null, onSlidedIn, displayDuration);
+        var newData = new MessageData(csvKey, null, onSlidedIn, displayDuration);
         var temp = new Queue<MessageData>(_queue);
         _queue.Clear();
         _queue.Enqueue(newData);
+        while (temp.Count > 0)
+            _queue.Enqueue(temp.Dequeue());
+
+        if (_slideCo == null)
+            _slideCo = StartCoroutine(ProcessQueue());
+    }
+
+    // 여러 메시지를 순서대로 한 번에 큐 맨 앞에 삽입 (연속 호출 시 순서 역전 방지)
+    public void EnqueueFrontTutorialMessages(params string[] csvKeys)
+    {
+        var inserts = new List<MessageData>();
+        foreach (var key in csvKeys)
+        {
+            var (message, _) = StringTableManager.Instance.GetMessage(key);
+            if (!string.IsNullOrEmpty(message))
+                inserts.Add(new MessageData(key, null, null, 3f));
+        }
+        if (inserts.Count == 0)
+            return;
+
+        var temp = new Queue<MessageData>(_queue);
+        _queue.Clear();
+        foreach (var item in inserts)
+            _queue.Enqueue(item);
         while (temp.Count > 0)
             _queue.Enqueue(temp.Dequeue());
 
@@ -177,11 +234,15 @@ public class MissionMessageUI : MonoBehaviour
         {
             var data = _queue.Dequeue();
 
-            _message.text = data.Message;
-            _senderName.text = data.Sender;
-            if (!string.IsNullOrEmpty(data.Sender))
+            // dequeue 시점에 현재 언어로 재조회
+            var (message, sender) = StringTableManager.Instance.GetMessage(data.MsgKey);
+            _message.text = message;
+            _senderName.text = sender;
+            _currentMsgKey = data.MsgKey;
+
+            if (!string.IsNullOrEmpty(sender))
             {
-                string imageKey = StringTableManager.Instance.GetImageKeyBySender(data.Sender);
+                string imageKey = StringTableManager.Instance.GetImageKeyBySender(sender);
                 _icon.sprite = Resources.Load<Sprite>(imageKey);
             }
 
@@ -194,6 +255,7 @@ public class MissionMessageUI : MonoBehaviour
             float waitTime = data.DisplayDuration > 0 ? data.DisplayDuration : _displayDuration;
             yield return new WaitForSecondsRealtime(waitTime);
             yield return StartCoroutine(Slide(0f, -_panelWidth, _currentSlideDuration));
+            _currentMsgKey = null;
         }
 
         _slideCo = null;
