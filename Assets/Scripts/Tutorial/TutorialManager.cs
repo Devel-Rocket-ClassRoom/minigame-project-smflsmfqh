@@ -184,6 +184,9 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitForSeconds(_catLifetime);
         ResumeGame();
 
+        // 미션 할당 직후 픽업 콜백 등록 — step 7 대기 중 픽업해도 놓치지 않음
+        MissionManager.Instance.OnMissionCompleted += OnEnergyDrinkCollected;
+
         // 6. 약국 미션 메시지가 화면에 표시될 때까지 대기
         MissionManager.Instance.OnMissionDisplayed += OnFirstMissionDisplayed;
         yield return new WaitUntil(() => _firstMissionDisplayed);
@@ -193,17 +196,20 @@ public class TutorialManager : MonoBehaviour
         {
             yield return EnqueueAndWait("TUT_MAP");
 
-            if (_arrowParticle != null)
+            // TUT_MAP 대기 중 약국에 진입했을 수 있으므로 재검사
+            if (!_pharmacyEntered)
             {
-                _arrowParticle.gameObject.SetActive(true);
-                _arrowParticle.Play(true);
-            }
+                if (_arrowParticle != null)
+                {
+                    _arrowParticle.gameObject.SetActive(true);
+                    _arrowParticle.Play(true);
+                }
 
-            yield return EnqueueAndWait("TUT_ARROW");
+                yield return EnqueueAndWait("TUT_ARROW");
+            }
         }
 
         // 8. 약국 숙취해소제 픽업 대기
-        MissionManager.Instance.OnMissionCompleted += OnEnergyDrinkCollected;
         yield return new WaitUntil(() => _energyDrinkCollected);
 
         // 9. 픽업 완료 후 미션 목표 안내
@@ -238,6 +244,8 @@ public class TutorialManager : MonoBehaviour
 
     private void ShowItemTutorial()
     {
+        if (_energyDrinkCollected)
+            return;
         _messageUI.EnqueueFrontTutorialMessages("TUT_ITEM_GLOW", "TUT_ITEM_PICKUP");
     }
 

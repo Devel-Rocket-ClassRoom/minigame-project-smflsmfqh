@@ -24,6 +24,11 @@ public class CrosswalkWaitZone : MonoBehaviour
     [SerializeField]
     private bool _startWithPedestrianGreen = false;
 
+    [Header("연동 차량 정지 구역")]
+    [Tooltip("이 신호와 동기화할 CarStopZone 목록")]
+    [SerializeField]
+    private CarStopZone[] _linkedCarStopZones;
+
     private SignalState _signal;
     private readonly List<NPCMovement> _waitingNPCs = new();
 
@@ -37,18 +42,37 @@ public class CrosswalkWaitZone : MonoBehaviour
     {
         if (_startWithPedestrianGreen)
         {
-            _signal = SignalState.PedestrianGreen;
+            SetSignal(SignalState.PedestrianGreen);
             yield return new WaitForSeconds(_pedestrianGreenDuration);
         }
 
         while (true)
         {
-            _signal = SignalState.CarGreen;
+            SetSignal(SignalState.CarGreen);
             yield return new WaitForSeconds(_carGreenDuration);
 
-            _signal = SignalState.PedestrianGreen;
-            ReleaseAll();
+            SetSignal(SignalState.PedestrianGreen);
+            ReleaseAllNPCs();
             yield return new WaitForSeconds(_pedestrianGreenDuration);
+        }
+    }
+
+    private void SetSignal(SignalState next)
+    {
+        _signal = next;
+        bool carGreen = next == SignalState.CarGreen;
+
+        if (_linkedCarStopZones == null)
+            return;
+
+        foreach (var zone in _linkedCarStopZones)
+        {
+            if (zone == null)
+                continue;
+            if (carGreen)
+                zone.OnSignalCarGreen();
+            else
+                zone.OnSignalPedestrianGreen();
         }
     }
 
@@ -72,7 +96,7 @@ public class CrosswalkWaitZone : MonoBehaviour
             _waitingNPCs.Remove(npc);
     }
 
-    private void ReleaseAll()
+    private void ReleaseAllNPCs()
     {
         foreach (var npc in _waitingNPCs)
             if (npc != null)

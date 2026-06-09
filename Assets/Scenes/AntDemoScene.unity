@@ -15993,6 +15993,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.9325066, y: 0.5, z: 7.6007996}
   m_Center: {x: -9.26375, y: 0, z: -3.9267159}
+--- !u!1 &288340819 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6886481261278363009, guid: d7ecfdee371ab48dc8e275bb2b79805c, type: 3}
+  m_PrefabInstance: {fileID: 1881297804599654658}
+  m_PrefabAsset: {fileID: 0}
+--- !u!208 &288340824
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 288340819}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 4.5870004, y: 4.669, z: 3.397}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 4.669, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &289710117
 GameObject:
   m_ObjectHideFlags: 0
@@ -38636,8 +38657,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.1728216, z: 1}
-  m_Center: {x: 0, y: -0.08641159, z: 0}
+  m_Size: {x: 0.61595535, y: 0.33652118, z: 1}
+  m_Center: {x: -1.008131, y: -0.5045613, z: 0}
 --- !u!1 &738621911
 GameObject:
   m_ObjectHideFlags: 0
@@ -40821,8 +40842,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.1447119, z: 1}
-  m_Center: {x: 0, y: -0.07235643, z: 0}
+  m_Size: {x: 1.0739748, y: 0.19119784, z: 0.57954407}
+  m_Center: {x: 0.00072534, y: -0.5491127, z: 0.21022797}
 --- !u!1 &776591638
 GameObject:
   m_ObjectHideFlags: 0
@@ -41159,6 +41180,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5481769308011430647, guid: d7ecfdee371ab48dc8e275bb2b79805c, type: 3}
   m_PrefabInstance: {fileID: 1881297804599654658}
   m_PrefabAsset: {fileID: 0}
+--- !u!208 &784627512
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784627502}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 7.76, y: 7.4870005, z: 6.129}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 7.4870005, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &786393753
 GameObject:
   m_ObjectHideFlags: 0
@@ -48674,6 +48711,7 @@ MonoBehaviour:
   _carGreenDuration: 8
   _pedestrianGreenDuration: 5
   _startWithPedestrianGreen: 0
+  _linkedCarStopZones: []
 --- !u!65 &939115430
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -49121,6 +49159,7 @@ MonoBehaviour:
   _carGreenDuration: 8
   _pedestrianGreenDuration: 5
   _startWithPedestrianGreen: 0
+  _linkedCarStopZones: []
 --- !u!65 &946938389
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -56181,6 +56220,27 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 1634895986789987100, guid: d9b25b32b49ebe241b553e7a5677f407, type: 3}
+--- !u!1 &1080513685 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6894056552424690669, guid: d7ecfdee371ab48dc8e275bb2b79805c, type: 3}
+  m_PrefabInstance: {fileID: 1881297804599654658}
+  m_PrefabAsset: {fileID: 0}
+--- !u!208 &1080513690
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080513685}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.268, y: 4.313, z: 4.096}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 4.313, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &1081286638
 GameObject:
   m_ObjectHideFlags: 0
@@ -57019,6 +57079,7 @@ MonoBehaviour:
   _carGreenDuration: 8
   _pedestrianGreenDuration: 5
   _startWithPedestrianGreen: 0
+  _linkedCarStopZones: []
 --- !u!65 &1102401409
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -88723,6 +88784,7 @@ MonoBehaviour:
   _carGreenDuration: 8
   _pedestrianGreenDuration: 5
   _startWithPedestrianGreen: 0
+  _linkedCarStopZones: []
 --- !u!65 &1693417694
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -96229,8 +96291,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.2642599, z: 1}
-  m_Center: {x: 0, y: -0.13213037, z: 0}
+  m_Size: {x: 0.5552139, y: 0.485753, z: 1}
+  m_Center: {x: 1.0543861, y: -0.5213836, z: 0}
 --- !u!1 &1840448731
 GameObject:
   m_ObjectHideFlags: 0
@@ -98635,6 +98697,7 @@ MonoBehaviour:
   _carGreenDuration: 8
   _pedestrianGreenDuration: 5
   _startWithPedestrianGreen: 0
+  _linkedCarStopZones: []
 --- !u!65 &1885704917
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -118762,12 +118825,18 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5482549534902514808, guid: d7ecfdee371ab48dc8e275bb2b79805c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1764113910}
+    - targetCorrespondingSourceObject: {fileID: 6894056552424690669, guid: d7ecfdee371ab48dc8e275bb2b79805c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1080513690}
     - targetCorrespondingSourceObject: {fileID: 325914311407111004, guid: d7ecfdee371ab48dc8e275bb2b79805c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 902997751}
     - targetCorrespondingSourceObject: {fileID: 5542492755150672211, guid: d7ecfdee371ab48dc8e275bb2b79805c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 179927196}
+    - targetCorrespondingSourceObject: {fileID: 6886481261278363009, guid: d7ecfdee371ab48dc8e275bb2b79805c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 288340824}
     - targetCorrespondingSourceObject: {fileID: 9154410070842124402, guid: d7ecfdee371ab48dc8e275bb2b79805c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 28520848}
@@ -118780,6 +118849,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5141132240899102797, guid: d7ecfdee371ab48dc8e275bb2b79805c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 784627507}
+    - targetCorrespondingSourceObject: {fileID: 5141132240899102797, guid: d7ecfdee371ab48dc8e275bb2b79805c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 784627512}
     - targetCorrespondingSourceObject: {fileID: 8517289075697211827, guid: d7ecfdee371ab48dc8e275bb2b79805c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1148934841}
