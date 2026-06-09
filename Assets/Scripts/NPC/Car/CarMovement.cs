@@ -14,12 +14,6 @@ public class CarMovement : MonoBehaviour
     private float _hornMinPlayTime = 1.5f;
     private float _hornPlayedTime = 0f;
 
-    private enum CarState
-    {
-        Running,
-        Stop,
-    }
-
     [Header("경로점 (Inspector 직접 지정 시)")]
     [SerializeField]
     private CarDrivingZone _path;
@@ -41,18 +35,14 @@ public class CarMovement : MonoBehaviour
     [SerializeField]
     private float _waypointReachDistance = 0.5f;
 
-    [Header("정지 설정")]
-    [SerializeField]
-    private float _waitTime = 7f;
-
-    private CarState _state = CarState.Running;
-    private float _waitTimer;
-    private CarStopZone _lastStopZone;
+    private bool _signalStopped = false;
     private Vector3 _currentDestination;
     private bool _initialized = false;
     private bool _tutorialPaused = false;
 
     public void SetTutorialPause(bool paused) => _tutorialPaused = paused;
+
+    public void SetSignalStop(bool stopped) => _signalStopped = stopped;
 
     private void Start()
     {
@@ -126,21 +116,8 @@ public class CarMovement : MonoBehaviour
 
         UpdateEngineVolume();
 
-        switch (_state)
-        {
-            case CarState.Running:
-                DriveCar();
-                break;
-            case CarState.Stop:
-                _waitTimer -= Time.deltaTime;
-                if (_waitTimer <= 0f)
-                {
-                    _waitTimer = 0f;
-                    _state = CarState.Running;
-                    _lastStopZone = null;
-                }
-                break;
-        }
+        if (!_signalStopped)
+            DriveCar();
     }
 
     private void UpdateEngineVolume()
@@ -213,16 +190,6 @@ public class CarMovement : MonoBehaviour
             _waypointIndex = (_waypointIndex + 1) % _path.GetWaypointCount(_laneIndex);
             _currentDestination = GetWaypointPosition();
         }
-    }
-
-    public void OnEnterStopZone(CarStopZone zone)
-    {
-        if (_lastStopZone == zone)
-            return;
-
-        _lastStopZone = zone;
-        _state = CarState.Stop;
-        _waitTimer = _waitTime;
     }
 
     private Vector3 GetWaypointPosition() =>

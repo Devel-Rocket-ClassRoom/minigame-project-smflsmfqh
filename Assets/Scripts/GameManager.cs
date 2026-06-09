@@ -70,6 +70,10 @@ public class GameManager : MonoBehaviour
 
     public void GameOver(CauseDeath cause)
     {
+        Time.timeScale = 0f;
+        if (cause != CauseDeath.Anger)
+            _angerSystem.Pause();
+
         MissionManager.Instance.PauseMissionAssignment();
         _missionMessageUI?.ClearQueue();
         Cursor.lockState = CursorLockMode.None;
@@ -79,6 +83,7 @@ public class GameManager : MonoBehaviour
 
     public void GameClear()
     {
+        Time.timeScale = 0f;
         MissionManager.Instance.PauseMissionAssignment();
         _missionMessageUI?.ClearQueue();
         Cursor.lockState = CursorLockMode.None;
