@@ -74,6 +74,7 @@ PAUSE_EXIT,"Quit the game?\nYour wife exits the marriage."
 GAMECLEAR_SCORE_MINSEC,"Wife's Patience: {0}m {1}s",
 GAMECLEAR_SCORE_SEC,"Wife's Patience: {0}s",
 GAMECLEAR_TAGLINE,"You made it. Against all feet.",
+CREDITS_BODY,"Honey, I'm home\n\n▶ Design & Development\nHaneul Lee\n\n\nTo you who made it\nthrough all those feet.\n\nThank you for playing.\n\nIf you enjoyed this game,\nplease support indie game developers.\n\n Donation: 3333-03-6309490 KakaoBank\n\n",
 
 // -- TUTORIAL PANEL -----------------------------------------------
 PANEL_SKIP_DESC,"Skip"
