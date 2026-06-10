@@ -72,7 +72,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(float damage, CauseDeath causeDeath)
     {
-        if (_isInvincible || _tutorialInvincible)
+        if (isDead || _isInvincible || _tutorialInvincible)
             return;
 
         _currentHealth -= damage;

@@ -70,14 +70,18 @@ public class GameManager : MonoBehaviour
 
     public void GameOver(CauseDeath cause)
     {
-        Time.timeScale = 0f;
-        if (cause != CauseDeath.Anger)
-            _angerSystem.Pause();
+        if (cause == CauseDeath.Anger)
+            Time.timeScale = 0f;
 
+        _angerSystem.Pause();
         MissionManager.Instance.PauseMissionAssignment();
         _missionMessageUI?.ClearQueue();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        foreach (var cat in FindObjectsByType<CatMovement>(FindObjectsSortMode.None))
+            cat.SetExternalPause(true);
+
         UIManager.Instance.ShowGameOver(cause);
     }
 
