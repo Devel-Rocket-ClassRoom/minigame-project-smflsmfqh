@@ -96,6 +96,7 @@ public class PlayerMovement : MonoBehaviour
     private bool _isSpeedBoost = false;
     private Coroutine _speedCo;
     private float _hangoverMultiplier = 1f;
+    private readonly List<Vector3> _contactNormals = new();
 
     // --- 이벤트 관련 필드 ---
     public event Action<float> OnSprintChanged;
@@ -138,10 +139,9 @@ public class PlayerMovement : MonoBehaviour
         _rb.MoveRotation(Quaternion.Euler(0f, Yaw, 0f));
 
         // 우선순위: Roll > Crouch > Sprint > Move
+        // SpeedBoost는 _currentSpeed만 덮어쓰므로 모드 결정에서 제외 — 콜라이더 관리가 끊기지 않도록
         if (_isRolling)
             _mode = MoveMode.Roll;
-        else if (_isSpeedBoost)
-            _mode = MoveMode.None;
         else if (_isCrouching)
             _mode = MoveMode.Crouch;
         else if (_isSprint && _sprintDuration > 0)
@@ -221,9 +221,22 @@ public class PlayerMovement : MonoBehaviour
         {
             Vector3 move =
                 (transform.forward * _inputDir.y + transform.right * _inputDir.x) * _currentSpeed;
+
+            // 속도 부스트 중 벽 충돌 노멀 방향으로 이동 성분을 제거해 끼임 방지
+            if (_isSpeedBoost)
+            {
+                foreach (var normal in _contactNormals)
+                {
+                    if (Vector3.Dot(move, normal) < 0f)
+                        move = Vector3.ProjectOnPlane(move, normal);
+                }
+            }
+
             move.y = _rb.linearVelocity.y;
             _rb.linearVelocity = move;
         }
+
+        _contactNormals.Clear();
 
         if (_mode != MoveMode.Roll && _isGrounded && _rb.linearVelocity.y <= 0f)
         {
@@ -344,8 +357,17 @@ public class PlayerMovement : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (IsGroundContact(collision))
-        {
             _groundContacts.Add(collision.collider);
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        // 속도 부스트 중 벽면 노멀 수집 (바닥 제외)
+        if (!_isSpeedBoost) return;
+        foreach (var contact in collision.contacts)
+        {
+            if (contact.normal.y < 0.7f)
+                _contactNormals.Add(contact.normal);
         }
     }
 
