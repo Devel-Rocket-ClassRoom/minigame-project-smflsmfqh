@@ -81,6 +81,9 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private ProximityPanelFeedbackUI _proximityPanelFeedbackUI;
 
+    [SerializeField]
+    private ClearCreditsController _clearCreditsController;
+
     [Header("히든 엔딩 영상")]
     [SerializeField]
     private GameObject _hiddenVideoPanel;
@@ -129,6 +132,7 @@ public class UIManager : MonoBehaviour
         });
         _restartButton2.onClick.AddListener(() =>
         {
+            _clearCreditsController?.CancelScroll();
             PlayButtonSound();
             GameManager.Instance.Restart();
         });
@@ -139,6 +143,7 @@ public class UIManager : MonoBehaviour
         });
         _exitButton2.onClick.AddListener(() =>
         {
+            _clearCreditsController?.CancelScroll();
             PlayButtonSound();
             GameManager.Instance.Exit();
         });
@@ -149,6 +154,7 @@ public class UIManager : MonoBehaviour
         });
         _backButton2?.onClick.AddListener(() =>
         {
+            _clearCreditsController?.CancelScroll();
             PlayButtonSound();
             GameManager.Instance.GoToTitle();
         });
@@ -349,6 +355,10 @@ public class UIManager : MonoBehaviour
             _clearTaglineText.text = StringTableManager
                 .Instance.GetMessage("GAMECLEAR_TAGLINE")
                 .message;
+
+        // 히든 엔딩 루트에서 호출된 경우에만 크레딧 자동 스크롤 시작
+        if (MissionManager.Instance.IsOptionalCompleted)
+            _clearCreditsController?.Activate();
     }
 
     private void Update()

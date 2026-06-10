@@ -253,7 +253,7 @@ public class MissionMessageUI : MonoBehaviour
             if (data.Item != null)
                 MissionManager.Instance?.NotifyMissionDisplayed(data.Item);
             float waitTime = data.DisplayDuration > 0 ? data.DisplayDuration : _displayDuration;
-            yield return new WaitForSecondsRealtime(waitTime);
+            yield return new WaitForSeconds(waitTime);
             yield return StartCoroutine(Slide(0f, -_panelWidth, _currentSlideDuration));
             _currentMsgKey = null;
         }
@@ -268,7 +268,7 @@ public class MissionMessageUI : MonoBehaviour
 
         while (elapsed < duration)
         {
-            elapsed += Time.unscaledDeltaTime;
+            elapsed += Time.deltaTime;
             float t = Mathf.SmoothStep(0f, 1f, elapsed / duration);
             _panel.anchoredPosition = new Vector2(Mathf.Lerp(fromX, toX, t), y);
             yield return null;
