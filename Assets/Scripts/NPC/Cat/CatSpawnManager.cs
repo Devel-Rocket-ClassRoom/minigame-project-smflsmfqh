@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+[DefaultExecutionOrder(-1)]
 public class CatSpawnManager : MonoBehaviour
 {
     [SerializeField]
