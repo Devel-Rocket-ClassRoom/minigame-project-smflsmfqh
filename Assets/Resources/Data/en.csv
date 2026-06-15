@@ -98,3 +98,13 @@ BTN_EN,"ENGLISH"
 BTN_BACK,"BACK"
 BTN_EXIT,"EXIT"
 BTN_RESUME,"RESUME"
+
+// -- SETTINGS PANEL -----------------------------------------------
+UI_SETTINGS_TITLE,"SETTINGS"
+UI_VOLUME,"VOLUME"
+
+// -- GAME STATE PANELS --------------------------------------------
+UI_GAMEOVER_TITLE,"You Died"
+UI_GAMECLEAR_TITLE,"You Made It"
+GAMEOVER_SCORE_MINSEC,"Survival Time: {0}m {1}s"
+GAMEOVER_SCORE_SEC,"Survival Time: {0}s"

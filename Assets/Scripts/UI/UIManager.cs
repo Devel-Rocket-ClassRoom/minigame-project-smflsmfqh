@@ -25,6 +25,9 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI _gameOverDescText;
 
     [SerializeField]
+    private TextMeshProUGUI _gameOverScoreText;
+
+    [SerializeField]
     private Button _restartButton1;
 
     [SerializeField]
@@ -232,7 +235,7 @@ public class UIManager : MonoBehaviour
         AudioManager.Instance?.PlayBGM(_gameplayBGM);
     }
 
-    public void ShowGameOver(CauseDeath cause)
+    public void ShowGameOver(CauseDeath cause, int playSeconds)
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -244,6 +247,15 @@ public class UIManager : MonoBehaviour
 
         string deathMsg = StringTableManager.Instance.GetDeathMessage(cause);
         _gameOverDescText.text = deathMsg;
+
+        if (_gameOverScoreText != null)
+        {
+            int min = playSeconds / 60;
+            int sec = playSeconds % 60;
+            string key = min > 0 ? "GAMEOVER_SCORE_MINSEC" : "GAMEOVER_SCORE_SEC";
+            string fmt = StringTableManager.Instance.GetMessage(key).message;
+            _gameOverScoreText.text = min > 0 ? string.Format(fmt, min, sec) : string.Format(fmt, sec);
+        }
     }
 
     public void ShowGameClear(int angerSeconds)
