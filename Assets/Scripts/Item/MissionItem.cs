@@ -1,5 +1,6 @@
 using System;
-using System.Collections;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class MissionItem : MonoBehaviour, IInteractive
@@ -19,7 +20,7 @@ public class MissionItem : MonoBehaviour, IInteractive
 
     private PlayerMovement _playerMovement;
     private FollowCamera _camera;
-    private Coroutine _lifeTimer;
+    private CancellationTokenSource _lifeTimerCts;
     private MinimapMarker _minimapMarker;
 
     private void Awake()
@@ -75,7 +76,10 @@ public class MissionItem : MonoBehaviour, IInteractive
     private void OnEnable()
     {
         if (IsPooled && LifeTime > 0f)
-            _lifeTimer = StartCoroutine(AutoDeactivate());
+        {
+            _lifeTimerCts = new CancellationTokenSource();
+            AutoDeactivateAsync(_lifeTimerCts.Token).Forget();
+        }
 
         if (
             _itemData != null
@@ -87,11 +91,9 @@ public class MissionItem : MonoBehaviour, IInteractive
 
     private void OnDisable()
     {
-        if (_lifeTimer != null)
-        {
-            StopCoroutine(_lifeTimer);
-            _lifeTimer = null;
-        }
+        _lifeTimerCts?.Cancel();
+        _lifeTimerCts?.Dispose();
+        _lifeTimerCts = null;
 
         if (
             _itemData != null
@@ -124,10 +126,14 @@ public class MissionItem : MonoBehaviour, IInteractive
         MissionManager.Instance.OnMissionDisplayed -= HandleOptionalDisplayed;
     }
 
-    private IEnumerator AutoDeactivate()
+    private async UniTaskVoid AutoDeactivateAsync(CancellationToken ct)
     {
-        yield return new WaitForSeconds(LifeTime);
-        Deactivate();
+        try
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(LifeTime), DelayType.DeltaTime, cancellationToken: ct);
+            Deactivate();
+        }
+        catch (OperationCanceledException) { }
     }
 
     public void Interact(PlayerController player)

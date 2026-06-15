@@ -1,5 +1,7 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class ShopBuilding : MonoBehaviour
@@ -26,9 +28,6 @@ public class ShopBuilding : MonoBehaviour
     [SerializeField]
     private ParticleSystem _groundParticlePrefab;
 
-    public event System.Action OnPlayerEntered;
-    public event System.Action<Transform> OnItemDropped;
-
     [Header("드랍 쿨타임")]
     [SerializeField]
     private float _cooldown = 10f;
@@ -45,7 +44,7 @@ public class ShopBuilding : MonoBehaviour
 
     private List<ItemData> _remainingItems = new();
     private Vector3 _spawnPos;
-    private Coroutine _cooldownCo;
+    private CancellationTokenSource _cooldownCts;
 
     private void Start()
     {
@@ -75,6 +74,10 @@ public class ShopBuilding : MonoBehaviour
             MissionManager.Instance.OnMissionAssigned -= HandleMissionAssigned;
             MissionManager.Instance.OnMissionDisplayed -= HandleMissionDisplayed;
         }
+
+        _cooldownCts?.Cancel();
+        _cooldownCts?.Dispose();
+        _cooldownCts = null;
     }
 
     private void HandleMissionAssigned(ItemData data)
@@ -103,15 +106,13 @@ public class ShopBuilding : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        OnPlayerEntered?.Invoke();
-
         if (_isCooldown)
             return;
 
         if (_remainingItems.Count == 0)
             return;
 
-        ItemData selected = _remainingItems[Random.Range(0, _remainingItems.Count)];
+        ItemData selected = _remainingItems[UnityEngine.Random.Range(0, _remainingItems.Count)];
 
         if (
             selected.category == ItemCategory.Mission
@@ -128,7 +129,6 @@ public class ShopBuilding : MonoBehaviour
         _spawnPos.y += selected.spawnHeightOffset;
         var rot = Quaternion.Euler(selected.spawnRotation);
         var dropped = Instantiate(selected.dropPrefab, _spawnPos, rot);
-        OnItemDropped?.Invoke(dropped.transform);
         if (_groundParticlePrefab != null)
             Instantiate(_groundParticlePrefab, dropped.transform);
 
@@ -138,34 +138,38 @@ public class ShopBuilding : MonoBehaviour
         if (TryGetComponent(out MinimapMarker marker))
             MinimapUI.Instance?.StopPingMarker(marker);
 
-        if (_cooldownCo != null)
-            StopCoroutine(_cooldownCo);
-
+        _cooldownCts?.Cancel();
+        _cooldownCts?.Dispose();
+        _cooldownCts = new CancellationTokenSource();
         float cooldown = selected.category == ItemCategory.Mission ? _cooldown : _foodCooldown;
-        _cooldownCo = StartCoroutine(CooldownRoutine(cooldown, selected));
+        CooldownAsync(cooldown, selected, _cooldownCts.Token).Forget();
     }
 
-    private IEnumerator CooldownRoutine(float cooldown, ItemData dropped)
+    private async UniTaskVoid CooldownAsync(float cooldown, ItemData dropped, CancellationToken ct)
     {
-        _isCooldown = true;
-        _cooldownBar?.Show();
-
-        float elapsed = 0f;
-        while (elapsed < cooldown)
+        try
         {
-            elapsed += Time.deltaTime;
-            _cooldownBar?.SetFill(elapsed / cooldown);
-            yield return null;
+            _isCooldown = true;
+            _cooldownBar?.Show();
+
+            float elapsed = 0f;
+            while (elapsed < cooldown)
+            {
+                elapsed += Time.deltaTime;
+                _cooldownBar?.SetFill(elapsed / cooldown);
+                await UniTask.Yield(PlayerLoopTiming.Update, ct);
+            }
+
+            _cooldownBar?.Hide();
+            _isCooldown = false;
+
+            if (dropped.category != ItemCategory.Mission)
+                _remainingItems.Add(dropped);
+
+            if (HasAvailableItem() && _spotParticle != null)
+                PlayParticle();
         }
-
-        _cooldownBar?.Hide();
-        _isCooldown = false;
-
-        if (dropped.category != ItemCategory.Mission)
-            _remainingItems.Add(dropped);
-
-        if (HasAvailableItem() && _spotParticle != null)
-            PlayParticle();
+        catch (OperationCanceledException) { }
     }
 
     private bool HasFoodItem()
@@ -210,9 +214,9 @@ public class ShopBuilding : MonoBehaviour
         outDir.y = 0f;
         outDir = outDir.sqrMagnitude > 0.001f ? outDir.normalized : transform.forward;
 
-        float angle = Random.Range(-_spreadHalfAngle, _spreadHalfAngle);
+        float angle = UnityEngine.Random.Range(-_spreadHalfAngle, _spreadHalfAngle);
         Vector3 dir = Quaternion.Euler(0f, angle, 0f) * outDir;
-        Vector3 horizontal = center + dir * Random.Range(_dropDistanceMin, _dropDistanceMax);
+        Vector3 horizontal = center + dir * UnityEngine.Random.Range(_dropDistanceMin, _dropDistanceMax);
 
         Vector3 origin = new Vector3(horizontal.x, center.y + 3f, horizontal.z);
 

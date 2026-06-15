@@ -1,5 +1,7 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class MissionCheckListUI : MonoBehaviour
@@ -21,7 +23,7 @@ public class MissionCheckListUI : MonoBehaviour
 
     private readonly List<MissionEntryUI> _entries = new();
     private bool _isOpen = false;
-    private Coroutine _peekCo;
+    private CancellationTokenSource _peekCts;
 
     private void Awake()
     {
@@ -44,6 +46,10 @@ public class MissionCheckListUI : MonoBehaviour
             _playerController.OnMissionTogglePressed -= ToggleList;
         if (_missionMessageUI != null)
             _missionMessageUI.OnSlidedIn -= HandleSlidedIn;
+
+        _peekCts?.Cancel();
+        _peekCts?.Dispose();
+        _peekCts = null;
     }
 
     // 미션 메시지가 슬라이딩 인 될 때 항목 추가 + 리스트 잠깐 표시
@@ -72,9 +78,10 @@ public class MissionCheckListUI : MonoBehaviour
 
     public void Peek()
     {
-        if (_peekCo != null)
-            StopCoroutine(_peekCo);
-        _peekCo = StartCoroutine(PeekCoroutine());
+        _peekCts?.Cancel();
+        _peekCts?.Dispose();
+        _peekCts = new CancellationTokenSource();
+        PeekAsync(_peekCts.Token).Forget();
     }
 
     private void ToggleList()
@@ -83,11 +90,15 @@ public class MissionCheckListUI : MonoBehaviour
         _listPanel.SetActive(_isOpen);
     }
 
-    private IEnumerator PeekCoroutine()
+    private async UniTaskVoid PeekAsync(CancellationToken ct)
     {
-        _listPanel.SetActive(true);
-        yield return new WaitForSeconds(3f);
-        if (!_isOpen)
-            _listPanel.SetActive(false);
+        try
+        {
+            _listPanel.SetActive(true);
+            await UniTask.Delay(TimeSpan.FromSeconds(3f), DelayType.DeltaTime, cancellationToken: ct);
+            if (!_isOpen)
+                _listPanel.SetActive(false);
+        }
+        catch (OperationCanceledException) { }
     }
 }
