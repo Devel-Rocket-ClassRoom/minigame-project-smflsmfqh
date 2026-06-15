@@ -30,7 +30,6 @@ public class AngerSystem : MonoBehaviour
     public bool IntroQueued { get; private set; }
     public event Action<float> OnAngerChanged;
     public event Action<string> OnMessasgeTriggered;
-    public event Action OnIntroQueued;
 
     private void Start()
     {
@@ -45,7 +44,6 @@ public class AngerSystem : MonoBehaviour
         }
 
         IntroQueued = true;
-        OnIntroQueued?.Invoke();
     }
 
     private void OnDisable()
