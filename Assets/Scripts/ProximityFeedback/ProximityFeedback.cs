@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ProximityFeedback : MonoBehaviour
@@ -18,13 +19,21 @@ public class ProximityFeedback : MonoBehaviour
     public float DangerRadius => _dangerRadius;
     public float PanicRadius => _panicRadius;
     public float Intensity { get; private set; }
-    private GameObject[] _dangers = Array.Empty<GameObject>();
-    private float _cacheTimer;
-    private const float k_CacheInterval = 0.2f;
+
+    private readonly List<Transform> _dangers = new();
+
+    private void Start()
+    {
+        foreach (var go in GameObject.FindGameObjectsWithTag("Danger"))
+            _dangers.Add(go.transform);
+    }
+
+    public void RegisterDanger(Transform t) => _dangers.Add(t);
+
+    public void UnregisterDanger(Transform t) => _dangers.Remove(t);
 
     private void Update()
     {
-        RefreshDangerCache();
         float minDist = CalcMinDist();
         float newIntensity = CalcIntensity(minDist);
 
@@ -40,28 +49,19 @@ public class ProximityFeedback : MonoBehaviour
         OnIntensityChanged?.Invoke(Intensity);
     }
 
-    private void RefreshDangerCache()
-    {
-        _cacheTimer -= Time.deltaTime;
-        if (_cacheTimer > 0f)
-            return;
-
-        _cacheTimer = k_CacheInterval;
-        _dangers = GameObject.FindGameObjectsWithTag("Danger");
-    }
-
     private float CalcMinDist()
     {
-        float minDist = float.MaxValue;
-        foreach (var obj in _dangers)
+        float minDistSq = float.MaxValue;
+        Vector3 myPos = transform.position;
+
+        foreach (var t in _dangers)
         {
-            if (obj == null)
-                continue;
-            float d = Vector3.Distance(transform.position, obj.transform.position);
-            if (d < minDist)
-                minDist = d;
+            float dSq = (myPos - t.position).sqrMagnitude;
+            if (dSq < minDistSq)
+                minDistSq = dSq;
         }
-        return minDist;
+
+        return minDistSq == float.MaxValue ? float.MaxValue : Mathf.Sqrt(minDistSq);
     }
 
     private float CalcIntensity(float minDist)
