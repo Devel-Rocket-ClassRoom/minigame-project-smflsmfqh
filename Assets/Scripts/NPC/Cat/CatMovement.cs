@@ -47,6 +47,9 @@ public class CatMovement : MonoBehaviour
     private bool _isAttacking = false;
     private Coroutine _attackCo;
 
+    private Vector3 _lastSetDestination;
+    private const float k_DestinationUpdateDistSq = 0.25f; // 0.5m 이상 이동 시 재계산
+
     [Header("야옹 소리")]
     [SerializeField]
     private AudioSource _audioSource;
@@ -173,6 +176,7 @@ public class CatMovement : MonoBehaviour
         _hasDestination = false;
         _isFound = true;
         _isWaiting = false;
+        _lastSetDestination = Vector3.positiveInfinity; // 진입 직후 즉시 경로 계산
     }
 
     private void EnterWander()
@@ -192,7 +196,12 @@ public class CatMovement : MonoBehaviour
         if (_player == null || !_agent.isOnNavMesh)
             return;
 
-        _agent.SetDestination(_player.transform.position);
+        Vector3 playerPos = _player.transform.position;
+        if ((playerPos - _lastSetDestination).sqrMagnitude >= k_DestinationUpdateDistSq)
+        {
+            _agent.SetDestination(playerPos);
+            _lastSetDestination = playerPos;
+        }
 
         Vector3 dir = (_player.transform.position - transform.position).normalized;
         dir.y = 0f;

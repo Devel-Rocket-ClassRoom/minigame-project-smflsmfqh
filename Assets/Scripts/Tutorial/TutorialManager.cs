@@ -5,8 +5,6 @@ using UnityEngine.InputSystem;
 
 public class TutorialManager : MonoBehaviour
 {
-    public static TutorialManager Instance { get; private set; }
-
     [Header("UI")]
     [SerializeField]
     private MissionMessageUI _messageUI;
@@ -40,6 +38,14 @@ public class TutorialManager : MonoBehaviour
     [SerializeField]
     private ParticleSystem _arrowParticle;
 
+    [Header("스킵 입력")]
+    [SerializeField]
+    private InputAction _skipAction = new InputAction(
+        name: "SkipTutorial",
+        type: InputActionType.Button,
+        binding: "<Keyboard>/q"
+    );
+
     [Header("튜토리얼 패널 존")]
     [SerializeField]
     private GameObject _skipTextZone;
@@ -49,8 +55,6 @@ public class TutorialManager : MonoBehaviour
 
     [SerializeField]
     private GameObject _pressCZone;
-
-    public bool IsActive => _active;
 
     private bool _active = true;
     private bool _firstMissionDisplayed;
@@ -67,13 +71,6 @@ public class TutorialManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-
         // TutorialPanel 부모가 에디터에서 비활성화되어 있으므로 먼저 활성화
         _skipTextZone?.transform.parent?.gameObject.SetActive(true);
         _skipTextZone?.SetActive(true);
@@ -83,6 +80,24 @@ public class TutorialManager : MonoBehaviour
         // 화살표 파티클: 약국 진입 전까지 꺼둠
         if (_arrowParticle != null)
             _arrowParticle.gameObject.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        _skipAction.performed += OnSkipPerformed;
+        _skipAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        _skipAction.performed -= OnSkipPerformed;
+        _skipAction.Disable();
+    }
+
+    private void OnSkipPerformed(InputAction.CallbackContext ctx)
+    {
+        if (_active)
+            Skip();
     }
 
     private void Start()
@@ -123,9 +138,6 @@ public class TutorialManager : MonoBehaviour
 
     private void Update()
     {
-        if (_active && Keyboard.current != null && Keyboard.current.qKey.wasPressedThisFrame)
-            Skip();
-
         UpdateArrowParticle();
     }
 
@@ -279,14 +291,21 @@ public class TutorialManager : MonoBehaviour
         var cat = Instantiate(_catPrefab, origin, Quaternion.identity);
         cat.MarkAsTutorialCat();
         cat.SetPlayer(_player);
-        StartCoroutine(DestroyCatAfter(cat));
+
+        var proximity = _player.GetComponent<ProximityFeedback>();
+        proximity?.RegisterDanger(cat.transform);
+
+        StartCoroutine(DestroyCatAfter(cat, proximity));
     }
 
-    private IEnumerator DestroyCatAfter(CatMovement cat)
+    private IEnumerator DestroyCatAfter(CatMovement cat, ProximityFeedback proximity)
     {
         yield return new WaitForSeconds(_catLifetime);
         if (cat != null)
+        {
+            proximity?.UnregisterDanger(cat.transform);
             Destroy(cat.gameObject);
+        }
         _pressCZone?.SetActive(false);
     }
 

@@ -126,12 +126,7 @@ public class CarMovement : MonoBehaviour
             return;
 
         if (_proximity == null)
-        {
-            var player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-                _proximity = player.GetComponent<ProximityFeedback>();
             return;
-        }
 
         float dist = Vector3.Distance(transform.position, _proximity.transform.position);
         bool inRange = dist <= _proximity.DangerRadius;
