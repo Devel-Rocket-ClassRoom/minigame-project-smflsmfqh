@@ -1,6 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -55,7 +56,7 @@ public class MissionMessageUI : MonoBehaviour
 
     private float _panelWidth;
     private float _currentSlideDuration = 0.3f;
-    private Coroutine _slideCo;
+    private CancellationTokenSource _slideCts;
     private string _currentMsgKey;
     private readonly Queue<MessageData> _queue = new();
 
@@ -64,11 +65,9 @@ public class MissionMessageUI : MonoBehaviour
     public void ClearQueue()
     {
         _queue.Clear();
-        if (_slideCo != null)
-        {
-            StopCoroutine(_slideCo);
-            _slideCo = null;
-        }
+        _slideCts?.Cancel();
+        _slideCts?.Dispose();
+        _slideCts = null;
         _currentMsgKey = null;
         _panel.anchoredPosition = new Vector2(-_panelWidth, _panel.anchoredPosition.y);
     }
@@ -103,6 +102,10 @@ public class MissionMessageUI : MonoBehaviour
         if (_angerSystem != null)
             _angerSystem.OnMessasgeTriggered -= HandleAngerMessage;
         StringTableManager.Instance.OnLanguageChanged -= HandleLanguageChanged;
+
+        _slideCts?.Cancel();
+        _slideCts?.Dispose();
+        _slideCts = null;
     }
 
     // 언어 변경 시 현재 화면에 표시 중인 메시지를 즉시 재번역
@@ -193,8 +196,11 @@ public class MissionMessageUI : MonoBehaviour
         while (temp.Count > 0)
             _queue.Enqueue(temp.Dequeue());
 
-        if (_slideCo == null)
-            _slideCo = StartCoroutine(ProcessQueue());
+        if (_slideCts == null)
+        {
+            _slideCts = new CancellationTokenSource();
+            ProcessQueueAsync(_slideCts.Token).Forget();
+        }
     }
 
     // 여러 메시지를 순서대로 한 번에 큐 맨 앞에 삽입 (연속 호출 시 순서 역전 방지)
@@ -217,51 +223,64 @@ public class MissionMessageUI : MonoBehaviour
         while (temp.Count > 0)
             _queue.Enqueue(temp.Dequeue());
 
-        if (_slideCo == null)
-            _slideCo = StartCoroutine(ProcessQueue());
+        if (_slideCts == null)
+        {
+            _slideCts = new CancellationTokenSource();
+            ProcessQueueAsync(_slideCts.Token).Forget();
+        }
     }
 
     private void Enqueue(MessageData data)
     {
         _queue.Enqueue(data);
-        if (_slideCo == null)
-            _slideCo = StartCoroutine(ProcessQueue());
-    }
-
-    private IEnumerator ProcessQueue()
-    {
-        while (_queue.Count > 0)
+        if (_slideCts == null)
         {
-            var data = _queue.Dequeue();
-
-            // dequeue 시점에 현재 언어로 재조회
-            var (message, sender) = StringTableManager.Instance.GetMessage(data.MsgKey);
-            _message.text = message;
-            _senderName.text = sender;
-            _currentMsgKey = data.MsgKey;
-
-            if (!string.IsNullOrEmpty(sender))
-            {
-                string imageKey = StringTableManager.Instance.GetImageKeyBySender(sender);
-                _icon.sprite = Resources.Load<Sprite>(imageKey);
-            }
-
-            AudioManager.Instance?.PlaySFX(_slideInSound);
-            yield return StartCoroutine(Slide(-_panelWidth, 10f, _currentSlideDuration));
-            OnSlidedIn?.Invoke(data.Item);
-            data.OnSlidedInCallback?.Invoke();
-            if (data.Item != null)
-                MissionManager.Instance?.NotifyMissionDisplayed(data.Item);
-            float waitTime = data.DisplayDuration > 0 ? data.DisplayDuration : _displayDuration;
-            yield return new WaitForSeconds(waitTime);
-            yield return StartCoroutine(Slide(0f, -_panelWidth, _currentSlideDuration));
-            _currentMsgKey = null;
+            _slideCts = new CancellationTokenSource();
+            ProcessQueueAsync(_slideCts.Token).Forget();
         }
-
-        _slideCo = null;
     }
 
-    private IEnumerator Slide(float fromX, float toX, float duration)
+    private async UniTaskVoid ProcessQueueAsync(CancellationToken ct)
+    {
+        try
+        {
+            while (_queue.Count > 0)
+            {
+                var data = _queue.Dequeue();
+
+                // dequeue 시점에 현재 언어로 재조회
+                var (message, sender) = StringTableManager.Instance.GetMessage(data.MsgKey);
+                _message.text = message;
+                _senderName.text = sender;
+                _currentMsgKey = data.MsgKey;
+
+                if (!string.IsNullOrEmpty(sender))
+                {
+                    string imageKey = StringTableManager.Instance.GetImageKeyBySender(sender);
+                    _icon.sprite = Resources.Load<Sprite>(imageKey);
+                }
+
+                AudioManager.Instance?.PlaySFX(_slideInSound);
+                await SlideAsync(-_panelWidth, 10f, _currentSlideDuration, ct);
+                OnSlidedIn?.Invoke(data.Item);
+                data.OnSlidedInCallback?.Invoke();
+                if (data.Item != null)
+                    MissionManager.Instance?.NotifyMissionDisplayed(data.Item);
+                float waitTime = data.DisplayDuration > 0 ? data.DisplayDuration : _displayDuration;
+                await UniTask.Delay(TimeSpan.FromSeconds(waitTime), DelayType.DeltaTime, cancellationToken: ct);
+                await SlideAsync(0f, -_panelWidth, _currentSlideDuration, ct);
+                _currentMsgKey = null;
+            }
+        }
+        catch (OperationCanceledException) { }
+        finally
+        {
+            _slideCts?.Dispose();
+            _slideCts = null;
+        }
+    }
+
+    private async UniTask SlideAsync(float fromX, float toX, float duration, CancellationToken ct)
     {
         float elapsed = 0f;
         float y = _panel.anchoredPosition.y;
@@ -271,7 +290,7 @@ public class MissionMessageUI : MonoBehaviour
             elapsed += Time.deltaTime;
             float t = Mathf.SmoothStep(0f, 1f, elapsed / duration);
             _panel.anchoredPosition = new Vector2(Mathf.Lerp(fromX, toX, t), y);
-            yield return null;
+            await UniTask.Yield(PlayerLoopTiming.Update, ct);
         }
 
         _panel.anchoredPosition = new Vector2(toX, y);

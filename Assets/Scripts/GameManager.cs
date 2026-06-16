@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
         foreach (var cat in FindObjectsByType<CatMovement>(FindObjectsSortMode.None))
             cat.SetExternalPause(true);
 
-        UIManager.Instance.ShowGameOver(cause);
+        UIManager.Instance.ShowGameOver(cause, Mathf.RoundToInt(_playTime));
     }
 
     public void GameClear()

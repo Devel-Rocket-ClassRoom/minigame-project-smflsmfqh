@@ -13,9 +13,6 @@ public class VolumeSettingsManager : MonoBehaviour
     public float BGMVolume { get; private set; }
     public float SFXVolume { get; private set; }
 
-    public event System.Action<float> OnBGMVolumeChanged;
-    public event System.Action<float> OnSFXVolumeChanged;
-
     private void Awake()
     {
         if (Instance != null)
@@ -43,7 +40,6 @@ public class VolumeSettingsManager : MonoBehaviour
         BGMVolume = Mathf.Clamp01(value);
         PlayerPrefs.SetFloat(BGMKey, BGMVolume);
         _mixer?.SetFloat("BGMVolume", LinearToDb(BGMVolume));
-        OnBGMVolumeChanged?.Invoke(BGMVolume);
     }
 
     public void SetSFXVolume(float value)
@@ -51,6 +47,5 @@ public class VolumeSettingsManager : MonoBehaviour
         SFXVolume = Mathf.Clamp01(value);
         PlayerPrefs.SetFloat(SFXKey, SFXVolume);
         _mixer?.SetFloat("SFXVolume", LinearToDb(SFXVolume));
-        OnSFXVolumeChanged?.Invoke(SFXVolume);
     }
 }
