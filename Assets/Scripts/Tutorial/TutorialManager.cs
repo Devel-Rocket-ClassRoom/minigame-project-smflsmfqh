@@ -191,13 +191,13 @@ public class TutorialManager : MonoBehaviour
         MissionManager.Instance.OnMissionDisplayed += OnFirstMissionDisplayed;
         yield return new WaitUntil(() => _firstMissionDisplayed);
 
-        // 7. 지도 + 방향 화살표 설명 (약국 콜라이더 진입 전인 경우만)
-        if (!_pharmacyEntered)
+        // 7. 지도 + 방향 화살표 설명 (약국 콜라이더 진입 전 + 아이템 미픽업 상태인 경우만)
+        if (!_pharmacyEntered && !_energyDrinkCollected)
         {
             yield return EnqueueAndWait("TUT_MAP");
 
-            // TUT_MAP 대기 중 약국에 진입했을 수 있으므로 재검사
-            if (!_pharmacyEntered)
+            // TUT_MAP 대기 중 약국 진입 또는 아이템 픽업이 일어났을 수 있으므로 재검사
+            if (!_pharmacyEntered && !_energyDrinkCollected)
             {
                 if (_arrowParticle != null)
                 {

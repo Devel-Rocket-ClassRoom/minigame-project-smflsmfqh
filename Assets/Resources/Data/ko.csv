@@ -98,3 +98,13 @@ BTN_EN,"영어"
 BTN_BACK,"뒤로"
 BTN_EXIT,"나가기"
 BTN_RESUME,"재개"
+
+// -- SETTINGS PANEL -----------------------------------------------
+UI_SETTINGS_TITLE,"설정"
+UI_VOLUME,"볼륨"
+
+// -- GAME STATE PANELS --------------------------------------------
+UI_GAMEOVER_TITLE,"당신은 죽었다"
+UI_GAMECLEAR_TITLE,"당신은 해냈다"
+GAMEOVER_SCORE_MINSEC,"생존 시간: {0}분 {1}초"
+GAMEOVER_SCORE_SEC,"생존 시간: {0}초"
