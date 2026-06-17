@@ -119,6 +119,9 @@ public class PlayerMovement : MonoBehaviour
         _animator = GetComponent<Animator>();
         _playerController = GetComponent<PlayerController>();
 
+        if (_animator != null)
+            _animator.applyRootMotion = false;
+
         _standHeight = _collider.height;
         _crouchHeight = _standHeight * 0.5f;
         _prevColliderCenter = _collider.center;
@@ -216,6 +219,14 @@ public class PlayerMovement : MonoBehaviour
                 OnSprintChanged?.Invoke(_sprintDuration / _sprintTotalTime);
             }
         }
+
+        bool hasInput = _inputDir.sqrMagnitude > 0.01f;
+
+        // 입력이 없을 때 XZ 이동을 물리 엔진이 덮어쓰지 못하도록 constraint로 고정
+        if (!hasInput && _mode != MoveMode.Roll)
+            _rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+        else
+            _rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         if (_mode != MoveMode.Roll)
         {
