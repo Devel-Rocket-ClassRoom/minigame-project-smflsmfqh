@@ -92,6 +92,10 @@ MiniGameProject/Assets/ithappy.meta
 # =============================================================
 Assets/Firebase/
 Assets/Firebase.meta
+Assets/ExternalDependencyManager/
+Assets/ExternalDependencyManager.meta
+Assets/Editor Default Resources/Firebase/
+Assets/Editor Default Resources/Firebase.meta
 Assets/Plugins/iOS/Firebase/
 Assets/Plugins/iOS/Firebase.meta
 Assets/Plugins/tvOS/Firebase/
