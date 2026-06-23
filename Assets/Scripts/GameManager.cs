@@ -142,4 +142,18 @@ public class GameManager : MonoBehaviour
         Application.Quit();
 #endif
     }
+
+    public void ResetGame()
+    {
+        Debug.Log("[Game] 초기화");
+
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        AuthManager.Instance.SignOut();
+
+        // 씬 전환으로 GameManager, MissionManager, AngerSystem, PlayerHealth 등 씬 바운드 상태 자동 소멸
+        SceneManager.LoadScene("TitleScene");
+    }
 }

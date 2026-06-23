@@ -86,3 +86,21 @@ MiniGameProject/Assets/SimplePoly City - Low Poly Assets.meta
 # ithappy 에셋 (무료이나 재배포 방지 차원에서 제외)
 MiniGameProject/Assets/ithappy/
 MiniGameProject/Assets/ithappy.meta
+
+# =============================================================
+# Firebase SDK (각 개발자가 직접 임포트 — 바이너리 LFS 회피)
+# =============================================================
+Assets/Firebase/
+Assets/Firebase.meta
+Assets/Plugins/iOS/Firebase/
+Assets/Plugins/iOS/Firebase.meta
+Assets/Plugins/tvOS/Firebase/
+Assets/Plugins/tvOS/Firebase.meta
+
+# Firebase 설정 파일 (프로젝트 키 포함 — 보안)
+Assets/google-services.json
+Assets/google-services.json.meta
+Assets/GoogleService-Info.plist
+Assets/GoogleService-Info.plist.meta
+Assets/Resources/FirebaseConfig.asset
+Assets/Resources/FirebaseConfig.asset.meta

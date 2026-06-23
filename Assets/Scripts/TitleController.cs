@@ -1,7 +1,9 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.Video;
 using UnityEngine.SceneManagement;
 
@@ -10,6 +12,8 @@ public class TitleController : MonoBehaviour
     [Header("UI Panels")]
     [SerializeField] private GameObject _titlePanel;
     [SerializeField] private GameObject _videoPanel;
+    [SerializeField] private GameObject _loginPanel;
+    [SerializeField] private ProfileUI _profileUI;
 
     [Header("Video Settings")]
     [SerializeField] private VideoPlayer _videoPlayer;
@@ -19,6 +23,8 @@ public class TitleController : MonoBehaviour
     [SerializeField] private Button _startButton;
     [SerializeField] private Button _skipButton;
     [SerializeField] private Button _languageButton;
+    [SerializeField] private Button _loginButton;
+    [SerializeField] private TextMeshProUGUI _loginButtonText;
 
     [Header("언어 선택")]
     [SerializeField] private GameObject _languagePanel;
@@ -52,6 +58,9 @@ public class TitleController : MonoBehaviour
     {
         if (_startButton != null)
             _startButton.onClick.AddListener(StartGameSequence);
+
+        if (_loginButton != null)
+            _loginButton.onClick.AddListener(OnLoginButtonClicked);
 
         if (_skipButton != null)
             _skipButton.onClick.AddListener(SkipVideo);
@@ -89,9 +98,64 @@ public class TitleController : MonoBehaviour
 
     }
 
-    private void Start()
+    private async UniTaskVoid Start()
     {
         AudioManager.Instance?.PlayBGM(_titleBGM);
+
+        await UniTask.WaitUntil(() => AuthManager.Instance != null && AuthManager.Instance.IsInitialized);
+        AuthManager.Instance.LogInStateChanged += OnLogInStateChanged;
+        ProfileManager.Instance.OnProfileChanged += OnProfileChanged;
+
+        await UpdateLoginUI(AuthManager.Instance.IsLoggedIn);
+    }
+
+    private void OnDisable()
+    {
+        if (AuthManager.Instance != null)
+            AuthManager.Instance.LogInStateChanged -= OnLogInStateChanged;
+        if (ProfileManager.Instance != null)
+            ProfileManager.Instance.OnProfileChanged -= OnProfileChanged;
+    }
+
+    private void OnLogInStateChanged(bool isLoggedIn)
+    {
+        UpdateLoginUI(isLoggedIn).Forget();
+    }
+
+    private void OnProfileChanged(UserProfile profile)
+    {
+        if (_loginButtonText != null)
+            _loginButtonText.text = profile.nickname;
+    }
+
+    private async UniTask UpdateLoginUI(bool isLoggedIn)
+    {
+        if (isLoggedIn)
+        {
+            var (profile, _) = await ProfileManager.Instance.LoadProfileAsync();
+            string nickname = profile?.nickname ?? AuthManager.Instance.UserId;
+
+            if (_loginButtonText != null) _loginButtonText.text = nickname;
+            if (_loginPanel != null) _loginPanel.SetActive(false);
+        }
+        else
+        {
+            if (_loginButtonText != null) _loginButtonText.text = "Log In";
+            if (_loginPanel != null) _loginPanel.SetActive(false);
+        }
+    }
+
+    private void OnLoginButtonClicked()
+    {
+        PlayButtonSound();
+        if (AuthManager.Instance != null && AuthManager.Instance.IsLoggedIn)
+        {
+            if (_profileUI != null) _profileUI.OpenProfilePanel().Forget();
+        }
+        else
+        {
+            if (_loginPanel != null) _loginPanel.SetActive(true);
+        }
     }
 
     private void Update()

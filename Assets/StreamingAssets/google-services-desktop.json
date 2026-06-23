@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "671144302205",
+    "firebase_url": "https://honeyimhome-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "honeyimhome",
+    "storage_bucket": "honeyimhome.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:671144302205:android:58e17d782a75d7588f0314",
+        "android_client_info": {
+          "package_name": "com.DevelRocket.HoneyImHome"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhJZeaA6H-S0hKRoHXcvLheqLCvi9Fl9U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
