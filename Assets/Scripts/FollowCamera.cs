@@ -49,7 +49,7 @@ public class FollowCamera : MonoBehaviour
         _defaultDistance = _offset.magnitude;
         _currentDistance = _defaultDistance;
         _activeOffset = _offset;
-        GetComponent<Camera>().nearClipPlane = 0.001f;
+        GetComponent<Camera>().nearClipPlane = 0.01f;
     }
 
     private void Start()

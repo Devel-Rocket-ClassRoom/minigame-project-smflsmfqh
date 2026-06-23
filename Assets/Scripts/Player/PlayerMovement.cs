@@ -115,6 +115,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+        _rb.interpolation = RigidbodyInterpolation.Interpolate;
         _collider = GetComponent<CapsuleCollider>();
         _animator = GetComponent<Animator>();
         _playerController = GetComponent<PlayerController>();
