@@ -10,13 +10,6 @@ public class LoginUI : MonoBehaviour
     [SerializeField]
     private GameObject loginPanel;
 
-    [Header("Profile Button")]
-    [SerializeField]
-    private Button profileButton;
-
-    [SerializeField]
-    private TextMeshProUGUI profileButtonText;
-
     [Header("Login Form")]
     [SerializeField]
     private TMP_InputField emailInput;
@@ -47,9 +40,7 @@ public class LoginUI : MonoBehaviour
     {
         await UniTask.WaitUntil(() => AuthManager.Instance.IsInitialized);
         await UniTask.WaitUntil(() => ProfileManager.Instance.IsInitialized);
-
-
-        profileButton.onClick.AddListener(OnProfileButtonClicked);
+        
         loginButton.onClick.AddListener(() => OnLoginButtonClicked().Forget());
         signupButton.onClick.AddListener(() => OnSignupButtonClicked().Forget());
         anonymousButton.onClick.AddListener(() => OnAnonymousButtonClicked().Forget());

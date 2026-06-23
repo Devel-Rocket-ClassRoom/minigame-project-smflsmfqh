@@ -56,12 +56,6 @@ public class AuthManager : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-            SignOut();
-    }
-
     private void OnAuthStateChanged(object sender, EventArgs eventArgs)
     {
         NotifyLogInState();
@@ -188,10 +182,9 @@ public class AuthManager : MonoBehaviour
     private void OnDestroy()
     {
         if (auth != null)
-        {
             auth.StateChanged -= OnAuthStateChanged;
-        }
 
-        instance = null;
+        if (instance == this)
+            instance = null;
     }
 }

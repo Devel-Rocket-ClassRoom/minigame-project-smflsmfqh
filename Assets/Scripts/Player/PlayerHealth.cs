@@ -40,6 +40,13 @@ public class PlayerHealth : MonoBehaviour
     public event Action<float> OnHealthChanged;
     public event Action<CauseDeath> OnDied;
 
+    private int _damagedByCat = 0;
+    public int DamagedByCat => _damagedByCat;
+    private int _damagedByNPC = 0;
+    public int DamagedByNPC => _damagedByNPC;
+    private int _damagedByCar = 0;
+    public int DamagedByCar => 0;
+
     private void Awake()
     {
         _animator = GetComponent<Animator>();
@@ -100,12 +107,15 @@ public class PlayerHealth : MonoBehaviour
             {
                 case CauseDeath.Car:
                     _playerMovement?.SetFaceShrink();
+                    _damagedByCar++;
                     break;
                 case CauseDeath.Cat:
                     _playerMovement?.SetFaceTrauma();
+                    _damagedByCat++;
                     break;
                 default:
                     _playerMovement?.SetFaceDamaged();
+                    _damagedByNPC++;
                     break;
             }
         }

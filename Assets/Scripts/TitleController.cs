@@ -14,6 +14,8 @@ public class TitleController : MonoBehaviour
     [SerializeField] private GameObject _videoPanel;
     [SerializeField] private GameObject _loginPanel;
     [SerializeField] private ProfileUI _profileUI;
+    [SerializeField] private GameObject _leaderboardPanel;
+    [SerializeField] private GameObject _historyPanel;
 
     [Header("Video Settings")]
     [SerializeField] private VideoPlayer _videoPlayer;
@@ -25,6 +27,8 @@ public class TitleController : MonoBehaviour
     [SerializeField] private Button _languageButton;
     [SerializeField] private Button _loginButton;
     [SerializeField] private TextMeshProUGUI _loginButtonText;
+    [SerializeField] private Button _leaderboardButton;
+    [SerializeField] private Button _historyButton;
 
     [Header("언어 선택")]
     [SerializeField] private GameObject _languagePanel;
@@ -56,6 +60,10 @@ public class TitleController : MonoBehaviour
 
     private void Awake()
     {
+        if (_historyButton != null)
+            _historyButton.onClick.AddListener(() => _historyPanel.SetActive(true));
+        if (_leaderboardButton != null)
+            _leaderboardButton.onClick.AddListener(() => _leaderboardPanel.SetActive(true));
         if (_startButton != null)
             _startButton.onClick.AddListener(StartGameSequence);
 
