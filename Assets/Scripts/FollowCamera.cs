@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class FollowCamera : MonoBehaviour
 {
@@ -39,7 +40,23 @@ public class FollowCamera : MonoBehaviour
     [SerializeField]
     private float _maxZoomOut = 2.5f;
 
+    [Tooltip(
+        "New Input System의 Mouse.scroll은 노치당 값이 레거시 Input.GetAxis(\"Mouse ScrollWheel\")보다 " +
+        "훨씬 큰 단위(Windows 기준 노치당 약 ±120)로 들어온다. 이전 _scrollSensitivity 값이 그대로 쓰이도록 " +
+        "같은 스케일(노치당 대략 ±0.1)로 나눠주는 계수 — 실제 플레이 체감이 이전과 다르면 여기서 조정."
+    )]
+    [SerializeField]
+    private float _scrollUnitScale = 1200f;
+
     public void SetShakeIntensity(float intensity) => _shakeIntensity = intensity;
+
+    private float ReadScrollDelta()
+    {
+        if (Mouse.current == null || _scrollUnitScale == 0f)
+            return 0f;
+
+        return Mouse.current.scroll.ReadValue().y / _scrollUnitScale;
+    }
 
     private void Awake()
     {
@@ -65,7 +82,7 @@ public class FollowCamera : MonoBehaviour
 
         if (!_isReacting)
         {
-            _currentDistance -= Input.GetAxis("Mouse ScrollWheel") * _scrollSensitivity;
+            _currentDistance -= ReadScrollDelta() * _scrollSensitivity;
             _currentDistance = Mathf.Clamp(
                 _currentDistance,
                 _defaultDistance,
