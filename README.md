@@ -39,17 +39,17 @@
 | | |
 |:--:|:--:|
 | ![오프닝 — 길바닥에서 깨어난 아빠 개미의 휴대폰에 쌓인 아내의 메시지](Docs/Images/readme/ybna_01_opening.png) | ![인게임 — 아내 메시지, 체력·스프린트 바, 미니맵, 심부름 목록](Docs/Images/readme/ybna_store_playing.png) |
-| 오프닝 시네마틱: 아내의 메시지 폭격 | 인게임 HUD: 메시지 · 체력/스프린트 · 미니맵 · 심부름 목록 |
-| ![스케일 — 사람 발 사이를 지나는 개미 시점](Docs/Images/readme/ybna_03_scale.png) | ![아이템 픽업 GIF](Docs/Images/readme/ybna_gif1_item.gif) |
-| 개미 시점의 스케일감: 발 사이를 지나가기 | 상점 앞 아이템 드랍 → `E` 픽업 |
-| ![심부름 GIF](Docs/Images/readme/ybna_gif2_mission.gif) | ![액션 GIF](Docs/Images/readme/ybna_gif3_action.gif) |
-| 심부름 할당 → 미니맵 핑 → 체크리스트 | 달리기 · 점프 · 구르기 회피 |
-| ![플레이 — 숙취 상태로 깨어난 직후, NPC 발 사이](Docs/Images/readme/play_01_start.png) | ![플레이 — 고양이 접근, 위험 경고 해골과 아내의 분노 메시지](Docs/Images/readme/play_02_cat.png) |
-| 게임 시작: 숙취 디버프(반투명 깜빡임) 상태로 발 사이를 지나기 | 고양이 접근: 근접 피드백 경고 + 아내 분노 메시지 |
-| ![플레이 — 도로 위, 신호 대기 중인 차량과 횡단보도 인파](Docs/Images/readme/play_03_car.png) | ![플레이 — 심부름 목록(Tab)과 바로 옆의 거대한 발](Docs/Images/readme/play_04_checklist.png) |
-| 도로 횡단: 신호에 맞춰 멈춘 차와 횡단보도 인파 | 심부름 목록(`Tab`): 랜덤으로 구성된 이번 판 목록 |
+| 오프닝 영상 (타이틀 씬 `VideoPlayer` 재생): 아내의 메시지 폭격 | 인게임 HUD: 메시지 · 체력/스프린트 · 미니맵 · 심부름 목록 |
+| ![스케일 — 사람 발 사이를 지나는 개미 시점](Docs/Images/readme/ybna_03_scale.png) | ![아이템 획득 GIF — 상점 앞 드랍 지점에서 아이템을 줍고 리액션 컷과 버프 파티클](Docs/Images/readme/ybna_gif1_item.gif) |
+| 개미 시점의 스케일감: 발 사이를 지나가기 | 아이템 획득: 드랍 지점 파티클 → `E` 픽업 → 리액션 컷 + 효과 파티클 |
+| ![심부름 GIF — 미션 아이템 픽업 후 체크리스트 완료, 이어서 발에 밟혀 리액션 컷](Docs/Images/readme/ybna_gif2_mission.gif) | ![이동 GIF — 스프린트로 사람 발 사이를 빠져나가기](Docs/Images/readme/ybna_gif3_action.gif) |
+| 미션 아이템 픽업 → 체크리스트 완료 표시 → 발에 밟힘(리액션 컷 · 표정 변화) | 스프린트로 발 사이 빠져나가기 (게이지 소모) |
+| ![플레이 — 숙취 상태로 깨어난 직후, NPC 발 사이](Docs/Images/readme/play_01_start.png) | ![플레이 — 고양이와 마주친 순간, 아내의 분노 메시지](Docs/Images/readme/play_02_cat.png) |
+| 게임 시작: 숙취 디버프(반투명 깜빡임) 상태로 발 사이를 지나기 | 고양이와 조우 + 아내 분노 메시지("5분이라고 했잖아…") |
+| ![플레이 — 도로 위, 지나가는 차와 횡단보도 인파](Docs/Images/readme/play_03_car.png) | ![플레이 — 심부름 목록(Tab)과 바로 옆의 거대한 발](Docs/Images/readme/play_04_checklist.png) |
+| 도로 위: 지나가는 차와 횡단보도 인파 사이 | 심부름 목록(`Tab`): 랜덤으로 구성된 이번 판 목록 |
 | ![엔딩 — 꽃다발을 건네는 아빠 개미](Docs/Images/readme/ybna_06_ending.png) | ![결과 — 클리어 화면, 아내의 인내심 7분 39초](Docs/Images/readme/ybna_07_result.png) |
-| 엔딩 시네마틱: 히든 미션 꽃다발 | 클리어 화면: "아내의 인내심" = 생존 시간 |
+| 히든 엔딩 영상 (꽃다발까지 완수하고 귀가하면 재생) | 클리어 화면: "아내의 인내심" = 생존 시간 |
 
 - 아이템 효과 데이터 구조: [`Docs/Images/readme/item_effect_so_diagram.svg`](Docs/Images/readme/item_effect_so_diagram.svg)
 
