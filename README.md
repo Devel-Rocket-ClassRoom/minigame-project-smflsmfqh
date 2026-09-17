@@ -44,10 +44,10 @@
 | 개미 시점의 스케일감: 발 사이를 지나가기 | 아이템 획득: 드랍 지점 파티클 → `E` 픽업 → 리액션 컷 + 효과 파티클 |
 | ![심부름 GIF — 미션 아이템 픽업 후 체크리스트 완료, 이어서 발에 밟혀 리액션 컷](Docs/Images/readme/ybna_gif2_mission.gif) | ![이동 GIF — 스프린트로 사람 발 사이를 빠져나가기](Docs/Images/readme/ybna_gif3_action.gif) |
 | 미션 아이템 픽업 → 체크리스트 완료 표시 → 발에 밟힘(리액션 컷 · 표정 변화) | 스프린트로 발 사이 빠져나가기 (게이지 소모) |
-| ![플레이 — 숙취 상태로 깨어난 직후, NPC 발 사이](Docs/Images/readme/play_01_start.png) | ![플레이 — 고양이와 마주친 순간, 아내의 분노 메시지](Docs/Images/readme/play_02_cat.png) |
-| 게임 시작: 숙취 디버프(반투명 깜빡임) 상태로 발 사이를 지나기 | 고양이와 조우 + 아내 분노 메시지("5분이라고 했잖아…") |
-| ![플레이 — 도로 위, 지나가는 차와 횡단보도 인파](Docs/Images/readme/play_03_car.png) | ![플레이 — 심부름 목록(Tab)과 바로 옆의 거대한 발](Docs/Images/readme/play_04_checklist.png) |
-| 도로 위: 지나가는 차와 횡단보도 인파 사이 | 심부름 목록(`Tab`): 랜덤으로 구성된 이번 판 목록 |
+| ![플레이 — 숙취 상태로 깨어난 직후, NPC 발 사이](Docs/Images/readme/play_01_start.png) | ![플레이 — 숙취 상태(빨간 해골 파티클)로 고양이와 마주친 순간, 아내의 분노 메시지](Docs/Images/readme/play_02_cat.png) |
+| 게임 시작: 숙취 디버프(반투명 깜빡임) 상태로 발 사이를 지나기 | 숙취 상태(빨간 해골 파티클)로 고양이와 조우 + 아내 분노 메시지("5분이라고 했잖아…") |
+| ![플레이 — 숙취 상태로 도로 위, 지나가는 차와 횡단보도 인파](Docs/Images/readme/play_03_car.png) | ![플레이 — 심부름 목록(Tab)과 바로 옆의 거대한 발](Docs/Images/readme/play_04_checklist.png) |
+| 숙취 상태로 도로 위: 지나가는 차와 횡단보도 인파 사이 | 심부름 목록(`Tab`): 랜덤으로 구성된 이번 판 목록 |
 | ![엔딩 — 꽃다발을 건네는 아빠 개미](Docs/Images/readme/ybna_06_ending.png) | ![결과 — 클리어 화면, 아내의 인내심 7분 39초](Docs/Images/readme/ybna_07_result.png) |
 | 히든 엔딩 영상 (꽃다발까지 완수하고 귀가하면 재생) | 클리어 화면: "아내의 인내심" = 생존 시간 |
 
@@ -64,7 +64,7 @@
 - **이동** — Rigidbody 기반 WASD, 접촉 법선을 모아 경사면·연석에서도 미끄러지지 않게 처리. 달리기(`Shift`, 7초 게이지 소모/회복), 점프, 구르기(`R`, 0.7초 무적 + 5초 쿨다운), 웅크리기(`C`, 콜라이더 높이 축소). 이동 모드는 `MoveMode` 상태로 관리하고 게이지 변화는 이벤트(`OnSprintChanged`, `OnRollChanged`)로만 UI에 전달합니다.
 - **체력** — 피격 25(발) / 10(고양이), 피격 후 0.7초 무적, 2초마다 자동 회복. 사망 원인은 [`CauseDeath`](Assets/Scripts/Data/CauseDeath.cs) enum으로 넘겨 원인별 사망 메시지·표정·게임오버 처리를 분기합니다.
 - **표정 · 리액션** — 피격 원인에 따라 `Eyes_Cry / Eyes_Shrink / Eyes_Trauma` 등 얼굴 애니메이션을 재생하고, [`FollowCamera`](Assets/Scripts/FollowCamera.cs)가 리액션 컷(정면 클로즈업)으로 잠시 전환됩니다.
-- **숙취 디버프** — [`HangoverEffect`](Assets/Scripts/Player/HangoverEffect.cs): 시작 시 이동 속도 ×0.6 + 반투명 깜빡임 머티리얼 + 파티클. 약국의 숙취해소제 미션 완료 이벤트를 받으면 원래 머티리얼로 복구합니다.
+- **숙취 디버프** — [`HangoverEffect`](Assets/Scripts/Player/HangoverEffect.cs): 시작 시 이동 속도 ×0.6 + 반투명 깜빡임 머티리얼 + 머리 위 빨간 해골 파티클. 약국의 숙취해소제 미션 완료 이벤트를 받으면 해골 파티클을 끄고 원래 머티리얼로 복구합니다.
 - **저체력 비네팅** — [`VignetteHealthController`](Assets/Scripts/Player/VignetteHealthController.cs): 체력 50% 이하부터 10% 단위 5단계로 URP Volume 비네팅 강도를 올립니다.
 
 ### 2. NPC 3종 · 스폰 — [`NPCMovement`](Assets/Scripts/NPC/Human/NPCMovement.cs) · [`CatMovement`](Assets/Scripts/NPC/Cat/CatMovement.cs) · [`CarMovement`](Assets/Scripts/NPC/Car/CarMovement.cs) ([`Assets/Scripts/NPC`](Assets/Scripts/NPC))
