@@ -40,16 +40,20 @@
 |:--:|:--:|
 | ![오프닝 — 길바닥에서 깨어난 아빠 개미의 휴대폰에 쌓인 아내의 메시지](Docs/Images/readme/ybna_01_opening.png) | ![인게임 — 아내 메시지, 체력·스프린트 바, 미니맵, 심부름 목록](Docs/Images/readme/ybna_store_playing.png) |
 | 오프닝 영상 (타이틀 씬 `VideoPlayer` 재생): 아내의 메시지 폭격 | 인게임 HUD: 메시지 · 체력/스프린트 · 미니맵 · 심부름 목록 |
-| ![스케일 — 사람 발 사이를 지나는 개미 시점](Docs/Images/readme/ybna_03_scale.png) | ![아이템 획득 GIF — 상점 앞 드랍 지점에서 아이템을 줍고 리액션 컷과 버프 파티클](Docs/Images/readme/ybna_gif1_item.gif) |
-| 개미 시점의 스케일감: 발 사이를 지나가기 | 아이템 획득: 드랍 지점 파티클 → `E` 픽업 → 리액션 컷 + 효과 파티클 |
-| ![심부름 GIF — 미션 아이템 픽업 후 체크리스트 완료, 이어서 발에 밟혀 리액션 컷](Docs/Images/readme/ybna_gif2_mission.gif) | ![이동 GIF — 스프린트로 사람 발 사이를 빠져나가기](Docs/Images/readme/ybna_gif3_action.gif) |
-| 미션 아이템 픽업 → 체크리스트 완료 표시 → 발에 밟힘(리액션 컷 · 표정 변화) | 스프린트로 발 사이 빠져나가기 (게이지 소모) |
-| ![플레이 — 숙취 상태로 깨어난 직후, NPC 발 사이](Docs/Images/readme/play_01_start.png) | ![플레이 — 숙취 상태(빨간 해골 파티클)로 고양이와 마주친 순간, 아내의 분노 메시지](Docs/Images/readme/play_02_cat.png) |
-| 게임 시작: 숙취 디버프(반투명 깜빡임) 상태로 발 사이를 지나기 | 숙취 상태(빨간 해골 파티클)로 고양이와 조우 + 아내 분노 메시지("5분이라고 했잖아…") |
-| ![플레이 — 숙취 상태로 도로 위, 지나가는 차와 횡단보도 인파](Docs/Images/readme/play_03_car.png) | ![플레이 — 심부름 목록(Tab)과 바로 옆의 거대한 발](Docs/Images/readme/play_04_checklist.png) |
-| 숙취 상태로 도로 위: 지나가는 차와 횡단보도 인파 사이 | 심부름 목록(`Tab`): 랜덤으로 구성된 이번 판 목록 |
-| ![엔딩 — 꽃다발을 건네는 아빠 개미](Docs/Images/readme/ybna_06_ending.png) | ![결과 — 클리어 화면, 아내의 인내심 7분 39초](Docs/Images/readme/ybna_07_result.png) |
-| 히든 엔딩 영상 (꽃다발까지 완수하고 귀가하면 재생) | 클리어 화면: "아내의 인내심" = 생존 시간 |
+| ![스케일 — 사람 발 사이를 지나는 개미 시점](Docs/Images/readme/ybna_03_scale.png) | ![플레이 — 숙취 상태로 깨어난 직후, NPC 발 사이](Docs/Images/readme/play_01_start.png) |
+| 개미 시점의 스케일감: 발 사이를 지나가기 | 게임 시작: 숙취 디버프(반투명 깜빡임 · 빨간 해골 파티클) 상태로 발 사이를 지나기 |
+| ![근접 피드백 GIF — 고양이가 바로 옆을 지나가는 동안 화면이 붉게 점멸](Docs/Images/readme/ybna_gif4_cat_proximity.gif) | ![근접 피드백 GIF — 차량이 머리 위로 지나가는 동안 화면이 붉게 점멸](Docs/Images/readme/ybna_gif5_car_proximity.gif) |
+| 근접 피드백: 고양이가 바로 옆을 지나가는 동안 화면 붉은 점멸 + 카메라 흔들림 | 근접 피드백: 도로 위에서 차가 머리 위로 지나갈 때 |
+| ![미션 할당 GIF — 아내 메시지 도착과 함께 체크리스트에 새 항목 추가](Docs/Images/readme/ybna_gif8_mission_assign.gif) | ![심부름 GIF — 미션 아이템 픽업 후 체크리스트 완료, 이어서 발에 밟혀 리액션 컷](Docs/Images/readme/ybna_gif2_mission.gif) |
+| 미션 할당: 아내 메시지 도착 → 체크리스트에 새 항목 추가 (인파 속 근접 점멸) | 미션 아이템 픽업 → 체크리스트 완료 표시 → 발에 밟힘(리액션 컷 · 표정 변화) |
+| ![아이템 획득 GIF — 상점 앞 드랍 지점에서 아이템을 줍고 리액션 컷과 버프 파티클](Docs/Images/readme/ybna_gif1_item.gif) | ![저체력 GIF — 어두운 비네팅 상태에서 길거리 음식을 먹고 회복](Docs/Images/readme/ybna_gif6_lowhealth_heal.gif) |
+| 아이템 획득: 드랍 지점 파티클 → `E` 픽업 → 리액션 컷 + 효과 파티클 | 저체력 비네팅 → 쓰레기통 옆 길거리 음식 → 회복 파티클 → 비네팅 완화 |
+| ![이동 GIF — 스프린트로 사람 발 사이를 빠져나가기](Docs/Images/readme/ybna_gif3_action.gif) | ![히든 미션 GIF — 꽃밭에서 꽃을 줍고 체크리스트가 전부 완료 표시](Docs/Images/readme/ybna_gif7_flower.gif) |
+| 스프린트로 발 사이 빠져나가기 (게이지 소모) | 히든 미션: 꽃밭에서 꽃 획득 → 체크리스트 전부 완료 |
+| ![플레이 — 심부름 목록(Tab)과 바로 옆의 거대한 발](Docs/Images/readme/play_04_checklist.png) | ![결과 — 클리어 화면, 아내의 인내심 7분 39초](Docs/Images/readme/ybna_07_result.png) |
+| 심부름 목록(`Tab`): 랜덤으로 구성된 이번 판 목록 | 클리어 화면: "아내의 인내심" = 생존 시간 |
+| ![엔딩 — 꽃다발을 건네는 아빠 개미](Docs/Images/readme/ybna_06_ending.png) | |
+| 히든 엔딩 영상 (꽃다발까지 완수하고 귀가하면 재생) | |
 
 - 아이템 효과 데이터 구조: [`Docs/Images/readme/item_effect_so_diagram.svg`](Docs/Images/readme/item_effect_so_diagram.svg)
 
@@ -92,7 +96,7 @@
 
 - **메시지 큐** — 아내 메시지·독백·힌트·튜토리얼 문구가 전부 한 큐를 지나갑니다. 표시 시점에 CSV 키를 다시 조회하므로 언어를 바꿔도 화면의 메시지가 즉시 재번역되고, 튜토리얼은 큐 맨 앞에 끼워 넣는 API를 씁니다.
 - **미니맵** — 월드 XZ → 패널 좌표 변환, 마커 타입(플레이어/상점/아이템/목적지)별 아이콘·색, 미션 할당 시 해당 상점 마커 **핑**. `LateUpdate` 순회 중 제거는 대기열로 미뤄 컬렉션 변경 예외를 피합니다.
-- **근접 피드백** — `Danger` 태그 오브젝트와의 최소 거리를 `intensity(0~1)`로 환산해 이벤트로 발행. 카메라 흔들림([`FollowCamera`](Assets/Scripts/FollowCamera.cs)), 화면 패널 연출([`ProximityPanelFeedbackUI`](Assets/Scripts/UI/ProximityPanelFeedbackUI.cs)), 차량 경적 볼륨이 각자 독립적으로 구독합니다.
+- **근접 피드백** — `Danger` 태그 오브젝트와의 최소 거리를 `intensity(0~1)`로 환산해 이벤트로 발행. 카메라 흔들림([`FollowCamera`](Assets/Scripts/FollowCamera.cs)), 화면 전체 붉은 점멸([`ProximityPanelFeedbackUI`](Assets/Scripts/UI/ProximityPanelFeedbackUI.cs)), 차량 경적 볼륨이 각자 독립적으로 구독합니다.
 - **다국어** — [`StringTableManager`](Assets/Scripts/StringTableManager.cs)가 `Resources/Data/ko.csv`, `en.csv`를 로드. 키·문구·발신자·프로필 이미지 키를 한 줄로 두어 사망 메시지(원인별 랜덤), 분노 메시지, 미션 메시지를 모두 데이터로 관리하며, 타이틀에서 언어를 고르면 `PlayerPrefs`로 유지됩니다.
 - 체력·스프린트·구르기 게이지, 심부름 체크리스트(`Tab`), 볼륨 설정(AudioMixer), 일시정지/클리어/게임오버 패널 — [`UIManager`](Assets/Scripts/UI/UIManager.cs)
 
